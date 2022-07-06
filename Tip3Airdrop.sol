@@ -2,7 +2,7 @@ pragma ever-solidity >= 0.59.0;
 pragma AbiHeader expire;
 import "TIP31TokenWallet.sol";
 
-contract Airdrop {
+contract Tip3Airdrop {
 
     address[] addresses;
     uint128[] amounts;

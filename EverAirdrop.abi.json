@@ -1,0 +1,44 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_refund_destination","type":"address"},
+				{"name":"_addresses","type":"address[]"},
+				{"name":"_amounts","type":"uint128[]"},
+				{"name":"_refund_lock_duration","type":"uint256"},
+				{"name":"_walletAddress","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "distribute",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"addresses","type":"address[]"},
+		{"name":"amounts","type":"uint128[]"},
+		{"name":"refund_destination","type":"address"},
+		{"name":"refund_lock_duration_end","type":"uint256"},
+		{"name":"distributed","type":"bool"},
+		{"name":"total_amount","type":"uint256"},
+		{"name":"required_fee","type":"uint256"},
+		{"name":"walletAddress","type":"address"},
+		{"name":"transferGas","type":"uint128"}
+	]
+}
