@@ -34,7 +34,7 @@ contract Tip3Airdrop {
         amounts = _amounts;
         refund_destination = _refund_destination;
         walletAddress = _walletAddress;
-	tokenRootAddress = _tokenRootAddress;
+	    tokenRootAddress = _tokenRootAddress;
         refund_lock_duration_end = now + _refund_lock_duration;
 
         for (uint i=0; i < amounts.length; i++) {

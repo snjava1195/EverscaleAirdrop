@@ -1,6 +1,5 @@
 pragma ever-solidity >= 0.59.0;
 pragma AbiHeader expire;
-import "TIP31TokenWallet.sol";
 
 contract EverAirdrop {
 
@@ -10,8 +9,7 @@ contract EverAirdrop {
     uint256 refund_lock_duration_end;
     bool distributed = false;
     uint total_amount = 0;
-    uint required_fee = 1000000000;
-    address private walletAddress;
+    uint required_fee = 1000000000; 
     uint128 private transferGas = 0.8 ever;
     
     // 1 TON should be enough for any possible fees
@@ -68,6 +66,17 @@ contract EverAirdrop {
             payable(addresses[i]).transfer(amounts[i], false, 1);
         }
         // comment out when finished with testing
-        distributed = false;
+        //distributed = false;
+    }
+
+     /**
+     * @dev Sends all contract's balance to the refund_destination
+     *      Can be executed only after
+     *      1. Refund lock passed
+     *      2. Distribution finished
+     */
+    //    function refund() refundLockPassed distributedStatus(true) public view {
+    function refund() refundLockPassedOrDistributionIsOver public view {
+        payable(refund_destination).transfer(0, false, 128);
     }
  }
