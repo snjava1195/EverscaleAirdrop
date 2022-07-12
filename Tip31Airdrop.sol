@@ -71,5 +71,10 @@ contract Tip31Airdrop {
         }
         return totalAmount;
     }
+    
+    function refund() public view {
+        tvm.accept();
+        payable(_senderAddr).transfer(0, false, 128);
+    }
 
  }
