@@ -14,7 +14,6 @@
 			"name": "deploy",
 			"inputs": [
 				{"name":"_airDropCode","type":"cell"},
-				{"name":"_msgOutputs","type":"string[]"},
 				{"name":"_refund_destination","type":"address"},
 				{"name":"_addresses","type":"address[]"},
 				{"name":"_amounts","type":"uint128[]"},

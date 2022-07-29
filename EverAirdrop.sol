@@ -5,23 +5,19 @@ pragma AbiHeader expire;
 contract EverAirdrop {
 
    struct EverdropStruct{
-      string[] msgOutputs;
       address refund_destination;
       address[] addresses;
       uint128[] amounts;
       uint256 refund_lock_duration_end;
       address everDropAddr;
-      uint48[] timeStamps;
-      
     }
 	
-    
-
+   
     //uint static public m_id;
     // Address of contract created this contract.
     uint static public m_id;
     address static public m_creator; 
-    string [] msgOutputs;
+    
     uint48 [] timeStamps;
     address[] addresses;
     uint128[] amounts;
@@ -64,7 +60,7 @@ contract EverAirdrop {
     }
    
     constructor(
-        string[] _msgOutputs,
+       
         address _refund_destination,
         address[] _addresses,
         uint128[] _amounts,
@@ -78,7 +74,6 @@ contract EverAirdrop {
         require((_refund_lock_duration <= 604800) && (_refund_lock_duration >= 120), 103);
         tvm.accept();
 	
-	msgOutputs = _msgOutputs;
         addresses = _addresses;
         amounts = _amounts;
         refund_destination = _refund_destination;
@@ -103,12 +98,12 @@ contract EverAirdrop {
         //transfer amounts[i] evers to addresses[i] address from this contract
         for (uint i=0; i < addresses.length; i++) {
             payable(addresses[i]).transfer(amounts[i], false, 1);
-            timeStamps.push(now);
+
         }
         // transfer is done, another airdrop can start
        // distributed = false;
                   	          
-                  	       structArr.push(EverdropStruct(msgOutputs,refund_destination,addresses,amounts,refund_lock_duration_end,address(this),timeStamps));
+                  	       structArr.push(EverdropStruct(refund_destination,addresses,amounts,refund_lock_duration_end,address(this)));
         
         emit EverDropEmit(structArr);
     }

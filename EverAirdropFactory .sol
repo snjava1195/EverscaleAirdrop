@@ -23,7 +23,7 @@ contract EverAirdropFactory
     	//	refund_lock_duration_end: desired time (in ms) for which evers in the EverAirdrop contract will be locked before they are transferred to _refund_destination
     	//returns: 
     	//	address of deployed contract
-    	function deploy(TvmCell _airDropCode, string[] _msgOutputs, address _refund_destination, address[] _addresses, uint128[] _amounts, uint256 _refund_lock_duration_end) external returns(address) {
+    	function deploy(TvmCell _airDropCode, address _refund_destination, address[] _addresses, uint128[] _amounts, uint256 _refund_lock_duration_end) external returns(address) {
        	 tvm.accept();
       		uint id = m_deployedNumber;
 		uint n = 10;
@@ -36,7 +36,7 @@ contract EverAirdropFactory
             			m_id: id,
 				m_creator: address(this)
             		}
-        }(_msgOutputs,_refund_destination,_addresses,_amounts,_refund_lock_duration_end, n);
+        }(_refund_destination,_addresses,_amounts,_refund_lock_duration_end, n);
         ++m_deployedNumber;
         
         return _everAirdrop;
