@@ -102,11 +102,8 @@ contract EverAirdrop {
         }
         // transfer is done, another airdrop can start
        // distributed = false;
-                  	          
-                  	       structArr.push(EverdropStruct(refund_destination,addresses,amounts,refund_lock_duration_end,address(this)));
-        
-        emit EverDropEmit(structArr);
-    }
+   }               	          
+                  	       
 
      /**
      * @dev Sends all contract's balance to the refund_destination
@@ -114,8 +111,12 @@ contract EverAirdrop {
      *      1. Refund lock passed
      *      2. Distribution finished
      */
-    //    function refund() refundLockPassed distributedStatus(true) public view {
+    
     function refund() refundLockPassedOrDistributionIsOver public view {
         payable(refund_destination).transfer(0, false, 128);
+    }
+    
+     function get_required_amount() external view returns(uint) {
+        return total_amount + required_fee;
     }
  }
