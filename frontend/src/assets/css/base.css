@@ -1,0 +1,178 @@
+@layer base {
+  @font-face {
+    font-family: 'Faktum';
+    src: url('../fonts/Rene Bieder - Faktum Test Regular.otf');
+  }
+  @font-face {
+    font-family: 'PT_Root';
+    src: url('../fonts/PT-Root-UI_Medium.ttf');
+  }
+}
+
+@layer components {
+  .main-content-airdrops {
+    @apply w-[1160px] mx-auto mt-[84px] relative z-10;
+  }
+  .main-content-create-airdrop {
+    @apply w-[1160px] mx-auto mt-[84px];
+  }
+  .title-airdrops {
+    @apply font-semibold text-[44px] text-center mb-[64px];
+  }
+  .btn-create {
+    @apply bg-[#2B63F1] text-white py-[8px] px-[12px] mr-[12px] font-pt_root;
+  }
+  .btn-add {
+    @apply bg-[#ECF1FE] text-[#2B63F1] py-[8px] px-[12px] font-pt_root;
+  }
+  .container {
+    @apply max-w-[1360px] min-h-[100vh] flex flex-col mx-auto font-faktum;
+  }
+  .header {
+    @apply flex justify-between items-center h-[64px] px-[20px];
+  }
+  .logo {
+    @apply text-[#2B63F1] font-semibold;
+  }
+  .header-btn {
+    @apply text-[#2B63F1] bg-[#ECF1FE] font-pt_root font-medium text-sm leading-5 py-[8px] px-[12px];
+  }
+  .main-header {
+    @apply relative z-10 w-[750px] h-[212px] flex flex-col justify-between mx-auto text-center mt-[116px];
+  }
+  .title-welcome {
+    @apply text-[44px] font-semibold;
+  }
+  .subtitle {
+    @apply font-medium;
+  }
+  .main {
+    @apply flex-1;
+  }
+  .main-header-btn {
+    @apply text-white bg-[#2B63F1] py-[16px] px-[20px] self-center;
+  }
+  .main-content-welcome {
+    @apply w-[1160px] h-[120px] flex justify-between items-center mx-auto mt-[108px] font-medium text-[18px];
+  }
+  .main-element {
+    @apply w-[260px] h-full flex flex-col items-center space-y-6 text-center;
+  }
+  .footer {
+    @apply border h-[64px] w-full px-[20px] flex justify-between items-center bg-[#F7F7F9] mt-[50px];
+  }
+  .footer-menu {
+    @apply flex space-x-[40px] text-[14px] text-[#8B909A] font-pt_root font-medium;
+  }
+  .right-menu {
+    @apply flex items-center;
+  }
+
+  /* main-list */
+  .table {
+    @apply border border-[#E4E5EA] font-pt_root;
+  }
+  .thead {
+    @apply border-b border-[#E4E5EA];
+  }
+  .thead-cell {
+    @apply w-[193px] h-[44px] text-left pl-[12px] bg-[#F7F7F9] text-[#8B909A] text-[14px] font-medium;
+  }
+  .table-content {
+    @apply w-[375px] mx-auto text-center font-faktum;
+  }
+  .tbody-cell {
+    @apply w-[193px] h-[60px] text-left pl-[12px] text-[14px] border-b border-[#E4E5EA];
+  }
+  .status {
+    @apply text-[12px] py-[4px] px-[8px] rounded-[27px] font-medium;
+  }
+  .pagination {
+    @apply flex justify-between items-center mt-[16px] text-sm font-pt_root;
+  }
+  .itemsPerPage {
+    @apply flex items-center space-x-[6px];
+  }
+  .dropdown {
+    @apply bg-white border border-[#C6C9CF] w-[62px] h-[36px] pr-[4px] pl-[12px];
+  }
+  .pageNumber {
+    @apply flex items-center space-x-[6px];
+  }
+  .paginationBtns {
+    @apply flex space-x-[4px];
+  }
+  .leftBtn {
+    @apply bg-[#ECF1FE] w-[36px] h-[36px] flex  justify-center items-center;
+  }
+  .rightBtn {
+    @apply bg-[#ECF1FE] w-[36px] h-[36px] flex  justify-center items-center;
+  }
+  .loading-blur {
+    @apply w-[96px] h-[20px] loading;
+  }
+
+  /* airdrop */
+  .form {
+    @apply flex justify-between pt-[16px] font-pt_root;
+  }
+  .dropdown {
+    @apply border border-[#C6C9CF] w-full py-[9.5px] px-[12px] bg-white;
+  }
+  .name-text-input {
+    @apply border border-[#C6C9CF] w-full h-[36px] text-[14px] px-[12px] placeholder:text-[#A6AAB2];
+  }
+  .upload-csv {
+    @apply opacity-0 absolute w-full h-full cursor-pointer;
+  }
+}
+
+@layer utilities {
+  .topGradient {
+    position: absolute;
+    height: 280px;
+    width: 1360px;
+    transform: translateX(-50%);
+    top: 0;
+    left: 50%;
+    background: radial-gradient(50% 100% at 50% 0%, #fef2cd 0%, rgba(254, 242, 205, 0) 100%);
+  }
+  .loading {
+    background: linear-gradient(
+      90deg,
+      rgba(234, 235, 240, 0.64) 0%,
+      #eaebf0 53.68%,
+      rgba(234, 235, 240, 0.16) 100%
+    );
+  }
+}
+
+@keyframes spinAround {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.is-loading {
+  color: transparent !important;
+  pointer-events: none;
+  user-select: none;
+}
+.is-loading::after {
+  animation: spinAround 500ms infinite linear;
+  border: 2px solid #ffffff;
+  border-radius: 100%;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  content: '';
+  display: block;
+  height: 1.2em;
+  width: 1.2em;
+  left: calc(50% - (1.2em / 2));
+  top: calc(50% - (1.2em / 2));
+  position: absolute !important;
+}

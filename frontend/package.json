@@ -1,0 +1,37 @@
+{
+  "name": "ever-drop",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@vueuse/core": "^9.0.0",
+    "pinia": "^2.0.16",
+    "pinia-plugin-persistedstate": "^1.6.3",
+    "vue": "^3.2.37",
+    "vue-router": "^4.1.2"
+  },
+  "devDependencies": {
+    "@eversdk/core": "^1.36.1",
+    "@eversdk/lib-web": "^1.36.1",
+    "@rushstack/eslint-patch": "^1.1.0",
+    "@vitejs/plugin-vue": "^3.0.1",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "autoprefixer": "^10.4.7",
+    "dayjs": "^1.11.4",
+    "eslint": "^8.5.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "everscale-inpage-provider": "^0.3.28",
+    "export-from-json": "^1.6.0",
+    "install": "^0.13.0",
+    "npm": "^8.15.1",
+    "postcss": "^8.4.14",
+    "prettier": "^2.5.1",
+    "tailwindcss": "^3.1.6",
+    "vite": "^3.0.1",
+    "vue-multiselect": "^3.0.0-alpha.2"
+  }
+}
