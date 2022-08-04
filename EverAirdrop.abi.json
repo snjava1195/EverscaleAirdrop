@@ -30,6 +30,14 @@
 			]
 		},
 		{
+			"name": "get_required_amount",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
 			"name": "m_id",
 			"inputs": [
 			],
