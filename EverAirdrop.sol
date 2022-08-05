@@ -4,20 +4,7 @@ pragma AbiHeader expire;
 //Contract used for airdrop of evers
 contract EverAirdrop {
 
-   struct EverdropStruct{
-      address refund_destination;
-      address[] addresses;
-      uint128[] amounts;
-      uint256 refund_lock_duration_end;
-      address everDropAddr;
-    }
-	
-   
-    //uint static public m_id;
-    // Address of contract created this contract.
-    uint static public m_id;
-    address static public m_creator; 
-    
+  
     uint48 [] timeStamps;
     address[] addresses;
     uint128[] amounts;
@@ -27,12 +14,7 @@ contract EverAirdrop {
     uint total_amount = 0;
     uint required_fee = 1000000000; 
     uint128 private transferGas = 0.8 ever;
-    uint public m_sum;
-    EverdropStruct[] public structArr;
     
-    event EverDropEmit(
-       EverdropStruct[] _structArr
-    );
     // 1 TON should be enough for any possible fees
     // The rest of the balance can always be refunded
     // Checks whether the contract has enough evers for airdrop along with the sending fee  
@@ -60,15 +42,11 @@ contract EverAirdrop {
     }
    
     constructor(
-       
         address _refund_destination,
         address[] _addresses,
         uint128[] _amounts,
-        uint256 _refund_lock_duration,
-        uint n
+        uint256 _refund_lock_duration
     ) public {
-        require(msg.sender == m_creator, 103);
-        require(msg.pubkey() == tvm.pubkey(), 106);
         require(_amounts.length == _addresses.length, 101);
         require((_addresses.length > 0) && (_addresses.length < 100), 102);
         require((_refund_lock_duration <= 604800) && (_refund_lock_duration >= 120), 103);
@@ -82,10 +60,6 @@ contract EverAirdrop {
 	//calculates total amount to be sent based on the amounts from the list
         for (uint i=0; i < amounts.length; i++) {
             total_amount += amounts[i];
-        }
-        
-        for (uint i = 0; i < n; ++i) {
-            m_sum += i;
         }
     }
     
