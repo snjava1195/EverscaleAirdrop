@@ -10,9 +10,9 @@
         </div>
 
         <div class="flex items-center space-x-[10px]">
-          <a class="text-[#2B63F1]">{{ $filters.addressFormat(walletStore.profile.address) }}</a>
+          <a class="text-[#2B63F1]">{{ $filters.addressFormat(airdropStore.address) }}</a>
 
-          <span @click="copy(walletStore.profile.address)" class="cursor-pointer">
+          <span @click="copy(airdropStore.address)" class="cursor-pointer">
             <CopyIcon />
           </span>
         </div>
@@ -25,7 +25,7 @@
 
       <div class="flex justify-between">
         <span>Estimated gas fee</span>
-        <span>0 EVER</span>
+        <span>{{ 0.1 * recipientsList.length }} EVER</span>
       </div>
 
       <div class="flex justify-between items-center font-bold text-black">
@@ -73,10 +73,10 @@
 
             <a v-if="step > 1" class="flex items-center">
               <span class="text-[#2B63F1] mr-[6px]">{{
-                $filters.addressFormat(walletStore.profile.address)
+                $filters.addressFormat(airdropStore.address)
               }}</span>
 
-              <span @click="copy(walletStore.profile.address)" class="cursor-pointer">
+              <span @click="copy(airdropStore.address)" class="cursor-pointer">
                 <CopyIcon />
               </span>
             </a>
@@ -115,10 +115,10 @@
 
             <a v-if="step > 2" class="flex items-center">
               <span class="text-[#2B63F1] mr-[6px]">{{
-                $filters.addressFormat(walletStore.profile.address)
+                $filters.addressFormat(airdropStore.address)
               }}</span>
 
-              <span @click="copy(walletStore.profile.address)" class="cursor-pointer">
+              <span @click="copy(airdropStore.address)" class="cursor-pointer">
                 <CopyIcon />
               </span>
             </a>
@@ -157,10 +157,10 @@
 
             <a v-if="step > 3" class="flex items-center">
               <span class="text-[#2B63F1] mr-[6px]">{{
-                $filters.addressFormat(walletStore.profile.address)
+                $filters.addressFormat(airdropStore.address)
               }}</span>
 
-              <span @click="copy(walletStore.profile.address)" class="cursor-pointer">
+              <span @click="copy(airdropStore.address)" class="cursor-pointer">
                 <CopyIcon />
               </span>
             </a>
@@ -209,10 +209,10 @@
 
             <a v-if="step > 4" class="flex items-center">
               <span class="text-[#2B63F1] mr-[6px]">{{
-                $filters.addressFormat(walletStore.profile.address)
+                $filters.addressFormat(airdropStore.address)
               }}</span>
 
-              <span @click="copy(walletStore.profile.address)" class="cursor-pointer">
+              <span @click="copy(airdropStore.address)" class="cursor-pointer">
                 <CopyIcon />
               </span>
             </a>
@@ -251,10 +251,10 @@
 
             <a v-if="step > 5" class="flex items-center">
               <span class="text-[#2B63F1] mr-[6px]">{{
-                $filters.addressFormat(walletStore.profile.address)
+                $filters.addressFormat(airdropStore.address)
               }}</span>
 
-              <span @click="copy(walletStore.profile.address)" class="cursor-pointer">
+              <span @click="copy(airdropStore.address)" class="cursor-pointer">
                 <CopyIcon />
               </span>
             </a>
@@ -270,7 +270,7 @@
           :class="!recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1]'"
           :disabled="!recipientsList.length"
         >
-          Top-up {{ gasFee }} EVER
+          Top-up 20 EVER
         </button>
         <!-- Step 2 -->
         <template v-if="step === 2">
@@ -330,7 +330,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useWalletStore } from '@/stores/wallet';
+import { useAirdropStore } from '@/stores/airdrop';
 import { useClipboard } from '@vueuse/core';
 import InfoIcon from '@/components/icons/IconInfo.vue';
 import CopyIcon from '@/components/icons/IconCopy.vue';
@@ -346,9 +346,8 @@ const props = defineProps({
   },
 });
 
-const walletStore = useWalletStore();
+const airdropStore = useAirdropStore();
 const { copy } = useClipboard();
-const gasFee = ref(null);
 const step = ref(1);
 const loading = ref(false);
 const error = ref(false);
@@ -361,6 +360,8 @@ const totalTokens = computed(() => {
     return accumulator + Number(object.amount);
   }, 0);
 });
+
+airdropStore.getExpectedAddress();
 
 async function onTopUpEver() {
   console.log('onTopUpEver');

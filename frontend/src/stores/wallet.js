@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { ProviderRpcClient } from 'everscale-inpage-provider';
-// import { useLocalStorage } from '@vueuse/core';
 import router from '@/router';
 
 const ever = new ProviderRpcClient();
