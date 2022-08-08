@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { Contract, Signer } from "locklift";
 import { FactorySource } from "../build/factorySource";
 import { WalletCode } from "../build/Wallet.code";
-
+import { bignumber } from "chai-bignumber";
 let sample: Contract<FactorySource["Sample"]>;
 let airdropCon: Contract<FactorySource["Airdrop"]>;
 let signer: Signer;
@@ -11,18 +11,20 @@ let tokenRootContr: Contract<FactorySource["TokenRoot"]>;
 let walletCode: WalletCode;
 let root: Contract<FactorySource["TokenRoot"]>;
 let airdrop: Contract<FactorySource["Airdrop"]>;
-
+let user: Contract<FactorySource["Wallet"]>;
 const start_timestamp = Math.floor(Date.now() / 1000);
 const claim_period_in_seconds = 60;
 const claim_periods_amount = 3;
 const amount = locklift.utils.toNano(1000);
+const chai = require('chai');
+chai.use(require('chai-bignumber')());
 
 const {
   expect,
   sleep,
-  setupAirdrop,
+ // setupAirdrop,
 } = require('./utils');
-
+const _randomNonce = locklift.utils.getRandomNonce();
 describe("Test Sample contract", async function () {
   before(async () => {
     signer = (await locklift.keystore.getSigner("0"))!;
@@ -38,70 +40,64 @@ describe("Test Sample contract", async function () {
       expect(sampleData.abi).not.to.equal(undefined, "ABI should be available");
       expect(sampleData.tvc).not.to.equal(undefined, "tvc should be available");
     });
-
-    it("Deploy contract", async function () {
-      const INIT_STATE = 0;
-      const { contract } = await locklift.factory.deployContract({
-        contract: "Sample",
-        publicKey: signer.publicKey,
-        initParams: {
-          _nonce: locklift.utils.getRandomNonce(),
-        },
-        constructorParams: {
-          _state: INIT_STATE,
-        },
-        value: locklift.utils.toNano(2),
-      });
-      sample = contract;
-
-      expect(await locklift.provider.getBalance(sample.address).then(balance => Number(balance))).to.be.above(0);
+    
+    it("Get owner", async function() {
+    	const accountFactory = locklift.factory.getAccountsFactory("Wallet");
+  	
+	owner = accountFactory.getAccount("0:4c36e2e4ab9d775e885ccd154657ee376851ade9dcab5b4f0406bf7126c9f433", signer.publicKey);
+  //  logger.log(`Owner: ${owner.address}`);
+  console.log(`Owner: ${owner.address}`);
+  console.log(`Owner's public key: ${owner.publicKey}`);
     });
 
-    it("Interact with contract", async function () {
-      const NEW_STATE = 1;
-
-      await sample.methods.setState({ _state: NEW_STATE }).sendExternal({ publicKey: signer.publicKey });
-
-      const response = await sample.methods.getDetails({}).call();
-
-      expect(Number(response._state)).to.be.equal(NEW_STATE, "Wrong state");
+    it("Get root", async function () {
+      
+        root = await locklift.factory.getDeployedContract(
+  "TokenRoot", // name of your contract
+  "0:b1ed038c07d92522924b87de7866a2eabc36e27cc76a2a3b41ddbb97368c4289",
+);
+	console.log(`Token root: ${root.address}`);
+      //expect(await locklift.provider.getBalance(sample.address).then(balance => Number(balance))).to.be.above(0);
     });
-    
-    it("Load contract factory", async function () {
-      const sampleWalletData = await locklift.factory.getContractArtifacts("TokenWallet");
 
-      expect(sampleWalletData.code).not.to.equal(undefined, "Code should be available");
-      expect(sampleWalletData.abi).not.to.equal(undefined, "ABI should be available");
-      expect(sampleWalletData.tvc).not.to.equal(undefined, "tvc should be available");
-    });
+    it("Get airdrop", async function () {
     
-    it("Load contract factory", async function () {
-      const sampleRootData = await locklift.factory.getContractArtifacts("TokenRoot");
+    airdrop = await locklift.factory.getDeployedContract("Airdrop", "0:01933cca65ad5699a23d622b5e97117a16a008e44408c5bbe398c69bfb7431a0");
+	console.log(`Airdrop: ${airdrop.address}`);
+    });
 
-      expect(sampleRootData.code).not.to.equal(undefined, "Code should be available");
-      expect(sampleRootData.abi).not.to.equal(undefined, "ABI should be available");
-      expect(sampleRootData.tvc).not.to.equal(undefined, "tvc should be available");
-    });
-    
-    it('Deploy airdrop', async function () {
-    [owner, root, airdrop] = await setupAirdrop(
-        start_timestamp,
-        claim_period_in_seconds,
-        claim_periods_amount
-    );
-    
-    airdropCon = airdrop;
-  });
   
   it('Check airdrop details', async function () {
   	console.log(`Sample deployed at: ${airdrop.address}`);
-  	//const details = await airdrop.methods.getDetails().call();
-  	//expect(root.address).to.equal(details._token, "Wrong token");
-  	//expect(details._token_wallet).not.to.equal("0:0000000000000000000000000000000000000000000000000000000000000000", "Wrong token wallet");
+  	const details = await airdrop.methods.getDetails({}).call();
+  	console.log(`Details token: ${details._token.toString()}, token wallet: ${details._token_wallet.toString()}, transferred count: ${details._transferred_count.toString()}`);
+  	expect(details._token).to.be.equal(root.address, "Wrong token");
+  	expect(details._token_wallet).not.to.equal("0:0000000000000000000000000000000000000000000000000000000000000000", "Wrong token wallet");	expect(details._token).not.to.equal("0:0000000000000000000000000000000000000000000000000000000000000000", "Wrong token wallet");
   	});
   	
- /* it("Setup owner", async () => {
-  	const accountFactory = locklift.factory.getAccountsFactory("Wallet");
+  	
+  it('Fill airdrop with tokens', async function () {
+  	await owner.runTarget({
+  		contract: root,
+    		value: locklift.utils.toNano(2.2),
+    		publicKey: signer.publicKey,
+    		},
+    		root =>
+    			root.methods.mint({ 
+    				amount: amount, 
+    				recipient: airdrop.address, 
+    				deployWalletValue: locklift.utils.toNano(1), 
+    				remainingGasTo: airdrop.address, 
+    				notify: false, 
+    				payload: '', 
+    				}),
+    		);
+    		expect(await root.methods.totalSupply({ answerId: 1 }).call()).not.to.equal(0, 'Wrong total supply');
+  	});
+  
+ 
+    	it("Deploy user", async function() {
+    	const accountFactory = locklift.factory.getAccountsFactory("Wallet");
   	const {account} = await accountFactory.deployNewAccount({
   		value: locklift.utils.toNano(3),
   		publicKey: signer.publicKey,
@@ -110,53 +106,47 @@ describe("Test Sample contract", async function () {
   		},
   		constructorParams: {},
   		});
-  		owner = account;
-  		owner.publicKey = signer.publicKey;
+  		user = account;
+    user.publicKey = signer.publicKey;
+   // owner.afterRun = afterRun;
+    user.name = 'Regular user';
+  console.log(`User: ${user.address}`);
+  console.log(`Owner's public key: ${user.publicKey}`);
+    });
+    
+  });
+  
+  describe('Airdrop tokens', async function() {
+    	
+  	it('Multitransfer', async function (){
+  	await locklift.giver.sendTo(owner.address, 20000000000);
+  		await user.runTarget(
+  		{
+  			contract: airdrop,
+    			value: locklift.utils.toNano(2.1),
+  		},
+  		airdrop =>
+  			airdrop.methods.multiTransfer({
+  				recipients: ["0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63"],
+  				amounts: [1000000000],
+  				remainingGasTo: "0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63",
+  			}),
+  		);
   		
-  });
+  		const ownerTokenWalletAddress = await root.methods.walletOf({answerId: 4, walletOwner: "0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63"}).call();
+  		console.log(`User's token wallet: ${ownerTokenWalletAddress.value0}`);
+  		const ownerTokenWallet = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress.value0);
+  		ownerTokenWallet.adress = ownerTokenWalletAddress.value0;
+  		const balanceWallet = await ownerTokenWallet.methods.balance({answerId:0}).call().value0;
+  		const totalAmount = balanceWallet+1000000000;
+  		expect((await ownerTokenWallet.methods.balance({answerId:0}).call()).value0).to.be.bignumber.equal(totalAmount, 'Wrong balance');
+  		//const balance = await ownerTokenWallet.methods.balance({answerId:0}).call();
+  		//expect(await balance.value0).not.to.equal(reward_per_period, 'Wrong balance');
+  		});
+  	//});
+  	
+  	});
   
-  it("Deploy token root", async() => {
-  const sampleRootData = await locklift.factory.getContractArtifacts("TokenRoot");
-  	const { tokenRoot } = await locklift.factory.deployContract({
-  		contract: "TokenRoot",
-  		constructorParams: {
-            initialSupplyTo: owner.address,
-            initialSupply: 0,
-            deployWalletValue: locklift.utils.toNano(1),
-            mintDisabled: false,
-            burnByRootDisabled: true,
-            burnPaused: false,
-            remainingGasTo: "0:0000000000000000000000000000000000000000000000000000000000000000",
-        },
-        initParams: {
-            deployer_: "0:0000000000000000000000000000000000000000000000000000000000000000",
-            randomNonce_: locklift.utils.getRandomNonce(),
-            rootOwner_: owner.address,
-            name_: 'Airdrop token',
-            symbol_: 'AIRDROP',
-            decimals_: 9,
-            walletCode_: sampleRootData.code,
-        },
-        publicKey: signer.publicKey,
-        value: locklift.utils.toNano(2),
-        });
-        tokenRootContr = tokenRoot;
-          console.log(`Sample deployed at: ${owner.address.toString()}`);
-//          console.log(`Sample deployed at: ${tokenRootContr.address.toString()}`);
-    });*/
-    
-    
-    
-  
-  //it('Check airdrop details', async function () {
-  //  const details = await airdrop.methods.getDetails({}).call();
 
-  //  expect(root.address)
-  //      .to.be.equal(details._token, 'Wrong token');
-  //  expect(details._token_wallet)
-  //      .to.not.be.equal(locklift.utils.zeroAddress, 'Wrong token wallet');
-  //  expect(details._periods)
-  //      .to.have.lengthOf(claim_periods_amount, 'Wrong periods amount');
-  //});
-  });
-});
+  
+ });

@@ -1,0 +1,53 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deploy",
+			"inputs": [
+				{"name":"_airDropCode","type":"cell"},
+				{"name":"_refund_destination","type":"address"},
+				{"name":"_addresses","type":"address[]"},
+				{"name":"_amounts","type":"uint128[]"},
+				{"name":"refund_lock_duration_end","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "withdrawGas",
+			"inputs": [
+				{"name":"gasTo","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "m_deployedNumber",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"m_deployedNumber","type":"uint256"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"m_deployedNumber","type":"uint256"}
+	]
+}

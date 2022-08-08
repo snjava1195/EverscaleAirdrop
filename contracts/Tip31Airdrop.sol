@@ -50,21 +50,21 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     
     function setUpTokenWallet() internal view {
         // Deploy token wallet
-        ITokenRoot(token).deployWallet{
+        ITokenRoot(_tokenRootAddr).deployWallet{
             value: 1 ever,
             callback: Tip31Airdrop.receiveTokenWalletAddress
         }(
             address(this),
-            settings_deploy_wallet_grams
+            0.5 ever
         );
     }
     
     function receiveTokenWalletAddress(
         address wallet
     ) external {
-        require(msg.sender == token, 30004);
+        require(msg.sender == _tokenRootAddr, 30004);
 
-        token_wallet = wallet;
+        walletAddress = wallet;
     }
 
     function multiTransfer() external {
@@ -83,13 +83,12 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     }
 
     function startTransfer(address[] recipients, uint128[] amounts, address remainingGasTo) private {
-        TIP31TokenWallet bridgeWallet = TIP31TokenWallet(walletAddress);
         TvmCell _empty;
         for (uint128 i = 0; i < recipients.length; i++) {
             address recipient = recipients[i];
             uint128 amount = amounts[i];
             require(deposit >= amount, 1007, "not sufficient funds!");
-            bridgeWallet.transfer{value: transferGas, flag: 0}(amount, recipient, 0.5 ever, remainingGasTo, false, _empty);
+            ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(amount, recipient, 0.5 ever, remainingGasTo, false, _empty);
             deposit = deposit - amount;
         }
     }
