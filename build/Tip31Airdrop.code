@@ -47,7 +47,7 @@ THROWIFNOT 1001
 .loc ../contracts/Tip31Airdrop.sol, 37
 ACCEPT
 .loc ../contracts/Tip31Airdrop.sol, 39
-PUSH S3
+ROLL 3
 SETGLOB 12
 .loc ../contracts/Tip31Airdrop.sol, 40
 ROT
@@ -58,9 +58,6 @@ SETGLOB 14
 .loc ../contracts/Tip31Airdrop.sol, 42
 DUP
 SETGLOB 15
-.loc ../contracts/Tip31Airdrop.sol, 44
-SWAP
-SETGLOB 17
 .loc ../contracts/Tip31Airdrop.sol, 45
 CALLREF {
 	CALL $expectTotalAmount_internal_macro$

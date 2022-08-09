@@ -1,6 +1,6 @@
 pragma ever-solidity >= 0.59.0;
 pragma AbiHeader expire;
-pragma AbiHeader time;
+//pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
 import 'InternalOwner.sol';
@@ -41,7 +41,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         _recipients = recipients;
         _amounts = amounts;
 
-       walletAddress = senderAddr;
+       //walletAddress = senderAddr;
         uint128 amount = expectTotalAmount(amounts);
         setOwnership(_senderAddr);
         setUpTokenWallet();
@@ -66,6 +66,18 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 
         walletAddress = wallet;
     }
+    
+    function getDetails() external view returns(
+        address _token,
+        address _token_wallet,
+        uint128 _transferred_count
+    ) {
+        return (
+            _tokenRootAddr,
+            walletAddress,
+            deposit
+        );
+    }
 
     function multiTransfer() external {
         require(walletAddress.value != 0, 1001, "Wallet address error!");
@@ -77,7 +89,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
      //   require(msgValue >= _amounts.length * (transferGas + transactionFee), 1008, "not sufficient gas!");
 
         uint128 totalAmount = expectTotalAmount(_amounts);
-        require(deposit >= totalAmount, 1007, "not sufficient funds!");
+       // require(deposit >= totalAmount, 1007, "not sufficient funds!");
 
         startTransfer(_recipients, _amounts, _senderAddr);
     }
@@ -87,9 +99,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         for (uint128 i = 0; i < recipients.length; i++) {
             address recipient = recipients[i];
             uint128 amount = amounts[i];
-            require(deposit >= amount, 1007, "not sufficient funds!");
+            //require(deposit >= amount, 1007, "not sufficient funds!");
             ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(amount, recipient, 0.5 ever, remainingGasTo, false, _empty);
-            deposit = deposit - amount;
+            deposit = deposit + amount;
         }
     }
 
@@ -107,20 +119,5 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         payable(_senderAddr).transfer(0, false, 128);
     }
     
-    /* function onAcceptTokensTransfer(
-        address tokenRoot,
-        uint128 amount,
-        address sender,
-        address senderWallet,
-        address remainingGasTo,
-        TvmCell payload
-    ) external override {
-        require(sender == _senderAddr, 1001, "Sender address error!");
-        require(tokenRoot == _tokenRootAddr, 1001, "Token root address error!");
-	tvm.accept();
-       // walletAddress = msg.sender;
-
-        deposit = deposit + amount;
-    }*/
 
  }
