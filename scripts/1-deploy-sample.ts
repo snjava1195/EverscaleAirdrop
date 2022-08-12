@@ -17,9 +17,7 @@ const { parse } = require('csv-parse/lib/sync');
 const isValidTonAddress = (address) => /^(?:-1|0):[0-9a-fA-F]{64}$/.test(address);
 let signer: Signer;
 let owner: Contract<FactorySource["Wallet"]>;
-let airdropCon: Contract<FactorySource["Airdrop"]>;
-
-let airdropDeployer: Contract<FactorySource["EverAirdropFactory"]>;
+let airdropCon: Contract<FactorySource["Tip31Airdrop"]>;
 
 let root: Contract<FactorySource["TokenRoot"]>;
 const main = async () => {
@@ -28,37 +26,7 @@ const main = async () => {
             type: 'text',
             name: 'data',
             message: 'Name of the csv file with airdrop addresses and amount, should be placed in the repo root',
-            initial: 'proba.csv',
-        },
-        /*{
-            type: 'text',
-            name: 'owner',
-            message: 'Airdrop owner',
-            validate: value => isValidTonAddress(value) ? true : 'Invalid address'
-        },
-        {
-            type: 'text',
-            name: 'token',
-            message: 'Token root',
-            validate: value => isValidTonAddress(value) ? true : 'Invalid address'
-        },*/
-        {
-            type: 'number',
-            name: 'start_timestamp',
-            initial: Math.floor(Date.now() / 1000),
-            message: 'Airdrop start timestamp',
-        },
-        {
-            type: 'number',
-            name: 'claim_period_in_seconds',
-            initial: 60 * 60 * 24 * 30,
-            message: 'Claim period duration in seconds (default = 1 month)'
-        },
-        {
-            type: 'number',
-            name: 'claim_periods_amount',
-            initial: 12,
-            message: 'Claim periods amount'
+            initial: 'data.csv',
         }
     ]);
 
@@ -67,9 +35,7 @@ const main = async () => {
     const chunks = _.chunk(data, 50);
   const signer = (await locklift.keystore.getSigner("0"))!;
   const _randomNonce = locklift.utils.getRandomNonce();
-  //const [keyPair] = await locklift.keystore.keyPair();
   let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
-  //const spinner = ora('Deploying initial owner').start();
   let records;
     records = parse(fs.readFileSync(response.data));
   const { account } = await accountsFactory.deployNewAccount({
@@ -78,36 +44,15 @@ const main = async () => {
             _randomNonce,
         },
         publicKey: signer.publicKey,
-        value:locklift.utils.toNano(1)
+        value:locklift.utils.toNano(10)
     });
     owner = account;
-    
+    owner.publicKey = signer.publicKey;
     console.log(`Account deployed at: ${owner.address.toString()}`);
     
     owner.name = 'Airdrop owner';
     
-    const { contract } = await locklift.factory.deployContract({
-        contract: "EverAirdropFactory",
-        publicKey: signer.publicKey,
-        initParams: {
-        _randomNonce,
-        },
-        constructorParams: {},
-        value: locklift.utils.toNano(10),
-    });
-    	airdropDeployer = contract;
-      console.log(`Airdrop factory deployed at: ${airdropDeployer.address.toString()}`);
-      //await airdropDeployer.methods.distribute({}).sendExternal( {publicKey: signer.publicKey });
-  
-  	
-	//console.log(`Airdrop returned: ${get_airdrop.address.toString()}`);
-      const airdropCode = locklift.factory.getContractArtifacts("EverAirdrop");
-    //  const deployAirdrop = await airdropDeployer.methods.deploy({_airDropCode: airdropCode.code, _refund_destination: "0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63", _addresses: records.map(i => i[0]), _amounts: records.map(i => parseInt(i[1], 10)), refund_lock_duration_end: 2000}).call();
- //  console.log(`Airdrop deployed at: ${deployAirdrop.value0.toString()}`);
    
-   
-   
-   //await deployAirdrop.methods.distribute.call();
   
   const sampleRootData = await locklift.factory.getContractArtifacts("TokenRoot");
   const { contract } = await locklift.factory.deployContract({
@@ -139,13 +84,12 @@ const main = async () => {
   
   //const Airdrop = await locklift.factory.getContract('Airdrop');
     const { contract } = await locklift.factory.deployContract({
-        contract: "Airdrop",
+        contract: "Tip31Airdrop",
         constructorParams: {
-            _token: root.address,
-            _owner: owner.address,
-            _start_timestamp: response.start_timestamp,
-            _claim_period_in_seconds: response.claim_period_in_seconds,
-            _claim_periods_amount: response.claim_periods_amount
+            senderAddr: owner.address,
+            tokenRootAddr: root.address,
+            recipients: records.map(i => i[0]),
+            amounts: records.map(i => parseInt(i[1], 10)),
         },
         initParams: {
             _randomNonce,
@@ -190,43 +134,8 @@ const main = async () => {
     	
     	console.log(`Root of: ${rootOfConst.value0.toString()}`);
     	
-    	
-    
-    	await airdropCon.methods.setChunk({ _users: records.map(i => i[0]), _rewards_per_period: records.map(i => parseInt(i[1], 10)) }).sendExternal({ publicKey: owner.publicKey });
-    	
-    	console.log("Chunks set");
-    	
-    	await airdropCon.methods.transferOwnership({newOwner: "0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63"}).sendExternal({ publicKey: owner.publicKey });
-    	
-    	const details = await airdropCon.methods.getDetails({}).call();
-    	console.log(`Details token: ${details._token.toString()}, token wallet: ${details._token_wallet.toString()}, transferred count: ${details._transferred_count.toString()}`);
-    	 
-    	 await airdropCon.methods.multiTransfer({ recipients: records.map(i => i[0]), amounts: records.map(i => parseInt(i[1], 10)), remainingGasTo: owner.address }).sendExternal({ publicKey: owner.publicKey });
-    	 
-    	/*await owner.runTarget({
-    		contract: airdropCon,
-    		method: 'setChunk',
-    		params: {
-    			_users,
-    			_rewards_per_period,
-    		},
-    		value: locklift.utils.toNano(2),
-    	}); */
-    
-    //spinner.stop();
-    
-    //spinner.start(`Transferring ownership`);
 
-    // Transfer ownership
-  /*  await owner.runTarget({
-        contract: airdropCon,
-        method: 'transferOwnership',
-        params: {
-            newOwner: response.owner,
-        }
-    });*/
-
-    //spinner.stop();
+ 
 }
 
 main()
