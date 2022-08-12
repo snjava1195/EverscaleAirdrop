@@ -19,7 +19,6 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     address[] _recipients;
     uint128[] _amounts;
 
-    uint128 constant private MAX_TRANSFER_NUMBER = 100000;
     uint128 private transferNumber = 255;
 
     address private walletAddress;
@@ -41,11 +40,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         _recipients = recipients;
         _amounts = amounts;
 
-       //walletAddress = senderAddr;
-        uint128 amount = expectTotalAmount(amounts);
         setOwnership(_senderAddr);
         setUpTokenWallet();
-       // deposit = deposit + amount;
+       
     }
     
     function setUpTokenWallet() internal view {
@@ -99,9 +96,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         for (uint128 i = 0; i < recipients.length; i++) {
             address recipient = recipients[i];
             uint128 amount = amounts[i];
-            //require(deposit >= amount, 1007, "not sufficient funds!");
             ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(amount, recipient, 0.5 ever, remainingGasTo, false, _empty);
-            deposit = deposit + amount;
         }
     }
 
@@ -111,6 +106,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         for (uint128 i = 0; i < amounts.length; i ++) {
             totalAmount += amounts[i];
         }
+       
         return totalAmount;
     }
     

@@ -1,8 +1,6 @@
 import { Contract, Signer } from "locklift";
 import { FactorySource } from "../build/factorySource";
-//const logger = require('mocha-logger');
 const chai = require('chai');
-//chai.use(require('chai-bignumber')());
 
 const { expect } = chai;
 
@@ -10,35 +8,15 @@ let owner: Contract<FactorySource["Wallet"]>;
 let root: Contract<FactorySource["TokenRoot"]>;
 let airdrop: Contract<FactorySource["Airdrop"]>;
 
-//const TOKEN_PATH = 'build';
 
-
-async function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// Due to the network lag, graphql may not catch wallets updates instantly
-const afterRun = async (tx) => {
-    if (locklift.network === 'dev' || locklift.network === 'prod') {
-        await sleep(100000);
-    }
-};
-
-
-const stringToBytesArray = (dataString) => {
-    return Buffer.from(dataString).toString('hex')
-};
-
-
-const setupAirdrop = async (_start_timestamp, _claim_period_in_seconds, _claim_periods_amount) => {
+const setupAirdrop = async () => {
     
     
-    //const [keyPair] = await locklift.keys.getKeyPairs();
     const _randomNonce = locklift.utils.getRandomNonce();
     const signer = (await locklift.keystore.getSigner("0"))!;
     const accountFactory = locklift.factory.getAccountsFactory("Wallet");
   	const {account} = await accountFactory.deployNewAccount({
-  		value: locklift.utils.toNano(3),
+  		value: locklift.utils.toNano(10),
   		publicKey: signer.publicKey,
   		initParams: {
   			_randomNonce: locklift.utils.getRandomNonce(),
@@ -47,17 +25,14 @@ const setupAirdrop = async (_start_timestamp, _claim_period_in_seconds, _claim_p
   		});
   		owner = account;
     owner.publicKey = signer.publicKey;
-    owner.afterRun = afterRun;
     owner.name = 'Airdrop owner';
 
-  //  logger.log(`Owner: ${owner.address}`);
+ // console.log(`Owner: ${owner.address}`);
 
     // Token
-  //  const RootToken = await locklift.factory.getContractArtifacts("../contracts/TokenRoot");
-  //  const TokenWallet = await locklift.factory.getContractArtifacts("../contracts/TokenWallet");
 
-    const sampleRootData = await locklift.factory.getContractArtifacts("TokenRoot");
-  	const { tokenRoot } = await locklift.factory.deployContract({
+   /* const sampleRootData = await locklift.factory.getContractArtifacts("TokenWallet");
+  const { contract } = await locklift.factory.deployContract({
   		contract: "TokenRoot",
   		constructorParams: {
             initialSupplyTo: owner.address,
@@ -80,38 +55,31 @@ const setupAirdrop = async (_start_timestamp, _claim_period_in_seconds, _claim_p
         publicKey: signer.publicKey,
         value: locklift.utils.toNano(2),
         });
-	root = tokenRoot;
-    //logger.log(`Token root: ${root.address}`);
-
+        
+        root = contract;
+	console.log(`Token root: ${root.address}`);*/
 
     // Airdrop
-    //const Airdrop = await locklift.factory.getContractArtifacts("Airdrop");
-    const airdropDep = await locklift.factory.deployContract({
-        contract: "Airdrop",
+     const {contract: airdrop, tx} = await locklift.factory.deployContract({
+        contract: "Tip31Airdrop",
         constructorParams: {
-            _token: "0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d",
-            _owner: owner.address,
-            _start_timestamp,
-            _claim_period_in_seconds,
-            _claim_periods_amount
+            senderAddr: owner.address,
+            tokenRootAddr: "0:b1ed038c07d92522924b87de7866a2eabc36e27cc76a2a3b41ddbb97368c4289",
+            recipients: ["0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63", "0:b5e9240fc2d2f1ff8cbb1d1dee7fb7cae155e5f6320e585fcc685698994a19a5", "0:f507994482f8aff121f55f474e976c9826709c0fb22d052172d71156b7d9e8dc"],
+            amounts: [locklift.utils.toNano(5), locklift.utils.toNano(10), locklift.utils.toNano(7)]
         },
         initParams: {
             _randomNonce,
         },
-       publicKey: signer.publicKey,
-       value: locklift.utils.toNano(10),
-    }); 
-    airdrop = airdropDep;
+        publicKey: signer.publicKey,
+        value: locklift.utils.toNano(10),
+    });
+//	console.log(`Airdrop: ${airdrop.address}`);
 
-    //logger.log(`Airdrop: ${airdrop.address}`);
-
-    return [owner, root, airdrop];
+    return [owner, airdrop];
 };
-
 
 module.exports = {
     setupAirdrop,
     expect,
-    afterRun,
-    sleep,
 };
