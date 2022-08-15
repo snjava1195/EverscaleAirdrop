@@ -3,7 +3,7 @@
     <div>
       <ShareCardIcon />
 
-      <img class="absolute right-0 bottom-0" src="../../assets/img/Rectangle 1842.png" alt="" />
+      <img class="absolute right-0 bottom-0" src="../../assets/img/Rectangle-1842.png" alt="" />
     </div>
 
     <h2 class="text-white font-medium absolute top-[16px] left-[16px]">
@@ -54,7 +54,7 @@
     </div>
 
     <span class="absolute right-0 bottom-6">
-      <img src="../../assets/img/Rectangle 1841.png" alt="" />
+      <img src="../../assets/img/Rectangle-1841.png" alt="" />
     </span>
   </div>
 </template>

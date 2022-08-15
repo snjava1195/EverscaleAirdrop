@@ -155,7 +155,7 @@
                   >
                     <input
                       v-model="item.address"
-                      class="placeholder:text-[#B7BAC2] placeholder:font-pt_root bg-white w-full h-full pl-[12px]"
+                      class="placeholder:text-[#B7BAC2] placeholder:font-pt_root bg-white w-full h-full pl-[12px] text-black"
                       type="text"
                       name="address"
                       placeholder="Recipient address"
@@ -168,8 +168,8 @@
                   >
                     <input
                       v-model="item.amount"
-                      class="placeholder:text-[#B7BAC2] placeholder:font-pt_root bg-white w-full h-full pl-[12px]"
-                      type="text"
+                      class="placeholder:text-[#B7BAC2] placeholder:font-pt_root bg-white w-full h-full pl-[12px] text-black"
+                      type="number"
                       name="amount"
                       :placeholder="`Amount, ${token.label}`"
                     />
@@ -223,10 +223,6 @@ const airdropName = ref(null);
 const token = ref(null);
 const tokenList = ref(tokensList);
 const hoverItem = ref(null);
-const itemsDefault = {
-  address: null,
-  amount: null,
-};
 const file = ref(null);
 const fileName = ref(null);
 const dropZoneRef = ref();
@@ -237,7 +233,10 @@ const uploadSuccessful = ref(false);
 useDropZone(dropZoneRef, onDrop);
 
 function addItem() {
-  items.value.push(itemsDefault);
+  items.value.push({
+    address: null,
+    amount: null,
+  });
 }
 function removeItem(index) {
   items.value.splice(index, 1);

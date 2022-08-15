@@ -5,6 +5,7 @@
     <RouterView />
 
     <AppFooter />
+    <notifications position="bottom right" />
   </div>
 </template>
 

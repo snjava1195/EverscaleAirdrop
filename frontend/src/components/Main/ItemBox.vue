@@ -25,6 +25,7 @@
 <script setup>
 import { computed } from 'vue';
 import dayjs from 'dayjs';
+import { toNano } from '@/utils';
 import EverIcon from '@/components/icons/IconEver.vue';
 
 const props = defineProps({
@@ -40,7 +41,6 @@ const createdAt = computed(() => {
 });
 
 const everDivider = computed(() => {
-  let divider = 1000000000;
-  return props.item.outMessages.length ? props.item.outMessages[0].value / divider : 0;
+  return props.item.outMessages.length ? props.item.outMessages[0].value / toNano(1) : 0;
 });
 </script>

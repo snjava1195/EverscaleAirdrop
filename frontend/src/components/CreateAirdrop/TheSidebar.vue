@@ -67,7 +67,7 @@
                     ? 'text-[#4AB44A] font-medium'
                     : ''
                 "
-                >Top-up 20 EVER</a
+                >Top-up 1 EVER</a
               >
             </div>
 
@@ -266,12 +266,16 @@
           v-if="step === 1"
           @click="onTopUpEver"
           type="button"
-          class="w-full h-[46px] text-white text-base font-medium flex justify-center items-center mt-[24px]"
-          :class="!recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1]'"
+          class="w-full h-[46px] text-white text-base font-medium flex justify-center items-center mt-[24px] relative"
+          :class="[
+            !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1]',
+            { 'is-loading': loading },
+          ]"
           :disabled="!recipientsList.length"
         >
-          Top-up 20 EVER
+          Top-up 1 EVER
         </button>
+
         <!-- Step 2 -->
         <template v-if="step === 2">
           <div
@@ -283,14 +287,16 @@
           <button
             @click="onDeployContract"
             type="button"
-            class="w-full h-[46px] text-white text-base font-medium bg-[#2B63F1] flex justify-center items-center"
+            class="w-full h-[46px] text-white text-base font-medium bg-[#2B63F1] flex justify-center items-center relative"
+            :class="{ 'is-loading': loading }"
           >
             Deploy contract
           </button>
         </template>
+
         <!-- Step 3 -->
         <button
-          v-if="step === 3 || (step === 4 && loading)"
+          v-if="step === 3"
           @click="onTopUpToken"
           type="button"
           class="w-full h-[46px] text-white text-base font-medium bg-[#2B63F1] flex justify-center items-center mt-[24px] relative"
@@ -298,29 +304,36 @@
         >
           Top-up {{ totalTokens }} {{ tokenName }}
         </button>
-        <!-- Step 4 -->
-        <template v-if="step === 4 && error">
-          <div
-            class="message py-[12px] pl-[16px] pr-[12px] bg-[#F7D7DD] text-[#762331] text-[12px] border-l-4 border-[#EB4361] mt-[25px] mb-[8px]"
-          >
-            <p>The airdrop hasn't completed. Error: ${someError}</p>
-          </div>
 
+        <!-- Step 4 -->
+        <template v-if="step === 4">
           <button
             @click="onResumeAirdrop"
-            class="w-full h-[46px] text-white text-base font-medium bg-[#2B63F1] flex justify-center items-center"
+            type="button"
+            class="w-full h-[46px] text-white text-base font-medium bg-[#2B63F1] flex justify-center items-center relative mt-[25px]"
+            :class="{ 'is-loading': loading }"
           >
-            Resume airdrop
+            {{ !error ? 'Run airdrop' : 'Resume airdrop' }}
           </button>
         </template>
+
         <!-- Step 5 -->
         <button
           v-if="step === 5"
           @click="onRedeemFunds"
-          class="w-full h-[46px] text-white text-base font-medium bg-[#2B63F1] flex justify-center items-center mt-[24px]"
+          type="button"
+          class="w-full h-[46px] text-white text-base font-medium bg-[#2B63F1] flex justify-center items-center mt-[24px] relative"
+          :class="{ 'is-loading': loading }"
         >
           Redeem funds
         </button>
+
+        <div
+          v-if="errors.error"
+          class="message py-[12px] pl-[16px] pr-[12px] bg-[#F7D7DD] text-[#762331] text-[12px] border-l-4 border-[#EB4361] mt-[25px] mb-[8px]"
+        >
+          <p>{{ errors.message }}</p>
+        </div>
 
         <ShareAirdrop v-if="step === 5 || step === 6" />
       </form>
@@ -332,6 +345,7 @@
 import { ref, computed } from 'vue';
 import { useAirdropStore } from '@/stores/airdrop';
 import { useClipboard } from '@vueuse/core';
+import { validateAddressAmountList } from '@/utils';
 import InfoIcon from '@/components/icons/IconInfo.vue';
 import CopyIcon from '@/components/icons/IconCopy.vue';
 import CheckIcon from '@/components/icons/IconCheck.vue';
@@ -351,6 +365,10 @@ const { copy } = useClipboard();
 const step = ref(1);
 const loading = ref(false);
 const error = ref(false);
+const errors = ref({
+  error: false,
+  message: null,
+});
 
 const recipientsList = computed(() => {
   return props.items.filter((item) => item.address && item.amount);
@@ -364,31 +382,84 @@ const totalTokens = computed(() => {
 airdropStore.getExpectedAddress();
 
 async function onTopUpEver() {
-  console.log('onTopUpEver');
-  step.value = 2;
+  if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+  loading.value = true;
+
+  try {
+    errors.value.error = false;
+    await airdropStore.getGiverContract();
+    step.value = 2;
+  } catch (e) {
+    console.log('e: ', e);
+    errors.value.error = true;
+    errors.value.message = e.message;
+  } finally {
+    loading.value = false;
+  }
 }
 async function onDeployContract() {
-  console.log('onDeployContract');
-  step.value = 3;
+  if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+  loading.value = true;
+
+  try {
+    errors.value.error = false;
+    await airdropStore.deployContract(recipientsList.value);
+    step.value = 3;
+  } catch (e) {
+    errors.value.error = true;
+    errors.value.message = e.message;
+  } finally {
+    loading.value = false;
+  }
 }
 async function onTopUpToken() {
-  step.value = 4;
-  console.log('onTopUpToken');
   loading.value = true;
-  const validation = true;
-  if (!validation) return;
-  setTimeout(() => {
-    console.log('setTimeout');
+
+  try {
+    errors.value.error = false;
+    await airdropStore.topUp();
+    step.value = 4;
+  } catch (e) {
+    console.log('onTopUpToken e:', e);
+    errors.value.error = true;
+    errors.value.message = e.message;
+  } finally {
     loading.value = false;
-    error.value = true;
-  }, 3000);
+  }
 }
 async function onResumeAirdrop() {
-  console.log('onResumeAirdrop');
-  step.value = 5;
+  loading.value = true;
+
+  try {
+    errors.value.error = false;
+    error.value = false;
+    await airdropStore.distribute();
+    step.value = 5;
+  } catch (e) {
+    console.log('onResumeAirdrop e:', e);
+    errors.value.error = true;
+    error.value = true;
+    errors.value.message = e.message;
+  } finally {
+    loading.value = false;
+    // error.value = true;
+  }
 }
 async function onRedeemFunds() {
-  console.log('onRedeemFunds');
-  step.value = 6;
+  loading.value = true;
+
+  try {
+    errors.value.error = false;
+    await airdropStore.redeemFunds();
+    // error.value = true;
+    step.value = 6;
+  } catch (e) {
+    console.log('onRedeemFunds e:', e);
+    errors.value.error = true;
+    errors.value.message = e.message;
+  } finally {
+    loading.value = false;
+    // error.value = true;
+  }
 }
 </script>

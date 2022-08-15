@@ -1,5 +1,11 @@
 export default [
   {
+    label: 'EVER',
+    decimals: 18,
+    address: '0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d',
+    icon: 'https://app.flatqube.io/assets/992f1244bd3cbc67.svg',
+  },
+  {
     label: 'WEVER',
     decimals: 9,
     address: '0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d',

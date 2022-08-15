@@ -17,10 +17,12 @@
   "devDependencies": {
     "@eversdk/core": "^1.36.1",
     "@eversdk/lib-web": "^1.36.1",
+    "@kyvg/vue3-notification": "^2.3.6",
     "@rushstack/eslint-patch": "^1.1.0",
     "@vitejs/plugin-vue": "^3.0.1",
     "@vue/eslint-config-prettier": "^7.0.0",
     "autoprefixer": "^10.4.7",
+    "bignumber.js": "^9.0.2",
     "dayjs": "^1.11.4",
     "eslint": "^8.5.0",
     "eslint-plugin-vue": "^9.0.0",
