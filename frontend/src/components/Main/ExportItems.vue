@@ -1,5 +1,7 @@
 <template>
-  <router-link @click="onExport" to="" class="text-[#2B63F1]">Export</router-link>
+  <router-link @click="onExport" to="" class="text-[#2B63F1] font-medium font-pt_root"
+    >Export</router-link
+  >
 </template>
 
 <script setup>

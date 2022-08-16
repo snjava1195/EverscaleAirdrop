@@ -1,7 +1,7 @@
 <template>
   <TheMainNotLogged v-if="!walletStore.isLogged" />
 
-  <main v-if="walletStore.isLogged" class="main">
+  <main v-if="walletStore.isLogged" class="flex-1 px-[20px] md:px-[40px] lg:px-[10px]">
     <TheMainLogged />
   </main>
 </template>

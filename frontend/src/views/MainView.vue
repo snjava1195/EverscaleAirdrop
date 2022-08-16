@@ -1,7 +1,5 @@
 <template>
-  <main class="main">
-    <TheMain />
-  </main>
+  <TheMain />
 </template>
 
 <script setup>
