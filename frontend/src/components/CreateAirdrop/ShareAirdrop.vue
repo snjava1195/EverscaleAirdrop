@@ -13,7 +13,6 @@
 
     <div class="icons flex space-x-[6px] absolute left-[16px] bottom-[16px]">
       <a
-        href="javascript:void(0)"
         class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
         title="Twitter"
       >
@@ -21,7 +20,6 @@
       </a>
 
       <a
-        href="javascript:void(0)"
         class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
         title="Telegram"
       >
@@ -29,7 +27,6 @@
       </a>
 
       <a
-        href="javascript:void(0)"
         class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
         title="Discord"
       >
@@ -37,7 +34,6 @@
       </a>
 
       <a
-        href="javascript:void(0)"
         class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
         title="Facebook"
       >
@@ -45,7 +41,6 @@
       </a>
 
       <a
-        href="javascript:void(0)"
         class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
         title="Reddit"
       >

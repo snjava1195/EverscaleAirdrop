@@ -1,5 +1,5 @@
 <template>
-  <main class="main">
+  <main class="flex-1">
     <TheCreateAirdrop />
   </main>
 </template>

@@ -1,29 +1,53 @@
 <template>
-  <tbody>
-    <tr>
-      <td colspan="4" class="p-10">
-        <div class="table-content">
-          <h3 class="text-[18px] font-semibold">It seems you haven’t made any airdrop yet</h3>
+  <div>
+    <table
+      class="desktopTable w-full mx-auto sm:border border-[#E4E5EA] text-[14px] mt-[17px] mb-[67px] md:mb-[455px] lg:mb-[484px]"
+    >
+      <thead class="hidden lg:block font-pt_root">
+        <ItemBoxHeading />
+      </thead>
 
-          <p class="mt-[12px] mb-[24px]">Create your first airdrop or add existing one.</p>
+      <tbody>
+        <tr>
+          <td colspan="4" class="md:border-t border-[#E4E5EA]">
+            <div
+              class="w-full md:w-[375px] mx-auto text-center mt-[32px] mb-[20px] px-[20px] md:px-0"
+            >
+              <h3 class="text-[18px] font-semibold mb-[12px] font-faktum">
+                It seems you haven’t made<br class="md:hidden" />
+                any airdrop yet
+              </h3>
+              <p class="font-pt_root">
+                Create your first airdrop or add<br class="md:hidden" />
+                existing one.
+              </p>
 
-          <div class="flex justify-between font-pt_root">
-            <router-link to="/create-airdrop" custom v-slot="{ navigate }">
-              <button
-                @click="navigate"
-                @keypress.enter="navigate"
-                role="link"
-                class="py-[12px] px-[38px] text-white bg-[#2B63F1]"
+              <div
+                class="flex flex-col md:flex-row md:justify-between mt-[24px] space-y-[16px] md:space-y-0 font-pt_root"
               >
-                Create airdrop
-              </button>
-            </router-link>
-            <button class="py-[12px] px-[16px] text-[#2B63F1] bg-[#ECF1FE]">
-              Add existing airdrop
-            </button>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </tbody>
+                <router-link to="/create-airdrop" custom v-slot="{ navigate }">
+                  <button
+                    @click="navigate"
+                    @keypress.enter="navigate"
+                    role="link"
+                    class="bg-[#2B63F1] text-white w-full md:w-[180px] h-[46px]"
+                  >
+                    Create airdrop
+                  </button>
+                </router-link>
+
+                <button class="bg-[#ECF1FE] text-[#2B63F1] w-full md:w-[177px] h-[46px]">
+                  Add existing airdrop
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
+
+<script setup>
+import ItemBoxHeading from '@/components/Main/ItemBoxHeading.vue';
+</script>

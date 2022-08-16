@@ -1,47 +1,49 @@
 <template>
-  <div class="main-content-airdrops">
-    <h2 class="title-airdrops">The simplest way to airdrop tokens</h2>
+  <header class="flex flex-col items-center mt-[64px] md:mt-[96px]">
+    <h1 class="main-title">
+      The simplest way<br class="lg:hidden" />
+      to airdrop tokens
+    </h1>
+  </header>
 
-    <header class="flex items-center justify-between mb-[21px]">
-      <h3 class="text-[24px] font-medium">Your airdrops</h3>
-
-      <div>
+  <main class="w-full xl:max-w-[1160px] mx-auto">
+    <div
+      class="flex flex-col md:flex-row md:justify-between md:items-center space-y-[16px] md:space-y-0 mt-[64px]"
+    >
+      <h2 class="text-[24px] font-medium">Your airdrops</h2>
+      <div
+        class="flex flex-col md:flex-row md:items-center md:space-x-[12px] space-y-[8px] md:space-y-0"
+      >
         <router-link to="/create-airdrop" custom v-slot="{ navigate }">
-          <button @click="navigate" @keypress.enter="navigate" role="link" class="btn-create">
+          <button
+            @click="navigate"
+            @keypress.enter="navigate"
+            role="link"
+            class="create-airdrop-btn"
+          >
             Create new airdrop
           </button>
         </router-link>
-        <button class="btn-add">Add existing airdrop</button>
+        <button class="add-airdrop-btn">Add existing airdrop</button>
       </div>
-    </header>
-
-    <table class="table">
-      <thead class="thead">
-        <tr>
-          <th class="thead-cell w-[579px]">Airdrop</th>
-          <th class="thead-cell">Amount</th>
-          <th class="thead-cell text-right">Recipients number</th>
-          <th class="thead-cell text-right pr-[12px]">Date</th>
-        </tr>
-      </thead>
-
-      <tbody
-        v-if="transactions && transactions.transactions.length && !walletStore.profile.loading"
-      >
-        <ItemBox v-for="(item, i) in transactions.transactions" :item="item" :key="i" />
-      </tbody>
-
-      <ItemLoading v-else-if="walletStore.profile.loading" />
-
-      <EmptyItemBox v-else />
-    </table>
-
-    <div v-if="transactions && transactions.transactions.length" class="pagination">
-      <ExportItems />
-
-      <AppPagination @submit="getTransactions" />
     </div>
-  </div>
+
+    <template
+      v-if="transactions && transactions.transactions.length && !walletStore.profile.loading"
+    >
+      <ItemBox />
+
+      <div class="hidden xl:flex items-center justify-between mt-[16px] mb-[100px]">
+        <ExportItems />
+
+        <AppPagination @submit="getTransactions" />
+      </div>
+    </template>
+
+    <ItemLoading v-else-if="walletStore.profile.loading" />
+
+    <EmptyItemBox v-else />
+  </main>
 </template>
 <script setup>
 import { computed } from 'vue';

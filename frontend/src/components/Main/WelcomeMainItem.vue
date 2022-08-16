@@ -1,8 +1,10 @@
 <template>
-  <div class="main-element">
-    <slot name="icon"></slot>
-    <p>
+  <div class="w-full flex flex-col items-center text-center">
+    <div class="w-[65px] h-[65px] mb-[16px]">
+      <slot name="icon"></slot>
+    </div>
+    <h3>
       <slot name="heading"></slot>
-    </p>
+    </h3>
   </div>
 </template>

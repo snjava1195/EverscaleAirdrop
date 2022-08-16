@@ -1,47 +1,45 @@
 <template>
-  <div :class="{ topGradient: $route.name === 'Main' }">
-    <header class="header">
-      <div class="logo">
-        <router-link to="/">
-          <h2>EVER Drop</h2>
-        </router-link>
-      </div>
+  <header class="header">
+    <div class="logo font-faktum">
+      <router-link to="/">
+        <h2>EVER Drop</h2>
+      </router-link>
+    </div>
 
-      <button v-if="!walletStore.isLogged" @click="onLogin()" class="header-btn">
-        Connect wallet
-      </button>
+    <button v-if="!walletStore.isLogged" @click="onLogin()" class="header-btn">
+      Connect wallet
+    </button>
 
-      <div v-if="walletStore.isLogged" class="right-menu">
-        <img
-          class="mr-[10px] w-6 h-6"
-          :src="`avatar/${walletStore.profile.address.substr(
-            walletStore.profile.address.length - 1,
-            1
-          )}.svg`"
-          alt="Avatar"
-        />
-        <ul class="leading-5">
-          <li>
-            <a class="text-[14px] text-black" href="javascript:void(0)">{{
-              $filters.addressFormat(walletStore.profile.address)
-            }}</a>
-          </li>
-          <li>
-            <a class="text-[14px] text-[#A6AAB2]" href="javascript:void(0)"
-              >{{ $filters.decimalFormat(walletStore.profile.balance, 4) }} EVER</a
-            >
-          </li>
-        </ul>
-        <a
-          @click="onLogout()"
-          class="py-[8px] px-[12px] bg-[#ECF1FE] ml-[16px]"
-          href="javascript:void(0)"
-        >
-          <LogoutIcon />
-        </a>
-      </div>
-    </header>
-  </div>
+    <div v-if="walletStore.isLogged" class="right-menu">
+      <img
+        class="mr-[10px] w-6 h-6"
+        :src="`avatar/${walletStore.profile.address.substr(
+          walletStore.profile.address.length - 1,
+          1
+        )}.svg`"
+        alt="Avatar"
+      />
+      <ul class="leading-5">
+        <li>
+          <a class="text-[14px] text-black" href="javascript:void(0)">{{
+            $filters.addressFormat(walletStore.profile.address)
+          }}</a>
+        </li>
+        <li>
+          <a class="text-[14px] text-[#A6AAB2]" href="javascript:void(0)"
+            >{{ $filters.decimalFormat(walletStore.profile.balance, 4) }} EVER</a
+          >
+        </li>
+      </ul>
+      <a
+        @click="onLogout()"
+        class="py-[8px] px-[12px] bg-[#ECF1FE] ml-[16px]"
+        href="javascript:void(0)"
+      >
+        <LogoutIcon />
+      </a>
+    </div>
+  </header>
 </template>
 
 <script setup>
