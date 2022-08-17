@@ -131,6 +131,9 @@
   .recipients-list-subtitle {
     @apply text-[24px] text-black font-medium;
   }
+  /*.dp-custom-input {*/
+  /*  @apply h-[40px] rounded-none placeholder:text-[#A6AAB2] placeholder:text-base;*/
+  /*}*/
 }
 
 @layer utilities {
@@ -217,4 +220,38 @@
 .multiselect__option--selected.multiselect__option--highlight {
   background: transparent;
   color: #2b63f1;
+}
+.dp__action_buttons {
+  display: flex;
+  width: unset;
+}
+.dp__action {
+  font-weight: normal;
+}
+.dp__action.dp__select {
+  color: white;
+  background: #2b63f1;
+  padding: 8px 12px;
+}
+.dp__action.dp__cancel {
+  color: #2b63f1;
+  padding: 8px 12px;
+}
+.dp__button {
+  color: #2b63f1;
+}
+.dp__range_end,
+.dp__range_start,
+.dp__active_date {
+  background: #2b63f1;
+}
+.dp-custom-input {
+  height: 40px;
+  border-radius: 0;
+}
+.dp-custom-input::placeholder {
+  color: #a6aab2;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 14px;
 }
