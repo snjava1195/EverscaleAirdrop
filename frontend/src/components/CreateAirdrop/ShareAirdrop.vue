@@ -12,19 +12,32 @@
     </h2>
 
     <div class="icons flex space-x-[6px] absolute left-[16px] bottom-[16px]">
-      <a
-        class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
-        title="Twitter"
+      <ShareNetwork
+        network="twitter"
+        :url="`https://everdrop.io/airdrops/${props.shareNetwork.contractAddress}`"
+        :title="`We have successfully finished the airdrop ${props.shareNetwork.airdropName}, check your wallets!`"
+        hashtags="vuejs,vite"
       >
-        <TwitterIcon />
-      </a>
+        <a
+          class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
+          title="Twitter"
+        >
+          <TwitterIcon />
+        </a>
+      </ShareNetwork>
 
-      <a
-        class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
-        title="Telegram"
+      <ShareNetwork
+        network="telegram"
+        :url="`https://everdrop.io/airdrops/${props.shareNetwork.contractAddress}`"
+        :title="`We have successfully finished the airdrop ${props.shareNetwork.airdropName}, check your wallets!`"
       >
-        <TelegramIcon />
-      </a>
+        <a
+          class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
+          title="Telegram"
+        >
+          <TelegramIcon />
+        </a>
+      </ShareNetwork>
 
       <a
         class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
@@ -33,19 +46,33 @@
         <DiscordIcon />
       </a>
 
-      <a
-        class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
-        title="Facebook"
+      <ShareNetwork
+        network="facebook"
+        :url="`https://everdrop.io/airdrops/${props.shareNetwork.contractAddress}`"
+        :title="`We have successfully finished the airdrop ${props.shareNetwork.airdropName}, check your wallets!`"
+        :description="`${props.shareNetwork.totalAmount} ${props.shareNetwork.tokenName} were distributed to ${props.shareNetwork.totalAddresses} addresses.`"
+        hashtags="vuejs,vite"
       >
-        <FacebookIcon />
-      </a>
+        <a
+          class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
+          title="Facebook"
+        >
+          <FacebookIcon />
+        </a>
+      </ShareNetwork>
 
-      <a
-        class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
-        title="Reddit"
+      <ShareNetwork
+        network="reddit"
+        :url="`https://everdrop.io/airdrops/${props.shareNetwork.contractAddress}`"
+        :title="`We have successfully finished the airdrop ${props.shareNetwork.airdropName}, check your wallets!`"
       >
-        <RedditIcon />
-      </a>
+        <a
+          class="w-[36px] h-[36px] bg-[#2B63F1] flex justify-center items-center rounded-full"
+          title="Reddit"
+        >
+          <RedditIcon />
+        </a>
+      </ShareNetwork>
     </div>
 
     <span class="absolute right-0 bottom-6">
@@ -61,4 +88,11 @@ import TelegramIcon from '@/components/icons/Social/IconTelegram.vue';
 import DiscordIcon from '@/components/icons/Social/IconDiscord.vue';
 import FacebookIcon from '@/components/icons/Social/IconFacebook.vue';
 import RedditIcon from '@/components/icons/Social/IconReddit.vue';
+
+const props = defineProps({
+  shareNetwork: {
+    type: Object,
+    required: true,
+  },
+});
 </script>

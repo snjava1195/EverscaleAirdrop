@@ -113,7 +113,7 @@ export const useAirdropStore = defineStore({
   id: 'airdrop',
   state: () => ({
     address: null,
-    everAirDropContract: null,
+    // everAirDropContract: null,
     randomNumber: getRandomNonce(),
   }),
   getters: {},
@@ -133,6 +133,20 @@ export const useAirdropStore = defineStore({
     async getGiverContract() {
       try {
         const giverContract = await new ever.Contract(giverAbi, this.address);
+
+        const estimateFees = await giverContract.methods
+          .sendTransaction({
+            value: toNano(1),
+            dest: this.address,
+            bounce: false,
+          })
+          .estimateFees({
+            from: walletStore.profile.address,
+            amount: toNano(1),
+            bounce: false,
+          });
+
+        console.log('estimateFees: ', parseInt(estimateFees) / Math.pow(10, 9));
 
         const sendTransaction = await giverContract.methods
           .sendTransaction({
@@ -157,7 +171,7 @@ export const useAirdropStore = defineStore({
     async deployContract(arr) {
       try {
         const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
-        this.everAirDropContract = everAirDropContract;
+        // this.everAirDropContract = everAirDropContract;
 
         const providerState = await ever.getProviderState();
         const stateInit = await ever.getStateInit(airdropAbi, {
@@ -192,9 +206,8 @@ export const useAirdropStore = defineStore({
     },
     async topUp() {
       try {
-        const requiredAmount = await this.everAirDropContract.methods
-          .get_required_amount({})
-          .call();
+        const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
+        const requiredAmount = await everAirDropContract.methods.get_required_amount({}).call();
 
         const giverContract = await new ever.Contract(giverAbi, this.address);
 
@@ -210,7 +223,7 @@ export const useAirdropStore = defineStore({
             bounce: false,
           });
 
-        return Promise.resolve([requiredAmount, sendTransaction]);
+        return Promise.resolve(sendTransaction);
       } catch (e) {
         console.log(e);
         return Promise.reject(e);
@@ -218,7 +231,8 @@ export const useAirdropStore = defineStore({
     },
     async distribute() {
       try {
-        const sendTransaction = await this.everAirDropContract.methods.distribute({}).send({
+        const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
+        const sendTransaction = await everAirDropContract.methods.distribute({}).send({
           from: walletStore.profile.address,
           amount: toNano(1),
           bounce: true,
@@ -233,7 +247,8 @@ export const useAirdropStore = defineStore({
     },
     async redeemFunds() {
       try {
-        const sendTransaction = await this.everAirDropContract.methods.refund({}).send({
+        const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
+        const sendTransaction = await everAirDropContract.methods.refund({}).send({
           from: walletStore.profile.address,
           amount: toNano(1),
           bounce: true,
