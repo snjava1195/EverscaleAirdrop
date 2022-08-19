@@ -1,15 +1,22 @@
 import BigNumber from 'bignumber.js';
 import { notify } from '@kyvg/vue3-notification';
 import { useWalletStore } from '@/stores/wallet';
+import dayjs from 'dayjs';
 const addressRegex = '^(0|-1):[0-9a-fA-F]{64}$';
 const amountRegex = '^\\d+(\\.\\d+)?$';
 
 export const toNano = (amount) => new BigNumber(amount).shiftedBy(9).toFixed(0);
+export const fromNano = (amount) => parseInt(amount) / Math.pow(10, 9);
 
 export const addressReg = new RegExp(addressRegex);
 export const amountReg = new RegExp(amountRegex);
 
 export const getRandomNonce = () => (Math.random() * 64000) | 0;
+
+export const getSeconds = (date) => {
+  const d = dayjs(date);
+  return d.diff(dayjs(), 's');
+};
 
 export const validateAddressAmountList = (arr, totalTokens) => {
   const walletStore = useWalletStore();
@@ -61,3 +68,22 @@ export const validateAddressAmountList = (arr, totalTokens) => {
   }
   return true;
 };
+
+export const validateLockDuration = (lockDuration) => {
+  if (lockDuration === null) {
+    notify({
+      text: 'Please select lock duration',
+      type: 'error',
+    });
+    return false;
+  }
+
+  if (getSeconds(lockDuration) <= 0) {
+    notify({
+      text: 'Duration expired, please select new',
+      type: 'error',
+    });
+    return false;
+  }
+  return true;
+}

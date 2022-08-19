@@ -4,8 +4,9 @@ import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
 import tvc from '../../../EverAirdrop.base64?raw';
 import { toNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
+import { getSeconds } from '@/utils';
 const ever = new ProviderRpcClient();
-const walletStore = useWalletStore();
+// const walletStore = useWalletStore();
 
 const giverAbi = {
   'ABI version': 2,
@@ -113,17 +114,35 @@ export const useAirdropStore = defineStore({
   id: 'airdrop',
   state: () => ({
     address: null,
+    deployOptions: {
+      initParams: { _randomNonce: 0 },
+      tvc: tvc,
+    },
+    lockDuration: new Date().toLocaleDateString(),
+    topUpRequiredAmount: 0,
     // everAirDropContract: null,
-    randomNumber: getRandomNonce(),
+    // randomNumber: getRandomNonce(),
+    // randomNumber: 0,
+    airdrop: {
+      name: null,
+      status: 'Preparing',
+      address: null,
+      recipientsNumber: 0,
+      totalTokens: 0,
+      step: 1,
+      createdDate: null,
+      token: {}
+    },
+    airdropsList: []
   }),
   getters: {},
   actions: {
     async getExpectedAddress() {
       try {
-        const address = await ever.getExpectedAddress(airdropAbi, {
-          initParams: { _randomNonce: this.randomNumber },
-          tvc: tvc,
-        });
+        this.deployOptions.initParams._randomNonce = getRandomNonce();
+        this.topUpRequiredAmount = 0;
+        this.lockDuration = null;
+        const address = await ever.getExpectedAddress(airdropAbi, this.deployOptions);
 
         this.address = address._address;
       } catch (e) {
@@ -131,6 +150,9 @@ export const useAirdropStore = defineStore({
       }
     },
     async getGiverContract() {
+      const walletStore = useWalletStore();
+      const seconds = getSeconds(this.lockDuration);
+      console.log('seconds:', seconds);
       try {
         const giverContract = await new ever.Contract(giverAbi, this.address);
 
@@ -165,19 +187,18 @@ export const useAirdropStore = defineStore({
         return Promise.resolve(sendTransaction);
       } catch (e) {
         console.log(e);
+        this.airdrop.status = 'Failed';
         return Promise.reject(e);
       }
     },
     async deployContract(arr) {
+      const walletStore = useWalletStore();
       try {
         const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
         // this.everAirDropContract = everAirDropContract;
 
         const providerState = await ever.getProviderState();
-        const stateInit = await ever.getStateInit(airdropAbi, {
-          initParams: { _randomNonce: this.randomNumber },
-          tvc: tvc,
-        });
+        const stateInit = await ever.getStateInit(airdropAbi, this.deployOptions);
 
         const publicKey = providerState.permissions.accountInteraction.publicKey;
         const addresses = arr.map((address) => address.address);
@@ -188,7 +209,7 @@ export const useAirdropStore = defineStore({
             _refund_destination: walletStore.profile.address,
             _addresses: addresses,
             _amounts: amounts,
-            _refund_lock_duration: 120,
+            _refund_lock_duration: getSeconds(this.lockDuration), // TODO proveri da li su stvarno sekunde za lock_duration?
           })
           .sendExternal({
             stateInit: stateInit.stateInit,
@@ -197,6 +218,8 @@ export const useAirdropStore = defineStore({
             // local: true,
           });
 
+        await this.getRequiredAmount();
+
         console.log('sendTransaction: ', sendTransaction);
         return Promise.resolve(sendTransaction);
       } catch (e) {
@@ -204,11 +227,14 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
+    async getRequiredAmount() {
+      const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
+      const requiredAmount = await everAirDropContract.methods.get_required_amount({}).call();
+      this.topUpRequiredAmount = requiredAmount.value0;
+    },
     async topUp() {
+      const walletStore = useWalletStore();
       try {
-        const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
-        const requiredAmount = await everAirDropContract.methods.get_required_amount({}).call();
-
         const giverContract = await new ever.Contract(giverAbi, this.address);
 
         const sendTransaction = await giverContract.methods
@@ -219,7 +245,7 @@ export const useAirdropStore = defineStore({
           })
           .send({
             from: walletStore.profile.address,
-            amount: requiredAmount.value0,
+            amount: this.topUpRequiredAmount,
             bounce: false,
           });
 
@@ -230,11 +256,12 @@ export const useAirdropStore = defineStore({
       }
     },
     async distribute() {
+      const walletStore = useWalletStore();
       try {
         const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
         const sendTransaction = await everAirDropContract.methods.distribute({}).send({
           from: walletStore.profile.address,
-          amount: toNano(1),
+          amount: toNano(0.5),
           bounce: true,
         });
 
@@ -246,11 +273,12 @@ export const useAirdropStore = defineStore({
       }
     },
     async redeemFunds() {
+      const walletStore = useWalletStore();
       try {
         const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
         const sendTransaction = await everAirDropContract.methods.refund({}).send({
           from: walletStore.profile.address,
-          amount: toNano(1),
+          amount: toNano(0.5),
           bounce: true,
         });
 
@@ -261,5 +289,11 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
+    updateAirdropsList() {
+      // Treba da se zove neka funkcija koja daje sve airdropove (kontrakte) sa walleta logovanog usera
+    },
+    getAirdrops() {
+      // Treba da se zove neka funkcija koja daje sve airdropove (kontrakte) sa walleta logovanog usera
+    }
   },
 });

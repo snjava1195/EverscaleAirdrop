@@ -157,7 +157,7 @@
                   ? 'text-[#4AB44A] font-medium'
                   : ''
               "
-              >Top-up {{ totalTokens + 1 }} {{ tokenName }}</a
+              >Top-up {{ topUpRequiredAmount }} {{ tokenName }}</a
             >
           </div>
 
@@ -264,6 +264,20 @@
             </span>
           </div>
         </li>
+        <a
+          v-if="!redeemExpired"
+          class="ml-8 text-sm"
+          :class="
+            !recipientsList.length
+              ? 'text-[#A6AAB2]'
+              : step === 5
+              ? 'text-black'
+              : step > 5
+              ? 'text-[#4AB44A] font-medium'
+              : ''
+          "
+          >Available {{ reedemText }}</a
+        >
       </ul>
 
       <!-- Step 1 -->
@@ -305,7 +319,7 @@
         class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
         :class="{ 'is-loading': loading }"
       >
-        Top-up {{ totalTokens }} {{ tokenName }}
+        Top-up {{ topUpRequiredAmount }} {{ tokenName }}
       </button>
 
       <!-- Step 4 -->
@@ -326,7 +340,8 @@
         @click="onRedeemFunds"
         type="button"
         class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
-        :class="{ 'is-loading': loading }"
+        :class="{ 'is-loading': loading, 'bg-[#DAE4FD]': !redeemExpired }"
+        :disabled="!redeemExpired"
       >
         Redeem funds
       </button>
@@ -350,15 +365,19 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router'
 import { useAirdropStore } from '@/stores/airdrop';
 import { useClipboard } from '@vueuse/core';
 import dayjs from 'dayjs';
-import { validateAddressAmountList } from '@/utils';
+import { validateAddressAmountList, validateLockDuration, fromNano } from '@/utils';
 import InfoIcon from '@/components/icons/IconInfo.vue';
 import CopyIcon from '@/components/icons/IconCopy.vue';
 import CheckIcon from '@/components/icons/IconCheck.vue';
 import ShareAirdrop from '@/components/CreateAirdrop/ShareAirdrop.vue';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { getSeconds } from '@/utils';
+dayjs.extend(relativeTime);
 
 const props = defineProps({
   items: {
@@ -372,6 +391,19 @@ const props = defineProps({
     required: true,
   },
 });
+
+// same as beforeRouteLeave option with no access to `this`
+onBeforeRouteLeave((to, from) => {
+  if (step.value < 3) {
+    const answer = window.confirm(
+      'Do you really want to leave? Airdrop contract will not be saved!'
+    )
+    // cancel the navigation and stay on the same page
+    if (!answer) return false
+  }
+});
+
+onUnmounted(() => clearInterval(redeemPolling.value));
 
 const airdropStore = useAirdropStore();
 const { copy } = useClipboard();
@@ -389,6 +421,9 @@ const transactionId = ref({
   distributeContractId: null,
   redeemContractId: null,
 });
+const redeemPolling = ref(null);
+const reedemText = ref('');
+const redeemRemainingSeconds = ref(null);
 
 const recipientsList = computed(() => {
   return props.items.filter((item) => item.address && item.amount);
@@ -398,6 +433,27 @@ const totalTokens = computed(() => {
     return accumulator + Number(object.amount);
   }, 0);
 });
+const topUpRequiredAmount = computed(() => {
+  const tempTopUpRequiredAmount = recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
+  return airdropStore.topUpRequiredAmount === 0 ? tempTopUpRequiredAmount : fromNano(airdropStore.topUpRequiredAmount);
+})
+const redeemExpired = computed(() => {
+  if (redeemRemainingSeconds.value <= 0) {
+    return true;
+  }
+
+  return false;
+});
+
+function availableToRedeem() {
+  redeemRemainingSeconds.value = getSeconds(airdropStore.lockDuration);
+  if (redeemRemainingSeconds.value > 0) {
+    reedemText.value = dayjs().to(airdropStore.lockDuration);
+    return;
+  }
+
+  clearInterval(redeemPolling.value);
+};
 
 airdropStore.getExpectedAddress();
 
@@ -410,6 +466,7 @@ async function onTopUpEver() {
     const data = await airdropStore.getGiverContract();
     transactionId.value.giverContractId = data.id.hash;
     step.value = 2;
+    airdropStore.airdrop.step = step.value;
   } catch (e) {
     console.log('e: ', e);
     errors.value.error = true;
@@ -420,13 +477,17 @@ async function onTopUpEver() {
 }
 async function onDeployContract() {
   if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+  if (!validateLockDuration(airdropStore.lockDuration)) return;
   loading.value = true;
+  airdropStore.airdrop.recipientsNumber = recipientsList.value.length;
+  airdropStore.airdrop.totalTokens = totalTokens.value;
 
   try {
     errors.value.error = false;
     const data = await airdropStore.deployContract(recipientsList.value);
     transactionId.value.deployContractId = data.transaction.id.hash;
     step.value = 3;
+    airdropStore.airdrop.step = step.value;
   } catch (e) {
     errors.value.error = true;
     errors.value.message = e.message;
@@ -442,6 +503,7 @@ async function onTopUpToken() {
     const data = await airdropStore.topUp();
     transactionId.value.amountContractId = data.id.hash;
     step.value = 4;
+    airdropStore.airdrop.step = step.value;
   } catch (e) {
     console.log('onTopUpToken e:', e);
     errors.value.error = true;
@@ -458,7 +520,14 @@ async function onResumeAirdrop() {
     error.value = false;
     const data = await airdropStore.distribute();
     transactionId.value.distributeContractId = data.id.hash;
+    availableToRedeem();
+    redeemPolling.value = setInterval(() => {
+      console.log('interval');
+      availableToRedeem();
+    }, 1000);
     step.value = 5;
+    airdropStore.airdrop.step = step.value;
+
   } catch (e) {
     console.log('onResumeAirdrop e:', e);
     errors.value.error = true;
@@ -478,6 +547,7 @@ async function onRedeemFunds() {
     transactionId.value.redeemContractId = data.id.hash;
     // error.value = true;
     step.value = 6;
+    airdropStore.airdrop.step = step.value;
   } catch (e) {
     console.log('onRedeemFunds e:', e);
     errors.value.error = true;

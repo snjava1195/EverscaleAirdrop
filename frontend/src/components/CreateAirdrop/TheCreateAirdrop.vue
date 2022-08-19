@@ -65,9 +65,11 @@
             <div class="w-full">
               <label for="airdropName" class="form-label">Lock duration</label>
               <Datepicker
-                v-model="lockDuration"
+                v-model="airdropStore.lockDuration"
                 inputClassName="dp-custom-input"
                 placeholder="Date and time of unlock"
+                :minDate="new Date()"
+                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"
               ></Datepicker>
             </div>
 
@@ -221,6 +223,7 @@ import ProgressIcon from '@/components/icons/Upload/IconProgress.vue';
 import SuccessIcon from '@/components/icons/Upload/IconSuccess.vue';
 import InfoIcon from '@/components/icons/IconInfo.vue';
 import Multiselect from 'vue-multiselect';
+import { useAirdropStore } from '@/stores/airdrop';
 
 const items = ref(recipientsList);
 const airdropName = ref(null);
@@ -233,6 +236,7 @@ const fileName = ref(null);
 const dropZoneRef = ref();
 const loading = ref(false);
 const uploadSuccessful = ref(false);
+const airdropStore = useAirdropStore();
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
