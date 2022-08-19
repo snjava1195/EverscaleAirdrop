@@ -23,6 +23,16 @@
 			]
 		},
 		{
+			"name": "getDetails",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_token","type":"address"},
+				{"name":"_token_wallet","type":"address"},
+				{"name":"_transferred_count","type":"uint128"}
+			]
+		},
+		{
 			"name": "multiTransfer",
 			"inputs": [
 			],

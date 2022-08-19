@@ -1,4 +1,4 @@
-.version sol 0.59.0
+.version sol 0.63.0
 
 .macro constructor
 DROP
@@ -16,11 +16,11 @@ CALLREF {
 }
 THROW 0
 
-.globl	setOwnership_internal
-.type	setOwnership_internal, @function
-CALL $setOwnership_internal_macro$
+.globl	setOwnership_3e1af783_internal
+.type	setOwnership_3e1af783_internal, @function
+CALL $setOwnership_3e1af783_internal_macro$
 
-.macro setOwnership_internal_macro
+.macro setOwnership_3e1af783_internal_macro
 .loc ../contracts/ExternalOwner.sol, 23
 GETGLOB 10
 .loc ../contracts/ExternalOwner.sol, 25
@@ -58,15 +58,14 @@ LDU 256
 ENDS
 .loc ../contracts/ExternalOwner.sol, 0
 CALLREF {
-	CALL $transferOwnership_internal_macro$
+	CALL $transferOwnership_d23e8489_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
 THROW 0
 
-.macro transferOwnership_internal_macro
+.macro transferOwnership_d23e8489_internal_macro
 .loc ../contracts/ExternalOwner.sol, 14
 GETGLOB 5
 DUP
@@ -86,7 +85,7 @@ THROWIFNOT 1102
 ACCEPT
 .loc ../contracts/ExternalOwner.sol, 39
 CALLREF {
-	CALL $setOwnership_internal_macro$
+	CALL $setOwnership_3e1af783_internal_macro$
 }
 .loc ../contracts/ExternalOwner.sol, 0
 
@@ -200,12 +199,12 @@ CALLREF {
 LDU 1 ; haveSign msgSlice
 SWAP
 PUSHCONT {
-	PUSHINT 512
+	PUSHPOW2 9
 	LDSLICEX ; signatureSlice msgSlice
 	DUP
 	HASHSU ; signatureSlice msgSlice hashMsgSlice
 	SWAP
-	LDU 1 ; signatureSlice hashMsgSlice havePubkey msgSlice
+	LDU 1 ; signatureSlice hashMsgSlice hasPubkey msgSlice
 	SWAP
 	PUSHCONT {
 		LDU 256 ; signatureSlice hashMsgSlice pubkey msgSlice
@@ -223,7 +222,7 @@ PUSHCONT {
 	THROWIFNOT 40
 }
 PUSHCONT {
-	LDU 1 ; havePubkey msgSlice
+	LDU 1 ; hasPubkey msgSlice
 	SWAP
 	THROWIF 58
 }

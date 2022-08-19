@@ -1,4 +1,4 @@
-.version sol 0.59.0
+.version sol 0.63.0
 
 .macro constructor
 DROP
@@ -120,7 +120,7 @@ CALLREF {
 LDU 1 ; haveSign msgSlice
 SWAP
 PUSHCONT {
-	PUSHINT 512
+	PUSHPOW2 9
 	LDSLICEX ; signatureSlice msgSlice
 	DUP
 	HASHSU ; signatureSlice msgSlice hashMsgSlice

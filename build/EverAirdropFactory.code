@@ -1,4 +1,4 @@
-.version sol 0.59.0
+.version sol 0.63.0
 
 .macro constructor
 DROP
@@ -69,7 +69,7 @@ LDU 256
 ENDS
 .loc ../contracts/EverAirdropFactory.sol, 0
 CALLREF {
-	CALL $deploy_internal_macro$
+	CALL $deploy_4ac41808_internal_macro$
 }
 OVER
 PUSHCONT {
@@ -97,13 +97,12 @@ PUSHCONT {
 	DROP
 }
 IFELSE
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
 THROW 0
 
-.macro deploy_internal_macro
+.macro deploy_4ac41808_internal_macro
 .loc ../contracts/EverAirdropFactory.sol, 27
 ACCEPT
 .loc ../contracts/EverAirdropFactory.sol, 30
@@ -222,15 +221,14 @@ LDMSGADDR
 ENDS
 .loc ../contracts/EverAirdropFactory.sol, 0
 CALLREF {
-	CALL $withdrawGas_internal_macro$
+	CALL $withdrawGas_b56f251b_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
 THROW 0
 
-.macro withdrawGas_internal_macro
+.macro withdrawGas_b56f251b_internal_macro
 .loc ../contracts/EverAirdropFactory.sol, 54
 PUSHREF {
 	.blob x4f6e6c7920746865206f776e65722063616e206f70657261746521
@@ -260,7 +258,7 @@ STSLICE
 PUSHINT 111
 STZEROES
 ENDC
-PUSHINT 128
+PUSHPOW2 7
 SENDRAWMSG
 .loc ../contracts/EverAirdropFactory.sol, 0
 
@@ -376,12 +374,12 @@ CALLREF {
 LDU 1 ; haveSign msgSlice
 SWAP
 PUSHCONT {
-	PUSHINT 512
+	PUSHPOW2 9
 	LDSLICEX ; signatureSlice msgSlice
 	DUP
 	HASHSU ; signatureSlice msgSlice hashMsgSlice
 	SWAP
-	LDU 1 ; signatureSlice hashMsgSlice havePubkey msgSlice
+	LDU 1 ; signatureSlice hashMsgSlice hasPubkey msgSlice
 	SWAP
 	PUSHCONT {
 		LDU 256 ; signatureSlice hashMsgSlice pubkey msgSlice
@@ -399,7 +397,7 @@ PUSHCONT {
 	THROWIFNOT 40
 }
 PUSHCONT {
-	LDU 1 ; havePubkey msgSlice
+	LDU 1 ; hasPubkey msgSlice
 	SWAP
 	THROWIF 58
 }

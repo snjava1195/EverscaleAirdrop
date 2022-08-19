@@ -6,9 +6,8 @@
 		{
 			"name": "constructor",
 			"inputs": [
+				{"name":"_contract_notes","type":"string"},
 				{"name":"_refund_destination","type":"address"},
-				{"name":"_addresses","type":"address[]"},
-				{"name":"_amounts","type":"uint128[]"},
 				{"name":"_refund_lock_duration","type":"uint256"}
 			],
 			"outputs": [
@@ -17,6 +16,37 @@
 		{
 			"name": "distribute",
 			"inputs": [
+				{"name":"_addresses","type":"address[]"},
+				{"name":"_amounts","type":"uint128[]"},
+				{"name":"_wid","type":"int8"},
+				{"name":"_code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployWithMsgBody",
+			"inputs": [
+				{"name":"_wid","type":"int8"},
+				{"name":"_initialBalance","type":"uint128"},
+				{"name":"_code","type":"cell"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "onDistribute",
+			"inputs": [
+				{"name":"_distributed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onRefund",
+			"inputs": [
+				{"name":"_refunded","type":"bool"}
 			],
 			"outputs": [
 			]
@@ -29,7 +59,23 @@
 			]
 		},
 		{
-			"name": "getPubkey",
+			"name": "getDeployedContracts",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address[]"}
+			]
+		},
+		{
+			"name": "getContractNotes",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"string"}
+			]
+		},
+		{
+			"name": "getRefundLockDuration",
 			"inputs": [
 			],
 			"outputs": [
@@ -37,33 +83,56 @@
 			]
 		},
 		{
-			"name": "m_id",
+			"name": "getStatus",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"m_id","type":"uint256"}
+				{"name":"value0","type":"bool[]"}
 			]
 		},
 		{
-			"name": "m_creator",
+			"name": "_randomNonce",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"m_creator","type":"address"}
+				{"name":"_randomNonce","type":"uint256"}
 			]
 		},
 		{
-			"name": "m_sum",
+			"name": "nonce",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"m_sum","type":"uint256"}
+				{"name":"nonce","type":"uint256"}
+			]
+		},
+		{
+			"name": "deployedContracts",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"deployedContracts","type":"address[]"}
+			]
+		},
+		{
+			"name": "stateInit",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"stateInit","type":"cell"}
+			]
+		},
+		{
+			"name": "contract_notes",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"contract_notes","type":"string"}
 			]
 		}
 	],
 	"data": [
-		{"key":1,"name":"m_id","type":"uint256"},
-		{"key":2,"name":"m_creator","type":"address"}
+		{"key":1,"name":"_randomNonce","type":"uint256"}
 	],
 	"events": [
 	],
@@ -71,16 +140,20 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
-		{"name":"m_id","type":"uint256"},
-		{"name":"m_creator","type":"address"},
-		{"name":"addresses","type":"address[]"},
-		{"name":"amounts","type":"uint128[]"},
 		{"name":"refund_destination","type":"address"},
+		{"name":"addr","type":"address"},
 		{"name":"refund_lock_duration_end","type":"uint256"},
 		{"name":"distributed","type":"bool"},
-		{"name":"total_amount","type":"uint256"},
-		{"name":"required_fee","type":"uint256"},
-		{"name":"transferGas","type":"uint128"},
-		{"name":"m_sum","type":"uint256"}
+		{"name":"total_amount","type":"uint128"},
+		{"name":"required_fee","type":"uint128"},
+		{"name":"_randomNonce","type":"uint256"},
+		{"name":"statusArray","type":"bool[]"},
+		{"name":"nonce","type":"uint256"},
+		{"name":"deployedContracts","type":"address[]"},
+		{"name":"stateInit","type":"cell"},
+		{"name":"contract_notes","type":"string"},
+		{"name":"counter","type":"uint256"},
+		{"name":"refunded","type":"bool[]"},
+		{"name":"refundCounter","type":"uint256"}
 	]
 }
