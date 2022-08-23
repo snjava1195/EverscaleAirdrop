@@ -8,7 +8,7 @@ contract EverAirdrop {
     uint256 refund_lock_duration_end;
     bool distributed = false;
     uint128 total_amount = 0;
-    uint128 required_fee = 1 ever; 
+    uint128 required_fee = 5 ever; 
     uint public static _randomNonce;
     bool[] statusArray;
     uint public nonce = 1;
@@ -18,7 +18,7 @@ contract EverAirdrop {
     uint counter=0;
     bool[] refunded;
     uint refundCounter=0;
-   
+  
    //Modifier that allows public function to accept external calls only from contract owner
      modifier checkOwnerAndAccept{
      	require(msg.pubkey() == tvm.pubkey() , 102);
@@ -63,12 +63,10 @@ contract EverAirdrop {
         require(msg.pubkey() == tvm.pubkey(), 106);
         require((_refund_lock_duration <= 604800) && (_refund_lock_duration >= 120), 103);
         tvm.accept();
-	
-        
-       
         contract_notes = _contract_notes;
         refund_destination = _refund_destination;
         refund_lock_duration_end = now + _refund_lock_duration;
+
 
     }
 
@@ -97,8 +95,8 @@ contract EverAirdrop {
             	}
             	uint128 _initialBalance = total_amount + required_fee;
         
-      		deployWithMsgBody(_wid, _initialBalance, _code);
-        	Distributer(deployedContracts[counter-1]).distribute{value: 1 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
+      		deployWithMsgBody(_wid, _initialBalance, _code, total_amount);
+        	Distributer(deployedContracts[counter-1]).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
         	total_amount = 0;
 
       	}
@@ -107,11 +105,11 @@ contract EverAirdrop {
 
      //Deploys Distributor contract using address.transfer
 	
-	function deployWithMsgBody(int8 _wid,uint128 _initialBalance,TvmCell _code) public returns(address){
+	function deployWithMsgBody(int8 _wid,uint128 _initialBalance,TvmCell _code, uint128 _totalAmount) public returns(address){
 		TvmCell payload = tvm.encodeBody(Distributer);
 		stateInit = tvm.buildStateInit({code: _code,
 			contr: Distributer,
-			varInit: {_randomNonce: nonce, _owner: address(this)},
+			varInit: {_randomNonce: nonce, _owner: address(this), totalAmount: _totalAmount},
 			pubkey: 0
 		});
 		addr = address.makeAddrStd(_wid, tvm.hash(stateInit));

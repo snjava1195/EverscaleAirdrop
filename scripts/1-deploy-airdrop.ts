@@ -24,7 +24,7 @@ const signer = (await locklift.keystore.getSigner("0"))!;
             type: 'text',
             name: 'data',
             message: 'Name of the csv file with airdrop addresses and amount, should be placed in the repo root',
-            initial: 'proba.csv',
+            initial: 'data.csv',
         }
     ]);
 
@@ -51,9 +51,9 @@ function chunk(array, chunkSize) {
   return output;
 }
 
-const chunkAddresses = chunk(addresses, 100);
+const chunkAddresses = chunk(addresses, 90);
 console.log(chunkAddresses);
-const chunkAmounts = chunk(amounts, 100);
+const chunkAmounts = chunk(amounts, 90);
 console.log(chunkAmounts);
       const { account } = await accountsFactory.deployNewAccount({
         constructorParams: {},
@@ -90,24 +90,25 @@ console.log(chunkAmounts);
 
       console.log("Distribute tokens:");
       
-      await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(1000));
-        await locklift.giver.sendTo(owner.address, locklift.utils.toNano(100));
+      await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10000));
+        await locklift.giver.sendTo(owner.address, locklift.utils.toNano(1000));
       const codeAirdrop = locklift.factory.getContractArtifacts("Distributer");
  
- 	for(let i=0; i<3; i++)
+ 	for(let i=0; i<8; i++)
  	{
  
       const result = await owner.runTarget({
       	contract: airdrop,
-    		value: locklift.utils.toNano(2.2),
+    		value: locklift.utils.toNano(3),
     		publicKey: signer.publicKey,
     		//callback: onDistribute,
     		},
     		airdrop =>
-    			airdrop.methods.distribute({_addresses: addresses, _amounts: amounts, _wid: 0, _code: codeAirdrop.code }),
+    			airdrop.methods.distribute({_addresses: chunkAddresses[i][1], _amounts: chunkAmounts[i][1], _wid: 0, _code: codeAirdrop.code }),
     		);
     		
     	console.log(result);
+    	console.log(result.transaction.outMessages);
     	}
     	
     	/* const result2 = await owner.runTarget({

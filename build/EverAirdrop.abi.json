@@ -29,7 +29,8 @@
 			"inputs": [
 				{"name":"_wid","type":"int8"},
 				{"name":"_initialBalance","type":"uint128"},
-				{"name":"_code","type":"cell"}
+				{"name":"_code","type":"cell"},
+				{"name":"_totalAmount","type":"uint128"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}

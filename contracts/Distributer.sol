@@ -5,13 +5,15 @@ contract Distributer {
 
 	uint public static _randomNonce;
 	address public static _owner;
-	
+	uint128 public static totalAmount;
 	constructor() public
 	{
 	tvm.accept();
 	}
-	function distribute(address[] addresses, uint128[] amounts) public pure responsible returns (bool)
+	function distribute(address[] addresses, uint128[] amounts) public view responsible returns (bool)
 	{
+		
+		require(address(this).balance>totalAmount, 105);
 		bool distributed = false;
 		//require(address(this).balance > total_amount + required_fee, 105);
 		for(uint i=0;i<addresses.length;i++)

@@ -46,11 +46,20 @@
 			"outputs": [
 				{"name":"_owner","type":"address"}
 			]
+		},
+		{
+			"name": "totalAmount",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"totalAmount","type":"uint128"}
+			]
 		}
 	],
 	"data": [
 		{"key":1,"name":"_randomNonce","type":"uint256"},
-		{"key":2,"name":"_owner","type":"address"}
+		{"key":2,"name":"_owner","type":"address"},
+		{"key":3,"name":"totalAmount","type":"uint128"}
 	],
 	"events": [
 	],
@@ -59,6 +68,7 @@
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"_randomNonce","type":"uint256"},
-		{"name":"_owner","type":"address"}
+		{"name":"_owner","type":"address"},
+		{"name":"totalAmount","type":"uint128"}
 	]
 }
