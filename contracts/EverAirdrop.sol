@@ -8,16 +8,21 @@ contract EverAirdrop {
     uint256 refund_lock_duration_end;
     bool distributed = false;
     uint128 total_amount = 0;
-    uint128 required_fee = 5 ever; 
+    uint128 required_fee = 0.5 ever; 
     uint public static _randomNonce;
     bool[] statusArray;
     uint public nonce = 1;
     address[] public deployedContracts;
+    address[] distributeAddresses;
     TvmCell public stateInit;
     string public contract_notes;
     uint counter=0;
     bool[] refunded;
     uint refundCounter=0;
+    struct Status{
+		bool distributed;
+		address contractAddress;
+	}
   
    //Modifier that allows public function to accept external calls only from contract owner
      modifier checkOwnerAndAccept{
@@ -25,6 +30,8 @@ contract EverAirdrop {
      	tvm.accept();
      	_;
     }
+    
+    Status[] distributed_status;
      
     // 1 ever should be enough for any possible fees
     // The rest of the balance can always be refunded
@@ -73,7 +80,7 @@ contract EverAirdrop {
     /**
      * @dev Distributes contract balance to the receivers from the addresses if there is enough gas on the contract. If it is first distribution with up to 100 addresses, airdrop is the sender, if not, Distributer contracts are deployed and their distribution method is triggered
     */
-    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid, TvmCell _code) balanceSufficient public {
+    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid, TvmCell _code) /*balanceSufficient*/ public {
     
         require(_amounts.length == _addresses.length, 101);
         require((_addresses.length > 0) && (_addresses.length < 100), 102);
@@ -121,9 +128,14 @@ contract EverAirdrop {
 	
     //Callback for Distributor's distribute method	
 	
-    function onDistribute(bool _distributed) public  
+    function onDistribute(address _contractAddress, bool _distributed) public  
     {
+    	 distributed_status.push(Status({
+                distributed: _distributed,
+                contractAddress: _contractAddress
+            }));	
     	 statusArray.push(_distributed);
+    	 distributeAddresses.push(_contractAddress);
     }
     
     function onRefund(bool _refunded) public
@@ -176,9 +188,14 @@ contract EverAirdrop {
     
     //gets the retrieved status array from callback, after the distribution is done in Distributor contracts
     
-    function getStatus() public view returns (bool[])
+    function getStatus() public view returns (bool[] _distributed, address[] _addresses)
     {
-    	return statusArray;
+    	for(uint i=0;i<distributed_status.length;i++)
+    	{
+    		_distributed.push(distributed_status[i].distributed);
+    		_addresses.push(distributed_status[i].contractAddress);
+    	}
+    	return (_distributed, _addresses);
     }
     
         

@@ -6,14 +6,14 @@ contract Distributer {
 	uint public static _randomNonce;
 	address public static _owner;
 	uint128 public static totalAmount;
+	
 	constructor() public
 	{
 	tvm.accept();
 	}
-	function distribute(address[] addresses, uint128[] amounts) public view responsible returns (bool)
-	{
-		
+	function distribute(address[] addresses, uint128[] amounts) public view responsible returns (address, bool){
 		require(address(this).balance>totalAmount, 105);
+		
 		bool distributed = false;
 		//require(address(this).balance > total_amount + required_fee, 105);
 		for(uint i=0;i<addresses.length;i++)
@@ -21,9 +21,10 @@ contract Distributer {
 		 payable(addresses[i]).transfer(amounts[i], false, 1);
 		 }
 		 distributed = true;
-		 return {value: 0, bounce: false, flag: 64} distributed;
-	}
+		 //Status status = Status(distributed, address(this));
+		 return {value: 0, bounce: false, flag: 64} (address(this), distributed);
 	
+	}
 	 function refund(address refund_destination) public view responsible returns (bool)   {
 	 	bool refunded = false;
         	payable(refund_destination).transfer(0, false, 128);
@@ -31,9 +32,9 @@ contract Distributer {
         	return {value: 0, bounce: false, flag: 64} refunded;
          }
 
-
-
-
-
-
 }
+
+
+
+
+

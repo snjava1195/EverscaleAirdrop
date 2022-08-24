@@ -10,7 +10,7 @@ IFREF {
 GETGLOB 6
 THROWIF 51
 ENDS
-.loc ../contracts/Distributer.sol, 11
+.loc ../contracts/Distributer.sol, 12
 ACCEPT
 .loc ../contracts/Distributer.sol, 0
 CALLREF {
@@ -27,7 +27,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Distributer.sol, 13
+.loc ../contracts/Distributer.sol, 14
 LDU 32
 GETGLOB 4
 ROT
@@ -48,9 +48,9 @@ ENDS
 CALLREF {
 	CALL $distribute_5c3b864b_internal_macro$
 }
-OVER
+PUSH S2
 PUSHCONT {
-	PUSH S3
+	PUSH S4
 	CTOS
 	LDU 2
 	LDMSGADDR
@@ -59,9 +59,14 @@ PUSHCONT {
 	NEWC
 	STSLICECONST xc
 	STSLICE
-	PUSHINT 3059120704
-	STUR 130
+	PUSHINT 1
+	STUR 98
+	XCHG S2
+	NEWC
+	STSLICECONST xbfc0f87c
+	STSLICE
 	STI 1
+	STBREFR
 	ENDC
 	PUSHINT 0
 }
@@ -82,12 +87,16 @@ PUSHCONT {
 	SWAP
 	STGRAMS
 	STDICT
-	PUSHINT 106
-	STZEROES
+	PUSHINT 1
+	STUR 106
+	XCHG S2
+	NEWC
 	GETGLOB 4
 	INDEX 5
 	STUR 32
+	STSLICE
 	STI 1
+	STBREFR
 	ENDC
 	GETGLOB 4
 	INDEX 4
@@ -104,7 +113,7 @@ THROW 0
 CALL $distribute_5c3b864b_internal_macro$
 
 .macro distribute_5c3b864b_internal_macro
-.loc ../contracts/Distributer.sol, 16
+.loc ../contracts/Distributer.sol, 15
 GETPARAM 7
 FIRST
 GETGLOB 12
@@ -146,9 +155,7 @@ PUSHCONT {
 }
 WHILE
 BLKDROP 3
-.loc ../contracts/Distributer.sol, 23
-TRUE
-.loc ../contracts/Distributer.sol, 24
+.loc ../contracts/Distributer.sol, 25
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
@@ -157,6 +164,8 @@ SETINDEXQ 1
 PUSHINT 64
 SETINDEXQ 4
 SETGLOB 4
+MYADDR
+TRUE
 .loc ../contracts/Distributer.sol, 0
 
 .macro refund
@@ -168,7 +177,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Distributer.sol, 27
+.loc ../contracts/Distributer.sol, 28
 LDU 32
 GETGLOB 4
 ROT
@@ -243,7 +252,7 @@ THROW 0
 CALL $refund_fa89401a_internal_macro$
 
 .macro refund_fa89401a_internal_macro
-.loc ../contracts/Distributer.sol, 29
+.loc ../contracts/Distributer.sol, 30
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -252,9 +261,9 @@ STZEROES
 ENDC
 PUSHPOW2 7
 SENDRAWMSG
-.loc ../contracts/Distributer.sol, 30
-TRUE
 .loc ../contracts/Distributer.sol, 31
+TRUE
+.loc ../contracts/Distributer.sol, 32
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
@@ -526,16 +535,16 @@ IFJMPREF {
 		CALL $_owner$
 	}
 	DUP
-	PUSHINT 911637056
-	EQUAL
-	IFJMPREF {
-		CALL $distribute$
-	}
-	DUP
 	PUSHINT 995308319
 	EQUAL
 	IFJMPREF {
 		CALL $_randomNonce$
+	}
+	DUP
+	PUSHINT 1069611132
+	EQUAL
+	IFJMPREF {
+		CALL $distribute$
 	}
 	DUP
 	PUSHINT 1648655918

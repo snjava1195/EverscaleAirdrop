@@ -39,6 +39,7 @@
 		{
 			"name": "onDistribute",
 			"inputs": [
+				{"name":"_contractAddress","type":"address"},
 				{"name":"_distributed","type":"bool"}
 			],
 			"outputs": [
@@ -88,7 +89,8 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"value0","type":"bool[]"}
+				{"name":"_distributed","type":"bool[]"},
+				{"name":"_addresses","type":"address[]"}
 			]
 		},
 		{
@@ -151,10 +153,12 @@
 		{"name":"statusArray","type":"bool[]"},
 		{"name":"nonce","type":"uint256"},
 		{"name":"deployedContracts","type":"address[]"},
+		{"name":"distributeAddresses","type":"address[]"},
 		{"name":"stateInit","type":"cell"},
 		{"name":"contract_notes","type":"string"},
 		{"name":"counter","type":"uint256"},
 		{"name":"refunded","type":"bool[]"},
-		{"name":"refundCounter","type":"uint256"}
+		{"name":"refundCounter","type":"uint256"},
+		{"components":[{"name":"distributed","type":"bool"},{"name":"contractAddress","type":"address"}],"name":"distributed_status","type":"tuple[]"}
 	]
 }

@@ -104,11 +104,11 @@ console.log(chunkAmounts);
     		//callback: onDistribute,
     		},
     		airdrop =>
-    			airdrop.methods.distribute({_addresses: chunkAddresses[i][1], _amounts: chunkAmounts[i][1], _wid: 0, _code: codeAirdrop.code }),
+    			airdrop.methods.distribute({_addresses: chunkAddresses[2][1], _amounts: chunkAmounts[2][1], _wid: 0, _code: codeAirdrop.code }),
     		);
     		
-    	console.log(result);
-    	console.log(result.transaction.outMessages);
+    	//console.log(result);
+    	//console.log(result.transaction.outMessages);
     	}
     	
     	/* const result2 = await owner.runTarget({
