@@ -57,8 +57,8 @@ const giverAbi = {
   ],
 };
 
-// const maxNumberOfAddresses = 99;
-const maxNumberOfAddresses = 3;
+// const maxNumberOfAddresses = 3;
+const maxNumberOfAddresses = 99;
 
 export const useAirdropStore = defineStore({
   id: 'airdrop',
@@ -173,7 +173,6 @@ export const useAirdropStore = defineStore({
           });
 
         this.getRequiredAmount(totalTokens, totalRecipients);
-        // this.topUpRequiredAmount = totalTokens + 2; // TODO racun je totalTokens + ((broj petlji - 1) * 0.5) (0.5 po deployovanom kontraktu)
 
         console.log('sendTransaction: ', sendTransaction);
         return Promise.resolve(sendTransaction);
