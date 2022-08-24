@@ -202,7 +202,9 @@
       <TheSidebar
         :items="items"
         :tokenName="token ? token.label : 'WEVER'"
-        :shareNetwork="shareNetwork"
+        :shareNetwork="{
+          airdropName: airdropName
+        }"
       />
     </div>
   </div>
@@ -240,9 +242,6 @@ const airdropStore = useAirdropStore();
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
-const shareNetwork = ref({
-  airdropName: airdropName.value,
-});
 
 function addItem() {
   items.value.push({

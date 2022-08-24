@@ -87,3 +87,18 @@ export const validateLockDuration = (lockDuration) => {
   }
   return true;
 }
+
+export const chunk = (array, chunkSize) => { 
+  // Create a plain object for housing our named properties: row1, row2, ...rowN
+  let output=[];
+  // Cache array.length
+  let arrayLength = array.length;
+  // Loop variables
+  let arrayIndex = 0, chunkOrdinal = 1;
+  // Loop over chunks
+  while (arrayIndex < arrayLength) {
+    // Use slice() to select a chunk. Note the incrementing operations.
+    output.push([chunkOrdinal++, array.slice(arrayIndex, arrayIndex += chunkSize)]);
+  }
+  return output;
+}

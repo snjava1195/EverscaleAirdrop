@@ -30,7 +30,7 @@
 
       <div class="flex justify-between">
         <span class="text-[#8B909A]">Estimated gas fee</span>
-        <span>{{ 0.1 * recipientsList.length }} EVER</span>
+        <span>{{ 0.1 * totalTokens }} EVER</span>
       </div>
 
       <div class="flex justify-between items-center font-bold text-black">
@@ -205,12 +205,6 @@
               "
               >Run airdrop</a
             >
-            <span
-              v-if="step === 4"
-              class="ml-[12px]"
-              :class="!error ? 'text-[#8B909A]' : 'text-[#D83F5A]'"
-              >128 / {{ recipientsList.length }}</span
-            >
           </div>
 
           <div v-if="step > 4" class="flex items-center space-x-[6px]">
@@ -222,6 +216,12 @@
             </span>
           </div>
         </li>
+        <span
+          v-if="step === 4"
+          class="ml-[32px]"
+          :class="!error ? 'text-[#8B909A]' : 'text-[#D83F5A]'"
+          >Batches: {{ currentBatch }} / {{ maxBatches }}</span
+        >
 
         <!-- Step 5 -->
         <li class="flex items-center" :class="{ 'justify-between': step > 5 }">
@@ -353,7 +353,7 @@
       <ShareAirdrop
         v-if="step === 5 || step === 6"
         :shareNetwork="{
-          airdropName: props.shareNetwork.airdropName,
+          airdropName: airdropName,
           totalAmount: totalTokens,
           totalAddresses: recipientsList.length,
           contractAddress: airdropStore.address,
@@ -424,6 +424,7 @@ const transactionId = ref({
 const redeemPolling = ref(null);
 const reedemText = ref('');
 const redeemRemainingSeconds = ref(null);
+const airdropName = ref(null);
 
 const recipientsList = computed(() => {
   return props.items.filter((item) => item.address && item.amount);
@@ -435,7 +436,7 @@ const totalTokens = computed(() => {
 });
 const topUpRequiredAmount = computed(() => {
   const tempTopUpRequiredAmount = recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
-  return airdropStore.topUpRequiredAmount === 0 ? tempTopUpRequiredAmount : fromNano(airdropStore.topUpRequiredAmount);
+  return airdropStore.topUpRequiredAmount === 0 ? tempTopUpRequiredAmount : airdropStore.topUpRequiredAmount;
 })
 const redeemExpired = computed(() => {
   if (redeemRemainingSeconds.value <= 0) {
@@ -443,6 +444,12 @@ const redeemExpired = computed(() => {
   }
 
   return false;
+});
+const currentBatch = computed(() => {
+  return airdropStore.currentBatch;
+});
+const maxBatches = computed(() => {
+  return airdropStore.maxBatches;
 });
 
 function availableToRedeem() {
@@ -479,12 +486,12 @@ async function onDeployContract() {
   if (!validateAddressAmountList(props.items, totalTokens.value)) return;
   if (!validateLockDuration(airdropStore.lockDuration)) return;
   loading.value = true;
-  airdropStore.airdrop.recipientsNumber = recipientsList.value.length;
-  airdropStore.airdrop.totalTokens = totalTokens.value;
 
   try {
     errors.value.error = false;
-    const data = await airdropStore.deployContract(recipientsList.value);
+    airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
+    console.log('airdropName:', airdropName.value);
+    const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length);
     transactionId.value.deployContractId = data.transaction.id.hash;
     step.value = 3;
     airdropStore.airdrop.step = step.value;
@@ -518,7 +525,7 @@ async function onResumeAirdrop() {
   try {
     errors.value.error = false;
     error.value = false;
-    const data = await airdropStore.distribute();
+    const data = await airdropStore.distribute(recipientsList.value);
     transactionId.value.distributeContractId = data.id.hash;
     availableToRedeem();
     redeemPolling.value = setInterval(() => {

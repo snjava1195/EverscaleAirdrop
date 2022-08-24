@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
-// import DePoolAbi from '../../../EverAirdrop.abi.json';
-import tvc from '../../../EverAirdrop.base64?raw';
+import airdropAbi from '../../../build/EverAirdrop.abi.json';
+import tvc from '../../../build/EverAirdrop.base64?raw';
+import distributerTvc from '../../../build/Distributer.base64?raw';
 import { toNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
-import { getSeconds } from '@/utils';
+import { getSeconds, chunk } from '@/utils';
 const ever = new ProviderRpcClient();
 // const walletStore = useWalletStore();
 
@@ -55,60 +56,9 @@ const giverAbi = {
     { name: 'm_messages', type: 'map(uint256,uint64)' },
   ],
 };
-const airdropAbi = {
-  'ABI version': 2,
-  version: '2.2',
-  header: ['time', 'expire'],
-  functions: [
-    {
-      name: 'constructor',
-      inputs: [
-        { name: '_refund_destination', type: 'address' },
-        { name: '_addresses', type: 'address[]' },
-        { name: '_amounts', type: 'uint128[]' },
-        { name: '_refund_lock_duration', type: 'uint256' },
-      ],
-      outputs: [],
-    },
-    {
-      name: 'distribute',
-      inputs: [],
-      outputs: [],
-    },
-    {
-      name: 'refund',
-      inputs: [],
-      outputs: [],
-    },
-    {
-      name: 'get_required_amount',
-      inputs: [],
-      outputs: [{ name: 'value0', type: 'uint256' }],
-    },
-    {
-      name: '_randomNonce',
-      inputs: [],
-      outputs: [{ name: '_randomNonce', type: 'uint32' }],
-    },
-  ],
-  data: [{ key: 1, name: '_randomNonce', type: 'uint32' }],
-  events: [],
-  fields: [
-    { name: '_pubkey', type: 'uint256' },
-    { name: '_timestamp', type: 'uint64' },
-    { name: '_constructorFlag', type: 'bool' },
-    { name: 'timeStamps', type: 'uint48[]' },
-    { name: 'addresses', type: 'address[]' },
-    { name: 'amounts', type: 'uint128[]' },
-    { name: 'refund_destination', type: 'address' },
-    { name: 'refund_lock_duration_end', type: 'uint256' },
-    { name: 'distributed', type: 'bool' },
-    { name: 'total_amount', type: 'uint256' },
-    { name: 'required_fee', type: 'uint256' },
-    { name: 'transferGas', type: 'uint128' },
-    { name: '_randomNonce', type: 'uint32' },
-  ],
-};
+
+// const maxNumberOfAddresses = 99;
+const maxNumberOfAddresses = 3;
 
 export const useAirdropStore = defineStore({
   id: 'airdrop',
@@ -120,6 +70,9 @@ export const useAirdropStore = defineStore({
     },
     lockDuration: new Date().toLocaleDateString(),
     topUpRequiredAmount: 0,
+    loopCount: 0,
+    currentBatch: 0,
+    maxBatches: 0,
     // everAirDropContract: null,
     // randomNumber: getRandomNonce(),
     // randomNumber: 0,
@@ -191,7 +144,7 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
-    async deployContract(arr) {
+    async deployContract(airdropName, totalTokens, totalRecipients) {
       const walletStore = useWalletStore();
       try {
         const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
@@ -201,15 +154,16 @@ export const useAirdropStore = defineStore({
         const stateInit = await ever.getStateInit(airdropAbi, this.deployOptions);
 
         const publicKey = providerState.permissions.accountInteraction.publicKey;
-        const addresses = arr.map((address) => address.address);
-        const amounts = arr.map((amount) => toNano(amount.amount));
+        // const addresses = arr.map((address) => address.address);
+        // const amounts = arr.map((amount) => toNano(amount.amount));
 
         const sendTransaction = await everAirDropContract.methods
           .constructor({
+            _contract_notes: airdropName,
             _refund_destination: walletStore.profile.address,
-            _addresses: addresses,
-            _amounts: amounts,
-            _refund_lock_duration: getSeconds(this.lockDuration), // TODO proveri da li su stvarno sekunde za lock_duration?
+            // _addresses: addresses,
+            // _amounts: amounts,
+            _refund_lock_duration: getSeconds(this.lockDuration),
           })
           .sendExternal({
             stateInit: stateInit.stateInit,
@@ -218,7 +172,8 @@ export const useAirdropStore = defineStore({
             // local: true,
           });
 
-        await this.getRequiredAmount();
+        this.getRequiredAmount(totalTokens, totalRecipients);
+        // this.topUpRequiredAmount = totalTokens + 2; // TODO racun je totalTokens + ((broj petlji - 1) * 0.5) (0.5 po deployovanom kontraktu)
 
         console.log('sendTransaction: ', sendTransaction);
         return Promise.resolve(sendTransaction);
@@ -227,16 +182,20 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
-    async getRequiredAmount() {
-      const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
-      const requiredAmount = await everAirDropContract.methods.get_required_amount({}).call();
-      this.topUpRequiredAmount = requiredAmount.value0;
+    async getRequiredAmount(totalTokens, totalRecipients) {
+      this.loopCount = Math.floor(totalRecipients / maxNumberOfAddresses);
+        if (totalRecipients % maxNumberOfAddresses !== 0) {
+          this.loopCount++;
+        }
+      this.topUpRequiredAmount = totalTokens + ((this.loopCount - 1) * 0.5);
+      this.maxBatches = this.loopCount;
     },
     async topUp() {
       const walletStore = useWalletStore();
       try {
         const giverContract = await new ever.Contract(giverAbi, this.address);
 
+        console.log('this.topUpRequiredAmount + 0.5:', toNano(this.topUpRequiredAmount));
         const sendTransaction = await giverContract.methods
           .sendTransaction({
             value: toNano(1),
@@ -245,7 +204,7 @@ export const useAirdropStore = defineStore({
           })
           .send({
             from: walletStore.profile.address,
-            amount: this.topUpRequiredAmount,
+            amount: toNano(this.topUpRequiredAmount),
             bounce: false,
           });
 
@@ -255,15 +214,47 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
-    async distribute() {
+    async distribute(arr) {
       const walletStore = useWalletStore();
       try {
+        const addresses = arr.map((address) => address.address);
+        const amounts = arr.map((amount) => toNano(amount.amount));
+        const chunkAddresses = chunk(addresses, maxNumberOfAddresses);
+        console.log(chunkAddresses);
+        const chunkAmounts = chunk(amounts, maxNumberOfAddresses);
+        console.log(chunkAmounts);
+
         const everAirDropContract = await new ever.Contract(airdropAbi, new Address(this.address));
-        const sendTransaction = await everAirDropContract.methods.distribute({}).send({
-          from: walletStore.profile.address,
-          amount: toNano(0.5),
-          bounce: true,
-        });
+
+        const { code } = await ever.splitTvc(distributerTvc);
+
+        let sendTransaction;
+        for(let i=0; i<this.loopCount; i++) {
+          this.currentBatch++;
+          sendTransaction = await everAirDropContract.methods.distribute({
+            _addresses: chunkAddresses[i][1],
+            _amounts: chunkAmounts[i][1],
+            _wid: 0,
+            _code: code
+          }).send({
+            from: walletStore.profile.address,
+            amount: toNano(0.5),
+            bounce: true,
+          });
+
+          // const futureEvent = await everAirDropContract.waitForEvent({ filter: event => event.event === "StateChanged" });
+          // console.log(futureEvent);
+        }
+
+        const transaction = await everAirDropContract.methods.getStatus({}).call();
+        console.log('transaction:', transaction);
+        console.log('transaction.value0:', transaction.value0);
+
+        // const sendTransaction = await everAirDropContract.methods.distribute({}).send({
+        //   from: walletStore.profile.address,
+        //   amount: toNano(0.5),
+        //   bounce: true,
+        // });
 
         console.log('distribute:', sendTransaction);
         return Promise.resolve(sendTransaction);
@@ -279,7 +270,7 @@ export const useAirdropStore = defineStore({
         const sendTransaction = await everAirDropContract.methods.refund({}).send({
           from: walletStore.profile.address,
           amount: toNano(0.5),
-          bounce: true,
+          bounce: false,
         });
 
         console.log('redeemFunds:', sendTransaction);
@@ -288,9 +279,6 @@ export const useAirdropStore = defineStore({
         console.log(e);
         return Promise.reject(e);
       }
-    },
-    updateAirdropsList() {
-      // Treba da se zove neka funkcija koja daje sve airdropove (kontrakte) sa walleta logovanog usera
     },
     getAirdrops() {
       // Treba da se zove neka funkcija koja daje sve airdropove (kontrakte) sa walleta logovanog usera
