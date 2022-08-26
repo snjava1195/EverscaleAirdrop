@@ -153,15 +153,15 @@ contract EverAirdrop {
    
     function refund() refundLockPassed public view {
         
-        payable(refund_destination).transfer(0, false, 128);
-        
         if(deployedContracts.length!=0)
         {
         	for(uint i=0;i<deployedContracts.length;i++)
         	{
-        		Distributer(deployedContracts[i]).refund{value: 1 ever, callback: EverAirdrop.onRefund}(refund_destination);
+        		Distributer(deployedContracts[i]).refund{value: 1 ever/*, callback: EverAirdrop.onRefund, bounce: false*/}(refund_destination).await;
         	}
         }
+        
+        payable(refund_destination).transfer(0, false, 128);
         
     }
     
