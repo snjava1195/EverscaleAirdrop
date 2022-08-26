@@ -132,6 +132,14 @@
 			"outputs": [
 				{"name":"contract_notes","type":"string"}
 			]
+		},
+		{
+			"name": "_await_Distributer_refund",
+			"inputs": [
+				{"name":"value0","type":"bool"}
+			],
+			"outputs": [
+			]
 		}
 	],
 	"data": [
@@ -143,6 +151,7 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_await","type":"optional(cell)"},
 		{"name":"refund_destination","type":"address"},
 		{"name":"addr","type":"address"},
 		{"name":"refund_lock_duration_end","type":"uint256"},

@@ -563,6 +563,77 @@ THROWIFNOT 107
 .loc ../contracts/EverAirdrop.sol, 57
 ACCEPT
 .loc ../contracts/EverAirdrop.sol, 156
+GETGLOB 19
+FIRST
+PUSHCONT {
+	.loc ../contracts/EverAirdrop.sol, 158
+	PUSHINT 0
+	PUSHCONT {
+		DUP
+		GETGLOB 19
+		FIRST
+		LESS
+	}
+	PUSHCONT {
+		.loc ../contracts/EverAirdrop.sol, 160
+		PUSHINT 243740060
+		SETGLOB 8
+		GETGLOB 10
+		OVER
+		GETGLOB 19
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		DUP
+		ROTREV
+		NEWC
+		STSLICECONST x62_
+		STSLICE
+		PUSHINT 2949852426645541256083542794369173188247553
+		STUR 143
+		SWAP
+		PUSHSLICE x62447e2e0e872d9c
+		NEWC
+		STSLICE
+		STSLICE
+		STBREFR
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		CALLREF {
+			CALLREF {
+				CALL $c7_to_c4_for_await$
+			}
+			DEPTH
+			ADDCONST -5; sys vars
+			PUSHINT 5
+			BLKSWX
+			SETGLOB 8
+			SETGLOB 9
+			SETGLOB 5
+			DEPTH
+			ADDCONST -4
+			PICK
+			LDU 32
+			SWAP
+			GETGLOB 8
+			EQUAL
+			THROWIFNOT 75
+			LDI 1
+			ENDS
+		}
+		DROP
+		.loc ../contracts/EverAirdrop.sol, 158
+		INC
+		.loc ../contracts/EverAirdrop.sol, 0
+	}
+	WHILE
+	DROP
+	.loc ../contracts/EverAirdrop.sol, 0
+}
+IF
+.loc ../contracts/EverAirdrop.sol, 164
 GETGLOB 10
 NEWC
 STSLICECONST x42_
@@ -572,49 +643,6 @@ STZEROES
 ENDC
 PUSHPOW2 7
 SENDRAWMSG
-.loc ../contracts/EverAirdrop.sol, 158
-GETGLOB 19
-FIRST
-PUSHCONT {
-	.loc ../contracts/EverAirdrop.sol, 160
-	PUSHINT 0
-	PUSHCONT {
-		DUP
-		GETGLOB 19
-		FIRST
-		LESS
-	}
-	PUSHCONT {
-		.loc ../contracts/EverAirdrop.sol, 162
-		DUP
-		GETGLOB 19
-		SECOND
-		PUSHINT 32
-		DICTUGET
-		THROWIFNOT 50
-		NEWC
-		STSLICECONST x62_
-		STSLICE
-		PUSHINT 2949852426645541256083542794369173188247553
-		STUR 143
-		GETGLOB 10
-		PUSHSLICE x62447e2e287ac4c6
-		NEWC
-		STSLICE
-		STSLICE
-		STBREFR
-		ENDC
-		PUSHINT 0
-		SENDRAWMSG
-		.loc ../contracts/EverAirdrop.sol, 160
-		INC
-		.loc ../contracts/EverAirdrop.sol, 0
-	}
-	WHILE
-	DROP
-	.loc ../contracts/EverAirdrop.sol, 0
-}
-IF
 .loc ../contracts/EverAirdrop.sol, 0
 
 .macro getDeployedContracts
@@ -909,6 +937,8 @@ LDU 256 ; pubkey c4
 LDU 64 ; pubkey timestamp c4
 LDU 1 ; ctor flag
 NIP
+LDI 1 ; await flag
+NIP
 LDMSGADDR
 LDREF
 ENDS
@@ -1073,7 +1103,7 @@ GETGLOB 2
 NEWC
 STU 256
 STU 64
-STONE
+STSLICECONST xa_
 STSLICE
 ROLLREV 16
 NEWC
@@ -1123,6 +1153,111 @@ STBREFR
 ENDC
 POPROOT
 
+.macro c7_to_c4_for_await
+PUSH C7
+FALSE
+PUSHINT 27
+SETINDEXVARQ
+PUSHINT 28
+UNTUPLEVAR
+DROP
+PUSHINT 27
+PUSHINT 0
+REVX
+BLKDROP 10
+GETGLOB 3
+GETGLOB 2
+NEWC
+STU 256
+STU 64
+STSLICECONST xe_
+PUSHINT 18
+ROLLX
+NEWC
+STSLICE
+PUSH c0
+PUSH c3
+PUSHCONT {
+	SETCONT c3
+	SETCONT c0
+	PUSHINT 17
+	ADDCONST 2
+	PUSHINT 1
+	BLKSWX
+	DEPTH
+	ADDCONST -7
+	PUSHINT 17
+	SUB
+	PUSHINT 2
+	PUSHINT 17
+	ADD
+	BLKSWX
+	GETGLOB 5
+	GETGLOB 9
+	GETGLOB 8
+	BLKSWAP 1, 3
+	DEPTH
+	ADDCONST -8
+	PUSHINT 17
+	SUB
+	PUSHINT -1
+	SETCONTVARARGS
+	SWAP
+	STCONT
+	ENDC
+	STREFR
+STSLICE
+ROLLREV 16
+NEWC
+STSLICE
+STU 256
+STI 1
+STU 128
+ROLLREV 12
+NEWC
+STU 128
+STU 256
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STU 256
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+ROLLREV 6
+NEWC
+STREF
+STREF
+STU 256
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STU 256
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STBREFR
+STBREFR
+STBREFR
+	ENDC
+	POPROOT
+	THROW 0
+}
+CALLCC
+
 .macro upd_only_time_in_c4
 PUSHROOT
 CTOS
@@ -1147,7 +1282,13 @@ NEQINT 1
 SETGLOB 6
 PUSH S2
 CTOS
-PLDU 4
+LDU 4 ; bounced tail
+LDMSGADDR ; bounced src tail
+DROP
+CALLREF {
+	CALL $check_resume$
+}
+SETGLOB 9
 MODPOW2 1
 IFRET
 OVER
@@ -1169,6 +1310,39 @@ CALLREF {
 	CALL $public_function_selector$
 }
 THROW 60
+
+.macro check_resume
+PUSHROOT
+CTOS
+PUSHINT 321
+LDSLICEX  ; beg_slice end_slice
+LDI 1
+SWAP
+PUSHCONT {
+	LDREFRTOS   ; beg_slice end_slice ref_slice
+	XCHG S2     ; ref_slice end beg
+	NEWC
+	STSLICE
+	STZERO
+	STSLICE
+	ENDC
+	POPROOT
+	LDMSGADDR
+	ROTREV
+	SDEQ
+	THROWIFNOT 74
+	LDCONT
+	DROP
+	NIP
+	CALLREF {
+		CALL $c4_to_c7$
+	}
+	CALLX
+}
+PUSHCONT {
+	DROP2
+}
+IFELSE
 
 .internal-alias :main_external, -1
 .internal :main_external
