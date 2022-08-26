@@ -73,19 +73,6 @@ export const useAirdropStore = defineStore({
     loopCount: 0,
     currentBatch: 0,
     maxBatches: 0,
-    // everAirDropContract: null,
-    // randomNumber: getRandomNonce(),
-    // randomNumber: 0,
-    airdrop: {
-      name: null,
-      status: 'Preparing',
-      address: null,
-      recipientsNumber: 0,
-      totalTokens: 0,
-      step: 1,
-      createdDate: null,
-      token: {}
-    },
     airdropsList: []
   }),
   getters: {},
@@ -213,7 +200,7 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
-    async distribute(arr) {
+    async distribute(arr, isResumed) {
       const walletStore = useWalletStore();
       try {
         const addresses = arr.map((address) => address.address);
@@ -227,9 +214,15 @@ export const useAirdropStore = defineStore({
 
         const { code } = await ever.splitTvc(distributerTvc);
 
+        let loopStart = isResumed ? this.currentBatch - 1 : 0;
+        console.log('loopStart:', loopStart);
+
         let sendTransaction;
-        for(let i=0; i<this.loopCount; i++) {
-          this.currentBatch++;
+        let firstResumed = isResumed;
+        for(let i=loopStart; i<this.loopCount; i++) {
+          if (!firstResumed) {
+            this.currentBatch++;
+          }
           sendTransaction = await everAirDropContract.methods.distribute({
             _addresses: chunkAddresses[i][1],
             _amounts: chunkAmounts[i][1],
@@ -240,14 +233,10 @@ export const useAirdropStore = defineStore({
             amount: toNano(0.5),
             bounce: true,
           });
-
+          firstResumed = false;
           // const futureEvent = await everAirDropContract.waitForEvent({ filter: event => event.event === "StateChanged" });
           // console.log(futureEvent);
         }
-
-        const transaction = await everAirDropContract.methods.getStatus({}).call();
-        console.log('transaction:', transaction);
-        console.log('transaction.value0:', transaction.value0);
 
         // const sendTransaction = await everAirDropContract.methods.distribute({}).send({
         //   from: walletStore.profile.address,

@@ -325,12 +325,22 @@
       <!-- Step 4 -->
       <template v-if="step === 4">
         <button
-          @click="onResumeAirdrop"
+          v-if="!error"
+          @click="onResumeAirdrop(false)"
           type="button"
           class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
           :class="{ 'is-loading': loading }"
         >
-          {{ !error ? 'Run airdrop' : 'Resume airdrop' }}
+          Run airdrop
+        </button>
+        <button
+          v-else
+          @click="onResumeAirdrop(true)"
+          type="button"
+          class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
+          :class="{ 'is-loading': loading }"
+        >
+          Resume airdrop
         </button>
       </template>
 
@@ -473,7 +483,6 @@ async function onTopUpEver() {
     const data = await airdropStore.getGiverContract();
     transactionId.value.giverContractId = data.id.hash;
     step.value = 2;
-    airdropStore.airdrop.step = step.value;
   } catch (e) {
     console.log('e: ', e);
     errors.value.error = true;
@@ -494,7 +503,6 @@ async function onDeployContract() {
     const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length);
     transactionId.value.deployContractId = data.transaction.id.hash;
     step.value = 3;
-    airdropStore.airdrop.step = step.value;
   } catch (e) {
     errors.value.error = true;
     errors.value.message = e.message;
@@ -510,7 +518,6 @@ async function onTopUpToken() {
     const data = await airdropStore.topUp();
     transactionId.value.amountContractId = data.id.hash;
     step.value = 4;
-    airdropStore.airdrop.step = step.value;
   } catch (e) {
     console.log('onTopUpToken e:', e);
     errors.value.error = true;
@@ -519,13 +526,13 @@ async function onTopUpToken() {
     loading.value = false;
   }
 }
-async function onResumeAirdrop() {
+async function onResumeAirdrop(isResumed) {
   loading.value = true;
 
   try {
     errors.value.error = false;
     error.value = false;
-    const data = await airdropStore.distribute(recipientsList.value);
+    const data = await airdropStore.distribute(recipientsList.value, isResumed);
     transactionId.value.distributeContractId = data.id.hash;
     availableToRedeem();
     redeemPolling.value = setInterval(() => {
@@ -533,8 +540,6 @@ async function onResumeAirdrop() {
       availableToRedeem();
     }, 1000);
     step.value = 5;
-    airdropStore.airdrop.step = step.value;
-
   } catch (e) {
     console.log('onResumeAirdrop e:', e);
     errors.value.error = true;
@@ -554,7 +559,6 @@ async function onRedeemFunds() {
     transactionId.value.redeemContractId = data.id.hash;
     // error.value = true;
     step.value = 6;
-    airdropStore.airdrop.step = step.value;
   } catch (e) {
     console.log('onRedeemFunds e:', e);
     errors.value.error = true;
