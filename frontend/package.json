@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^9.0.0",
+    "axios": "^0.27.2",
     "pinia": "^2.0.16",
     "pinia-plugin-persistedstate": "^1.6.3",
     "vue": "^3.2.37",

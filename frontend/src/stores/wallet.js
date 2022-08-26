@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ProviderRpcClient } from 'everscale-inpage-provider';
 import router from '@/router';
+import { useAirdropStore } from './airdrop';
 
 const ever = new ProviderRpcClient();
 
@@ -49,7 +50,9 @@ export const useWalletStore = defineStore({
         this.profile.loading = true;
         this.profile.address = accountInteraction.address._address;
         await this.getBalance();
-        await this.getTransactions(10, 1);
+        // await this.getTransactions(10, 1);
+        // const airdropStore = useAirdropStore();
+        // await airdropStore.getAirdrops();
 
         return accountInteraction.address;
       } catch (e) {
@@ -65,6 +68,8 @@ export const useWalletStore = defineStore({
         permissions: ['basic', 'accountInteraction'],
       });
       this.resetState();
+      const airdropStore = useAirdropStore();
+      airdropStore.resetState();
 
       return accountInteraction;
     },

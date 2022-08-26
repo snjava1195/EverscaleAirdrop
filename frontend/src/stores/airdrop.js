@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
-import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
+import { ProviderRpcClient, Address, Subscriber } from 'everscale-inpage-provider';
 import airdropAbi from '../../../build/EverAirdrop.abi.json';
 import tvc from '../../../build/EverAirdrop.base64?raw';
 import distributerTvc from '../../../build/Distributer.base64?raw';
 import { toNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
+import axios from 'axios';
+import dayjs from 'dayjs';
 const ever = new ProviderRpcClient();
 // const walletStore = useWalletStore();
 
@@ -73,6 +75,7 @@ export const useAirdropStore = defineStore({
     loopCount: 0,
     currentBatch: 0,
     maxBatches: 0,
+    airdropsLoading: false,
     airdropsList: []
   }),
   getters: {},
@@ -181,7 +184,6 @@ export const useAirdropStore = defineStore({
       try {
         const giverContract = await new ever.Contract(giverAbi, this.address);
 
-        console.log('this.topUpRequiredAmount + 0.5:', toNano(this.topUpRequiredAmount));
         const sendTransaction = await giverContract.methods
           .sendTransaction({
             value: toNano(1),
@@ -268,8 +270,114 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
-    getAirdrops() {
+    resetState() {
+      this.address = null;
+      this.lockDuration = null,
+      this.topUpRequiredAmount = 0;
+      this.loopCount = 0;
+      this.currentBatch = 0;
+      this.maxBatches = 0;
+      this.airdropsLoading = false;
+      this.airdropsList = [];
+    },
+    async getAirdrops() {
+      this.airdropsLoading = true;
+      const walletStore = useWalletStore();
+      const { accounts } = await ever.getAccountsByCodeHash({codeHash:'96bc9c33975d4c7a743030652a8a9a61a17ee5df991bee4c6c7587b5868470ad', limit:10});
+      console.log('getAccountsByCodeHash:', accounts);
       // Treba da se zove neka funkcija koja daje sve airdropove (kontrakte) sa walleta logovanog usera
+      const graphqlQuery = {
+        "operationName": null,
+        "query": `query($a1: String!){
+          blockchain{
+            account(address:$a1){
+              messages(msg_type:[IntOut], last:10){
+                edges{
+                  node{
+                    dst,
+                    created_at_string,
+                  }
+                  cursor
+                }
+                pageInfo{
+                  hasNextPage
+                }
+              }
+            }
+          }
+        }`,
+        // "query": `query{
+        //   counterparties(account:"0:e2332476d7c48622df13732ee89bfe0bd045fb15c4d639768d8fab864adeab09", first: 10) {
+        //       counterparty
+        //   }
+        // }`,
+        "variables": {"a1": walletStore.profile.address}
+      };
+
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      try {
+        const resp = await axios.post('https://devnet.evercloud.dev/graphql', graphqlQuery, headers);
+        console.log(resp.data);
+
+        const subscriber = new Subscriber(ever);
+        console.log(await subscriber.oldTransactions({address: walletStore.profile.address}));
+
+        // const unique = resp.data.data.blockchain.account.messages.edges.filter((value, index, self) =>
+        //   index === self.findIndex((t) => (
+        //     t.node.dst === value.node.dst
+        //   ))
+        // )
+        // console.log('unique:', unique);
+
+        // for (let i=0; i<unique.length; i++) {
+        //   console.log(unique[i].node.dst);
+        //   const contractAddress = unique[i].node.dst;
+        //   const everAirdropContract = await new ever.Contract(airdropAbi, new Address(contractAddress));
+        //   console.log('contract:', everAirdropContract);
+        //   const resp = await everAirdropContract.methods.getContractNotes({}).call();
+        //   const airdrop = {
+        //     name: resp.value0,
+        //     status: 'Pending',
+        //     amount: 100,
+        //     recipientsNumber: 100,
+        //     createdAt: dayjs(unique[i].node.created_at_string).format('DD MMM YYYY')
+        //   };
+        //   this.airdropsList.push(airdrop);
+        // };
+        for (let i=0; i<accounts.length; i++) {
+          const everAirdropContract = new ever.Contract(airdropAbi, accounts[i]);
+          const resp = await everAirdropContract.methods.getContractNotes({}).call();
+          const airdrop = {
+            name: resp.value0,
+            status: 'Pending',
+            amount: 100,
+            recipientsNumber: 100,
+            createdAt: dayjs.unix(Date.now()).format('DD MMM YYYY')
+          };
+          this.airdropsList.push(airdrop);
+
+        };
+        this.airdropsLoading = false;
+        return Promise.resolve();
+      } catch(error) {
+        console.log('getAirdrops e:', error);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          this.airdropsLoading = false;
+          return Promise.reject(error.response.data);
+        }
+        this.airdropsLoading = false;
+        return Promise.reject(error)
+      } finally {
+        this.airdropsLoading = false;
+      };
     }
   },
 });
