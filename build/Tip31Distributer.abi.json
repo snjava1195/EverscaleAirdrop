@@ -1,0 +1,38 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"tokenRootAddr","type":"address"},
+				{"name":"recipients","type":"address[]"},
+				{"name":"amounts","type":"uint128[]"},
+				{"name":"remainingGasTo","type":"address"},
+				{"name":"_empty","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveTokenWalletAddress",
+			"inputs": [
+				{"name":"wallet","type":"address"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_tokenRootAddr","type":"address"},
+		{"name":"walletAddress","type":"address"}
+	]
+}

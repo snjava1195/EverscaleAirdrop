@@ -1,4 +1,4 @@
-.version sol 0.62.0
+.version sol 0.63.0
 
 .macro constructor
 DROP
@@ -21,25 +21,15 @@ LDREF
 ENDS
 CTOS
 LDMSGADDR
-LDU 32
-LDDICT
-ROTREV
-PAIR
-SWAP
-LDU 32
-LDDICT
-ROTREV
-PAIR
-SWAP
 ENDS
 .loc ../contracts/Tip31Airdrop.sol, 34
-PUSH S3
+OVER
 PARSEMSGADDR
 INDEX 3
 PLDU 256
 THROWIFNOT 1001
 .loc ../contracts/Tip31Airdrop.sol, 35
-PUSH S2
+DUP
 PARSEMSGADDR
 INDEX 3
 PLDU 256
@@ -47,16 +37,10 @@ THROWIFNOT 1001
 .loc ../contracts/Tip31Airdrop.sol, 36
 ACCEPT
 .loc ../contracts/Tip31Airdrop.sol, 38
-ROLL 3
+SWAP
 SETGLOB 12
 .loc ../contracts/Tip31Airdrop.sol, 39
-ROT
 SETGLOB 13
-.loc ../contracts/Tip31Airdrop.sol, 40
-SWAP
-SETGLOB 14
-.loc ../contracts/Tip31Airdrop.sol, 41
-SETGLOB 15
 .loc ../contracts/Tip31Airdrop.sol, 43
 GETGLOB 12
 CALLREF {
@@ -121,7 +105,6 @@ ENDS
 CALLREF {
 	CALL $receiveTokenWalletAddress_9b3a57ad_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -206,19 +189,33 @@ IFREF {
 	CALL $c4_to_c7$
 }
 .loc ../contracts/Tip31Airdrop.sol, 79
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
 .loc ../contracts/Tip31Airdrop.sol, 0
 CALLREF {
-	CALL $multiTransfer_1c14edea_internal_macro$
+	CALL $multiTransfer_3c9fa8be_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
 THROW 0
 
-.macro multiTransfer_1c14edea_internal_macro
+.macro multiTransfer_3c9fa8be_internal_macro
 .loc ../contracts/Tip31Airdrop.sol, 80
+SWAP
+SETGLOB 14
+.loc ../contracts/Tip31Airdrop.sol, 81
+SETGLOB 15
+.loc ../contracts/Tip31Airdrop.sol, 82
 PUSHREF {
 	.blob x57616c6c65742061646472657373206572726f7221
 }
@@ -228,7 +225,7 @@ INDEX 3
 PLDU 256
 NEQINT 0
 THROWARGIFNOT 1001
-.loc ../contracts/Tip31Airdrop.sol, 81
+.loc ../contracts/Tip31Airdrop.sol, 83
 PUSHREF {
 	.blob x546865206e756d626572206f6620726563697069656e7473206572726f7221
 }
@@ -241,7 +238,7 @@ GETGLOB 16
 LEQ
 AND
 THROWARGIFNOT 1002
-.loc ../contracts/Tip31Airdrop.sol, 82
+.loc ../contracts/Tip31Airdrop.sol, 84
 PUSHREF {
 	.blob x546865206e756d626572206f6620726563697069656e7473206d75737420657175616c20746f20746865206e756d626572206f6620616d6f756e747321
 }
@@ -251,14 +248,14 @@ GETGLOB 15
 FIRST
 EQUAL
 THROWARGIFNOT 1003
-.loc ../contracts/Tip31Airdrop.sol, 83
+.loc ../contracts/Tip31Airdrop.sol, 85
 ACCEPT
-.loc ../contracts/Tip31Airdrop.sol, 88
+.loc ../contracts/Tip31Airdrop.sol, 90
 GETGLOB 15
 CALLREF {
 	CALL $expectTotalAmount_eda240be_internal_macro$
 }
-.loc ../contracts/Tip31Airdrop.sol, 91
+.loc ../contracts/Tip31Airdrop.sol, 93
 DROP
 GETGLOB 14
 GETGLOB 15
@@ -273,10 +270,10 @@ CALLREF {
 CALL $startTransfer_8bfcba8b_internal_macro$
 
 .macro startTransfer_8bfcba8b_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 95
+.loc ../contracts/Tip31Airdrop.sol, 97
 PUSHREF {
 }
-.loc ../contracts/Tip31Airdrop.sol, 96
+.loc ../contracts/Tip31Airdrop.sol, 98
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S4
@@ -284,20 +281,20 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/Tip31Airdrop.sol, 97
+	.loc ../contracts/Tip31Airdrop.sol, 99
 	PUSH2 S0, S4
 	SECOND
 	PUSHINT 32
 	DICTUGET
 	THROWIFNOT 50
-	.loc ../contracts/Tip31Airdrop.sol, 98
+	.loc ../contracts/Tip31Airdrop.sol, 100
 	PUSH2 S1, S4
 	SECOND
 	PUSHINT 32
 	DICTUGET
 	THROWIFNOT 50
 	PLDU 128
-	.loc ../contracts/Tip31Airdrop.sol, 99
+	.loc ../contracts/Tip31Airdrop.sol, 101
 	PUSH S3
 	FALSE
 	PUSH S6
@@ -328,7 +325,7 @@ PUSHCONT {
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
-	.loc ../contracts/Tip31Airdrop.sol, 96
+	.loc ../contracts/Tip31Airdrop.sol, 98
 	INC
 	UFITS 128
 	.loc ../contracts/Tip31Airdrop.sol, 0
@@ -346,7 +343,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Airdrop.sol, 103
+.loc ../contracts/Tip31Airdrop.sol, 105
 LDU 32
 LDDICT
 ROTREV
@@ -379,7 +376,6 @@ PUSHCONT {
 	DROP
 }
 IFELSE
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -390,7 +386,7 @@ THROW 0
 CALL $expectTotalAmount_eda240be_internal_macro$
 
 .macro expectTotalAmount_eda240be_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 104
+.loc ../contracts/Tip31Airdrop.sol, 106
 PUSHREF {
 	.blob x546865206e756d626572206f6620616d6f756e7473206572726f7221
 }
@@ -403,17 +399,17 @@ GETGLOB 16
 LEQ
 AND
 THROWARGIFNOT 1002
-.loc ../contracts/Tip31Airdrop.sol, 105
+.loc ../contracts/Tip31Airdrop.sol, 107
 PUSHINT 0
 DUP
-.loc ../contracts/Tip31Airdrop.sol, 106
+.loc ../contracts/Tip31Airdrop.sol, 108
 PUSHCONT {
 	PUSH2 S0, S2
 	FIRST
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/Tip31Airdrop.sol, 107
+	.loc ../contracts/Tip31Airdrop.sol, 109
 	PUSH2 S0, S2
 	SECOND
 	PUSHINT 32
@@ -424,14 +420,14 @@ PUSHCONT {
 	ADD
 	UFITS 128
 	POP S2
-	.loc ../contracts/Tip31Airdrop.sol, 106
+	.loc ../contracts/Tip31Airdrop.sol, 108
 	INC
 	UFITS 128
 	.loc ../contracts/Tip31Airdrop.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/Tip31Airdrop.sol, 110
+.loc ../contracts/Tip31Airdrop.sol, 112
 NIP
 .loc ../contracts/Tip31Airdrop.sol, 0
 
@@ -444,7 +440,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Airdrop.sol, 113
+.loc ../contracts/Tip31Airdrop.sol, 115
 ENDS
 .loc ../contracts/Tip31Airdrop.sol, 0
 CALLREF {
@@ -460,9 +456,9 @@ THROW 0
 CALL $refund_590e1ae3_internal_macro$
 
 .macro refund_590e1ae3_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 114
+.loc ../contracts/Tip31Airdrop.sol, 116
 ACCEPT
-.loc ../contracts/Tip31Airdrop.sol, 115
+.loc ../contracts/Tip31Airdrop.sol, 117
 GETGLOB 12
 NEWC
 STSLICECONST x42_
@@ -525,7 +521,6 @@ ENDS
 CALLREF {
 	CALL $transferOwnership_f2fde38b_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -565,7 +560,6 @@ ENDS
 CALLREF {
 	CALL $renounceOwnership_715018a6_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -929,16 +923,16 @@ IFJMPREF {
 		CALL $transferOwnership$
 	}
 	DUP
-	PUSHINT 241709755
-	EQUAL
-	IFJMPREF {
-		CALL $constructor$
-	}
-	DUP
 	PUSHINT 966922996
 	EQUAL
 	IFJMPREF {
 		CALL $refund$
+	}
+	DUP
+	PUSHINT 967336398
+	EQUAL
+	IFJMPREF {
+		CALL $multiTransfer$
 	}
 	DUP
 	PUSHINT 995308319
@@ -958,16 +952,16 @@ IFJMPREF {
 		CALL $getDetails$
 	}
 	DUP
+	PUSHINT 1241152735
+	EQUAL
+	IFJMPREF {
+		CALL $constructor$
+	}
+	DUP
 	PUSHINT 1251386125
 	EQUAL
 	IFJMPREF {
 		CALL $expectTotalAmount$
-	}
-	DUP
-	PUSHINT 1338647832
-	EQUAL
-	IFJMPREF {
-		CALL $multiTransfer$
 	}
 	DUP
 	PUSHINT 1354746527

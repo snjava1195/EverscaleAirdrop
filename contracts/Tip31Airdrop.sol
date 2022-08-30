@@ -28,8 +28,8 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     uint128 private transactionFee = 0.015 ever;
     uint total_amount = 0;
 
-    constructor(address senderAddr, address tokenRootAddr,
-    address[] recipients, uint128[] amounts) public 
+    constructor(address senderAddr, address tokenRootAddr
+    /*address[] recipients, uint128[] amounts*/) public 
     {
         require(senderAddr.value != 0, 1001);
         require(tokenRootAddr.value != 0, 1001);
@@ -37,8 +37,8 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 
         _senderAddr = senderAddr;
         _tokenRootAddr = tokenRootAddr;
-        _recipients = recipients;
-        _amounts = amounts;
+       // _recipients = recipients;
+       // _amounts = amounts;
 
         setOwnership(_senderAddr);
         setUpTokenWallet();
@@ -76,7 +76,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         );
     }
 
-    function multiTransfer() external {
+    function multiTransfer(address[] recipients, uint128[] amounts) external {
+    	_recipients = recipients;
+    	_amounts = amounts;
         require(walletAddress.value != 0, 1001, "Wallet address error!");
         require(_recipients.length > 0 && _recipients.length <= transferNumber, 1002, "The number of recipients error!");
         require(_recipients.length == _amounts.length, 1003, "The number of recipients must equal to the number of amounts!");

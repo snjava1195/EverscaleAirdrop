@@ -1,0 +1,363 @@
+.version sol 0.63.0
+
+.macro constructor
+DROP
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7_with_init_storage$
+}
+GETGLOB 6
+THROWIF 51
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+LDREF
+ENDS
+.loc ../contracts/Tip31Distributer.sol, 16
+DROP2
+PUSHREF {
+	.blob x546865206e756d626572206f6620090909726563697069656e7473206572726f7221
+}
+PUSH S2
+FIRST
+GTINT 0
+PUSH S3
+FIRST
+LESSINT 101
+AND
+THROWARGIFNOT 1002
+.loc ../contracts/Tip31Distributer.sol, 17
+PUSHREF {
+	.blob x546865206e756d626572206f6620726563697069656e7473206d75737420090909657175616c20746f20746865206e756d626572206f6620616d6f756e747321
+}
+PUSH S2
+FIRST
+PUSH S2
+FIRST
+EQUAL
+THROWARGIFNOT 1003
+.loc ../contracts/Tip31Distributer.sol, 18
+ACCEPT
+.loc ../contracts/Tip31Distributer.sol, 19
+ROT
+SETGLOB 10
+.loc ../contracts/Tip31Distributer.sol, 20
+CALLREF {
+	CALL $setUpTokenWallet_aa46637f_internal_macro$
+}
+.loc ../contracts/Tip31Distributer.sol, 21
+PUSHREF {
+	.blob x57616c6c65742061646472657373206572726f7221
+}
+GETGLOB 11
+PARSEMSGADDR
+INDEX 3
+PLDU 256
+NEQINT 0
+THROWARGIFNOT 1001
+.loc ../contracts/Tip31Distributer.sol, 23
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S2
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/Tip31Distributer.sol, 24
+	PUSH2 S0, S2
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	.loc ../contracts/Tip31Distributer.sol, 25
+	DROP
+	PUSH2 S0, S1
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	DROP
+	.loc ../contracts/Tip31Distributer.sol, 23
+	INC
+	UFITS 128
+	.loc ../contracts/Tip31Distributer.sol, 0
+}
+WHILE
+BLKDROP 3
+.loc ../contracts/Tip31Distributer.sol, 0
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	setUpTokenWallet_aa46637f_internal
+.type	setUpTokenWallet_aa46637f_internal, @function
+CALL $setUpTokenWallet_aa46637f_internal_macro$
+
+.macro setUpTokenWallet_aa46637f_internal_macro
+.loc ../contracts/Tip31Distributer.sol, 33
+PUSHINT 500000000
+MYADDR
+GETGLOB 10
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 2949852426645541256083542794369173188247553
+STUR 143
+ROTREV
+PUSHSLICE x31edd4c750bfca9f
+NEWC
+STSLICE
+STSLICE
+STU 128
+STBREFR
+ENDC
+PUSHINT 0
+SENDRAWMSG
+.loc ../contracts/Tip31Distributer.sol, 0
+
+.macro receiveTokenWalletAddress
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/Tip31Distributer.sol, 42
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+ENDS
+.loc ../contracts/Tip31Distributer.sol, 0
+CALLREF {
+	CALL $receiveTokenWalletAddress_9b3a57ad_internal_macro$
+}
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro receiveTokenWalletAddress_9b3a57ad_internal_macro
+.loc ../contracts/Tip31Distributer.sol, 43
+PUSHINT 30004
+GETGLOB 9
+GETGLOB 10
+SDEQ
+THROWANYIFNOT
+.loc ../contracts/Tip31Distributer.sol, 44
+SETGLOB 11
+.loc ../contracts/Tip31Distributer.sol, 0
+
+.macro c4_to_c7
+PUSHROOT
+CTOS
+LDU 256 ; pubkey c4
+LDU 64 ; pubkey timestamp c4
+LDU 1 ; ctor flag
+NIP
+LDMSGADDR
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+ENDS
+SETGLOB 11
+SETGLOB 10
+SETGLOB 3
+SETGLOB 2
+
+.macro c4_to_c7_with_init_storage
+PUSHROOT
+CTOS
+SBITS
+GTINT 1
+PUSHCONT {
+	PUSHINT 0
+	PUSHROOT
+	CTOS
+	PLDDICT ; D
+	PUSHREFSLICE {
+		.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+	}
+	DUP
+	SETGLOB 11
+	SETGLOB 10
+	PUSHINT 64
+	DICTUGET
+	THROWIFNOT 61
+	PLDU 256
+	SETGLOB 2
+	PUSHINT 0 ; timestamp
+	SETGLOB 3
+}
+IFREFELSE {
+	CALL $c4_to_c7$
+}
+
+.macro c7_to_c4
+GETGLOB 10
+GETGLOB 3
+GETGLOB 2
+NEWC
+STU 256
+STU 64
+STONE
+STSLICE
+GETGLOB 11
+NEWC
+STSLICE
+STBREFR
+ENDC
+POPROOT
+
+.macro upd_only_time_in_c4
+PUSHROOT
+CTOS
+LDU 256
+LDU 64
+NIP
+GETGLOB 3
+ROT
+NEWC
+STU 256
+STU 64
+STSLICE
+ENDC
+POPROOT
+
+.internal-alias :main_internal, 0
+.internal :main_internal
+PUSHROOT
+CTOS
+SBITS
+NEQINT 1
+SETGLOB 6
+PUSH S2
+CTOS
+LDU 4 ; bounced tail
+LDMSGADDR ; bounced src tail
+DROP
+SETGLOB 9
+MODPOW2 1
+IFRET
+OVER
+SEMPTY ; isEmpty
+IFJMPREF {
+	GETGLOB 6
+	THROWIFNOT 76
+}
+OVER
+LDUQ 32  ; [funcId] body' ok
+THROWIFNOT 60
+OVER
+IFNOTJMPREF {
+	GETGLOB 6
+	THROWIFNOT 76
+}
+SWAP
+CALLREF {
+	CALL $public_function_selector$
+}
+THROW 60
+
+.internal-alias :main_external, -1
+.internal :main_external
+PUSHROOT
+CTOS
+SBITS
+NEQINT 1
+SETGLOB 6
+PUSHREFSLICE {
+	.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+}
+SETGLOB 9
+OVER
+CALLREF {
+	CALL $c4_to_c7_with_init_storage$
+}
+LDU 1 ; haveSign msgSlice
+SWAP
+PUSHCONT {
+	PUSHPOW2 9
+	LDSLICEX ; signatureSlice msgSlice
+	DUP
+	HASHSU ; signatureSlice msgSlice hashMsgSlice
+	SWAP
+	LDU 1 ; signatureSlice hashMsgSlice hasPubkey msgSlice
+	SWAP
+	PUSHCONT {
+		LDU 256 ; signatureSlice hashMsgSlice pubkey msgSlice
+		XCHG S3
+		SWAP
+	}
+	PUSHCONT {
+		XCHG S2
+		GETGLOB 2
+	}
+	IFELSE
+	CHKSIGNU ; msgSlice isSigned
+	THROWIFNOT 40
+}
+PUSHCONT {
+	LDU 1 ; hasPubkey msgSlice
+	SWAP
+	THROWIF 58
+}
+IFELSE
+LDU 64 ; timestamp msgSlice
+SWAP
+CALL $replay_protection_macro$
+LDU 32 ; expireAt msgSlice
+SWAP
+NOW ; msgSlice expireAt now
+GREATER ; msgSlice expireAt>now
+THROWIFNOT 57
+LDU 32 ; funcId body
+SWAP
+CALLREF {
+	CALL $public_function_selector$
+}
+THROW 60
+
+.macro public_function_selector
+DUP
+PUSHINT 163761079
+EQUAL
+IFJMPREF {
+	CALL $constructor$
+}
+DUP
+PUSHINT 1354746527
+EQUAL
+IFJMPREF {
+	CALL $receiveTokenWalletAddress$
+}
+
