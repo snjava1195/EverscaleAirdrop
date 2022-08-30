@@ -92,13 +92,14 @@ console.log(chunkAmounts);
 
       console.log("Distribute tokens:");
       
-      await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10000));
+      await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(2500));
         await locklift.giver.sendTo(owner.address, locklift.utils.toNano(10000));
-      
-        
+     
+         
  	for(let i=0; i<8; i++)
  	{
  
+
       const result = await owner.runTarget({
       	contract: airdrop,
     		value: locklift.utils.toNano(3),
@@ -108,51 +109,62 @@ console.log(chunkAmounts);
     		airdrop =>
     			airdrop.methods.distribute({_addresses: chunkAddresses[2][1], _amounts: chunkAmounts[2][1], _wid: 0,_totalAmount:locklift.utils.toNano(1000)}),
     		);  
-            const distributedContracts = await airdrop.methods.getDistributorAddress({_nonce: nonce++}).call();
-            console.log(distributedContracts);
+         //   const distributedContracts = await airdrop.methods.getDistributorAddress({_nonce: nonce++}).call();
+          
+        //   console.log(distributedContracts);
+        
     //	console.log(result);
     //	console.log(result.transaction.outMessages);
     	}
     	
-    	/* const result2 = await owner.runTarget({
-      	contract: airdrop,
-    		value: locklift.utils.toNano(2.2),
-    		publicKey: signer.publicKey,
-    		},
-    		airdrop =>
-    			airdrop.methods.sendOverload({_addresses: addresses, _amounts: amounts }),
-    		);
-    		
-    	console.log(result2);*/
+    	const result2 = await owner.runTarget({
+            contract: airdrop,
+              value: locklift.utils.toNano(2),
+              publicKey: signer.publicKey,
+              },
+              airdrop =>
+                  airdrop.methods.distributerBalance({}),
+              );
+              
+          console.log(result2);
     	
-    		/*
-    		 const result2 = await owner.runTarget({
+    		
+    		 const result3 = await owner.runTarget({
       	contract: airdrop,
     		value: locklift.utils.toNano(2.2),
     		publicKey: signer.publicKey,
     		},
     		airdrop =>
-    			airdrop.methods.sendOverload({  
+    			airdrop.methods.getTestFunc({  
     				}),
     		);
   
-      console.log(result);
+      console.log(result3);
      // console.log(result2);*/
-    //  const numberOfDeployed = await airdrop.methods.getDeployedContracts({}).call();
-    //  console.log(numberOfDeployed);
+      const getTestCallBackArr = await airdrop.methods.getTestCallBackArr({}).call();
+     console.log(getTestCallBackArr);
      
     //  const getAddress = await airdrop.methods.getAddr({}).call();
      // const amount = await airdrop.methods.getAmount({}).call();
    //   console.log(getAddress);
-    //  const getTHes = await airdrop.methods.getStateInit({}).call();
-     // console.log(getTHes);
+
+     //const getNonce = await airdrop.methods.getNonce({}).call();
+   //   console.log(getNonce);
      // const refundLock = await airdrop.methods.getRefundLockDuration({}).call();
      // console.log(refundLock);
+
+
+     
       
     
-	
-	//const distributed = await airdrop.methods.getDeployedContracts({}).call();
-    //  console.log(distributed);
+	   //const distributorBalance1 = await airdrop.methods.distributerBalance({}).sendExternal({publicKey: signer.publicKey});
+     //console.log(distributorBalance1);
+
+      const getDistributorBalanceArr = await airdrop.methods.getDistributorBalanceArr({}).call();
+      console.log(getDistributorBalanceArr);
+
+	const getEverdropBalance = await airdrop.methods.getEverdropBalance({}).call();
+     console.log(getEverdropBalance);
 }
 
 main()

@@ -36,6 +36,29 @@
 			]
 		},
 		{
+			"name": "getTestFunc",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "testCallBack",
+			"inputs": [
+				{"name":"_input","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getTestCallBackArr",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"string[]"}
+			]
+		},
+		{
 			"name": "getAddr",
 			"inputs": [
 			],
@@ -44,11 +67,11 @@
 			]
 		},
 		{
-			"name": "getStateInit",
+			"name": "getEverdropBalance",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"value0","type":"cell"}
+				{"name":"value0","type":"uint256"}
 			]
 		},
 		{
@@ -58,6 +81,29 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "distributerBalance",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDistributorBalance",
+			"inputs": [
+				{"name":"_value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDistributorBalanceArr",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256[]"}
 			]
 		},
 		{
@@ -166,6 +212,14 @@
 			]
 		},
 		{
+			"name": "valueArr",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"valueArr","type":"uint256[]"}
+			]
+		},
+		{
 			"name": "distributedAddressArr",
 			"inputs": [
 			],
@@ -209,6 +263,8 @@
 		{"name":"contract_notes","type":"string"},
 		{"name":"refunded","type":"bool[]"},
 		{"name":"refundCounter","type":"uint256"},
+		{"name":"testArr","type":"string[]"},
+		{"name":"valueArr","type":"uint256[]"},
 		{"name":"distributedAddressArr","type":"address[]"},
 		{"components":[{"name":"distributed","type":"bool"},{"name":"contractAddress","type":"address"}],"name":"distributed_status","type":"tuple[]"}
 	]

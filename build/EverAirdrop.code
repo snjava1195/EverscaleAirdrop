@@ -23,7 +23,7 @@ IFELSE
 LDMSGADDR
 LDU 256
 ENDS
-.loc ../contracts/EverAirdrop.sol, 72
+.loc ../contracts/EverAirdrop.sol, 73
 GETGLOB 5
 DUP
 ISNULL
@@ -35,7 +35,7 @@ IF
 GETGLOB 2
 EQUAL
 THROWIFNOT 106
-.loc ../contracts/EverAirdrop.sol, 73
+.loc ../contracts/EverAirdrop.sol, 74
 DUP
 PUSHINT 604800
 LEQ
@@ -43,15 +43,15 @@ OVER
 GTINT 119
 AND
 THROWIFNOT 103
-.loc ../contracts/EverAirdrop.sol, 74
-ACCEPT
 .loc ../contracts/EverAirdrop.sol, 75
+ACCEPT
+.loc ../contracts/EverAirdrop.sol, 76
 ROT
 SETGLOB 23
-.loc ../contracts/EverAirdrop.sol, 76
+.loc ../contracts/EverAirdrop.sol, 77
 SWAP
 SETGLOB 10
-.loc ../contracts/EverAirdrop.sol, 77
+.loc ../contracts/EverAirdrop.sol, 78
 NOW
 ADD
 SETGLOB 12
@@ -70,7 +70,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 85
+.loc ../contracts/EverAirdrop.sol, 88
 LDU 32
 LDDICT
 ROTREV
@@ -99,14 +99,14 @@ THROW 0
 CALL $distribute_6605b07a_internal_macro$
 
 .macro distribute_6605b07a_internal_macro
-.loc ../contracts/EverAirdrop.sol, 87
+.loc ../contracts/EverAirdrop.sol, 90
 PUSH S2
 FIRST
 PUSH S4
 FIRST
 EQUAL
 THROWIFNOT 101
-.loc ../contracts/EverAirdrop.sol, 88
+.loc ../contracts/EverAirdrop.sol, 91
 PUSH S3
 FIRST
 GTINT 0
@@ -115,20 +115,20 @@ FIRST
 LESSINT 100
 AND
 THROWIFNOT 102
-.loc ../contracts/EverAirdrop.sol, 89
+.loc ../contracts/EverAirdrop.sol, 93
 ACCEPT
-.loc ../contracts/EverAirdrop.sol, 92
+.loc ../contracts/EverAirdrop.sol, 96
 DUP
 GETGLOB 15
 ADD
 UFITS 128
-.loc ../contracts/EverAirdrop.sol, 94
+.loc ../contracts/EverAirdrop.sol, 99
 SWAP
 CALLREF {
 	CALL $deployWithMsgBody_d4476aa3_internal_macro$
 }
-.loc ../contracts/EverAirdrop.sol, 95
-XCPU S2, S2
+.loc ../contracts/EverAirdrop.sol, 100
+XCHG S1, S2
 NEWC
 STSLICECONST x62_
 STSLICE
@@ -147,16 +147,6 @@ STDICT
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/EverAirdrop.sol, 96
-GETGLOB 21
-UNPAIR
-OVER
-INC
-ROLLREV 3
-PUSHINT 32
-DICTUSET
-PAIR
-SETGLOB 21
 .loc ../contracts/EverAirdrop.sol, 0
 
 .macro deployWithMsgBody
@@ -168,7 +158,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 101
+.loc ../contracts/EverAirdrop.sol, 108
 LDI 8
 LDU 128
 LDU 128
@@ -214,11 +204,11 @@ THROW 0
 CALL $deployWithMsgBody_d4476aa3_internal_macro$
 
 .macro deployWithMsgBody_d4476aa3_internal_macro
-.loc ../contracts/EverAirdrop.sol, 103
+.loc ../contracts/EverAirdrop.sol, 110
 PUSHREF {
 	.blob x68b55f3f
 }
-.loc ../contracts/EverAirdrop.sol, 104
+.loc ../contracts/EverAirdrop.sol, 111
 PUSHINT 0
 NEWC
 STU 256
@@ -229,19 +219,19 @@ DICTUSETB
 GETGLOB 19
 NEWC
 STU 256
-PUSHINT 3
+PUSHINT 1
 ROT
 PUSHINT 64
 DICTUSETB
 MYADDR
-PUSHINT 1
+PUSHINT 2
 ROT
 PUSHINT 64
 DICTUSET
 ROT
 NEWC
 STU 128
-PUSHINT 2
+PUSHINT 3
 ROT
 PUSHINT 64
 DICTUSETB
@@ -257,7 +247,7 @@ STZERO
 ENDC
 DUP
 SETGLOB 22
-.loc ../contracts/EverAirdrop.sol, 109
+.loc ../contracts/EverAirdrop.sol, 117
 HASHCU
 ROLL 3
 NEWC
@@ -267,7 +257,7 @@ STU 256
 ENDC
 CTOS
 SETGLOB 11
-.loc ../contracts/EverAirdrop.sol, 110
+.loc ../contracts/EverAirdrop.sol, 118
 SWAP
 GETGLOB 11
 NEWC
@@ -307,7 +297,7 @@ STREF
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/EverAirdrop.sol, 111
+.loc ../contracts/EverAirdrop.sol, 120
 GETGLOB 11
 GETGLOB 20
 UNPAIR
@@ -318,12 +308,178 @@ PUSHINT 32
 DICTUSET
 PAIR
 SETGLOB 20
-.loc ../contracts/EverAirdrop.sol, 116
+.loc ../contracts/EverAirdrop.sol, 122
+GETGLOB 11
+GETGLOB 21
+UNPAIR
+OVER
+INC
+ROLLREV 3
+PUSHINT 32
+DICTUSET
+PAIR
+SETGLOB 21
+.loc ../contracts/EverAirdrop.sol, 123
 GETGLOB 19
 INC
 SETGLOB 19
-.loc ../contracts/EverAirdrop.sol, 117
+.loc ../contracts/EverAirdrop.sol, 124
 GETGLOB 11
+.loc ../contracts/EverAirdrop.sol, 0
+
+.macro getTestFunc
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/EverAirdrop.sol, 127
+ENDS
+.loc ../contracts/EverAirdrop.sol, 0
+CALLREF {
+	CALL $getTestFunc_8fe1c6eb_internal_macro$
+}
+IFREF {
+	CALL $upd_only_time_in_c4$
+}
+THROW 0
+
+.globl	getTestFunc_8fe1c6eb_internal
+.type	getTestFunc_8fe1c6eb_internal, @function
+CALL $getTestFunc_8fe1c6eb_internal_macro$
+
+.macro getTestFunc_8fe1c6eb_internal_macro
+.loc ../contracts/EverAirdrop.sol, 128
+PUSHINT 0
+PUSHCONT {
+	DUP
+	GETGLOB 20
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/EverAirdrop.sol, 129
+	DUP
+	GETGLOB 20
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	FALSE
+	NEWC
+	STSLICECONST x6_
+	STI 1
+	STSLICECONST x1_
+	STSLICE
+	PUSHINT 54415172769541377993823933492320150904965850730831943988300122
+	STUR 207
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	.loc ../contracts/EverAirdrop.sol, 128
+	INC
+	.loc ../contracts/EverAirdrop.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/EverAirdrop.sol, 0
+
+.macro testCallBack
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/EverAirdrop.sol, 133
+LDREF
+ENDS
+.loc ../contracts/EverAirdrop.sol, 0
+CALLREF {
+	CALL $testCallBack_a8f48020_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	testCallBack_a8f48020_internal
+.type	testCallBack_a8f48020_internal, @function
+CALL $testCallBack_a8f48020_internal_macro$
+
+.macro testCallBack_a8f48020_internal_macro
+.loc ../contracts/EverAirdrop.sol, 134
+GETGLOB 26
+UNPAIR
+OVER
+INC
+ROLLREV 3
+PUSHINT 32
+DICTUSETREF
+PAIR
+SETGLOB 26
+.loc ../contracts/EverAirdrop.sol, 0
+
+.macro getTestCallBackArr
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/EverAirdrop.sol, 137
+ENDS
+.loc ../contracts/EverAirdrop.sol, 0
+CALLREF {
+	CALL $getTestCallBackArr_18ea3713_internal_macro$
+}
+OVER
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 4145459986
+	STUR 130
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	DROP
+}
+IFELSE
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	getTestCallBackArr_18ea3713_internal
+.type	getTestCallBackArr_18ea3713_internal, @function
+CALL $getTestCallBackArr_18ea3713_internal_macro$
+
+.macro getTestCallBackArr_18ea3713_internal_macro
+.loc ../contracts/EverAirdrop.sol, 138
+GETGLOB 26
 .loc ../contracts/EverAirdrop.sol, 0
 
 .macro getAddr
@@ -335,7 +491,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 120
+.loc ../contracts/EverAirdrop.sol, 141
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
 CALLREF {
@@ -377,11 +533,11 @@ THROW 0
 CALL $getAddr_a74c2bb6_internal_macro$
 
 .macro getAddr_a74c2bb6_internal_macro
-.loc ../contracts/EverAirdrop.sol, 121
+.loc ../contracts/EverAirdrop.sol, 142
 GETGLOB 11
 .loc ../contracts/EverAirdrop.sol, 0
 
-.macro getStateInit
+.macro getEverdropBalance
 DROP
 GETGLOB 6
 THROWIFNOT 76
@@ -390,11 +546,11 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 124
+.loc ../contracts/EverAirdrop.sol, 147
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
 CALLREF {
-	CALL $getStateInit_ccf9940a_internal_macro$
+	CALL $getEverdropBalance_e6bb2f16_internal_macro$
 }
 OVER
 PUSHCONT {
@@ -407,9 +563,9 @@ PUSHCONT {
 	NEWC
 	STSLICECONST xc
 	STSLICE
-	PUSHINT 2538085196
+	PUSHINT 3583459335
 	STUR 130
-	STREF
+	STU 256
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -423,13 +579,14 @@ IFREF {
 }
 THROW 0
 
-.globl	getStateInit_ccf9940a_internal
-.type	getStateInit_ccf9940a_internal, @function
-CALL $getStateInit_ccf9940a_internal_macro$
+.globl	getEverdropBalance_e6bb2f16_internal
+.type	getEverdropBalance_e6bb2f16_internal, @function
+CALL $getEverdropBalance_e6bb2f16_internal_macro$
 
-.macro getStateInit_ccf9940a_internal_macro
-.loc ../contracts/EverAirdrop.sol, 125
-GETGLOB 22
+.macro getEverdropBalance_e6bb2f16_internal_macro
+.loc ../contracts/EverAirdrop.sol, 148
+GETPARAM 7
+FIRST
 .loc ../contracts/EverAirdrop.sol, 0
 
 .macro getDistributorAddress
@@ -441,7 +598,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 128
+.loc ../contracts/EverAirdrop.sol, 153
 LDU 256
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
@@ -484,12 +641,171 @@ THROW 0
 CALL $getDistributorAddress_d3f60d4e_internal_macro$
 
 .macro getDistributorAddress_d3f60d4e_internal_macro
-.loc ../contracts/EverAirdrop.sol, 129
+.loc ../contracts/EverAirdrop.sol, 154
 GETGLOB 21
 SECOND
 PUSHINT 32
 DICTUGET
 THROWIFNOT 50
+.loc ../contracts/EverAirdrop.sol, 0
+
+.macro distributerBalance
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/EverAirdrop.sol, 157
+ENDS
+.loc ../contracts/EverAirdrop.sol, 0
+CALLREF {
+	CALL $distributerBalance_852bb6a7_internal_macro$
+}
+IFREF {
+	CALL $upd_only_time_in_c4$
+}
+THROW 0
+
+.globl	distributerBalance_852bb6a7_internal
+.type	distributerBalance_852bb6a7_internal, @function
+CALL $distributerBalance_852bb6a7_internal_macro$
+
+.macro distributerBalance_852bb6a7_internal_macro
+.loc ../contracts/EverAirdrop.sol, 158
+PUSHINT 0
+PUSHCONT {
+	DUP
+	GETGLOB 20
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/EverAirdrop.sol, 159
+	DUP
+	GETGLOB 20
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	FALSE
+	NEWC
+	STSLICECONST x6_
+	STI 1
+	STSLICECONST x1_
+	STSLICE
+	PUSHINT 54415172769541377993823933492320150904965846110728292560284715
+	STUR 207
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	.loc ../contracts/EverAirdrop.sol, 158
+	INC
+	.loc ../contracts/EverAirdrop.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/EverAirdrop.sol, 0
+
+.macro getDistributorBalance
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/EverAirdrop.sol, 163
+LDU 256
+ENDS
+.loc ../contracts/EverAirdrop.sol, 0
+CALLREF {
+	CALL $getDistributorBalance_24170091_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	getDistributorBalance_24170091_internal
+.type	getDistributorBalance_24170091_internal, @function
+CALL $getDistributorBalance_24170091_internal_macro$
+
+.macro getDistributorBalance_24170091_internal_macro
+.loc ../contracts/EverAirdrop.sol, 164
+GETGLOB 27
+SWAP
+NEWC
+STU 256
+SWAP
+UNPAIR
+OVER
+INC
+ROLLREV 3
+PUSHINT 32
+DICTUSETB
+PAIR
+SETGLOB 27
+.loc ../contracts/EverAirdrop.sol, 0
+
+.macro getDistributorBalanceArr
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/EverAirdrop.sol, 167
+ENDS
+.loc ../contracts/EverAirdrop.sol, 0
+CALLREF {
+	CALL $getDistributorBalanceArr_402c2b8e_internal_macro$
+}
+OVER
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 3497440181
+	STUR 130
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	DROP
+}
+IFELSE
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	getDistributorBalanceArr_402c2b8e_internal
+.type	getDistributorBalanceArr_402c2b8e_internal, @function
+CALL $getDistributorBalanceArr_402c2b8e_internal_macro$
+
+.macro getDistributorBalanceArr_402c2b8e_internal_macro
+.loc ../contracts/EverAirdrop.sol, 168
+GETGLOB 27
 .loc ../contracts/EverAirdrop.sol, 0
 
 .macro onDistribute
@@ -501,7 +817,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 133
+.loc ../contracts/EverAirdrop.sol, 172
 OVER
 PUSHCONT {
 	LDREF
@@ -527,7 +843,7 @@ THROW 0
 CALL $onDistribute_752a10c4_internal_macro$
 
 .macro onDistribute_752a10c4_internal_macro
-.loc ../contracts/EverAirdrop.sol, 136
+.loc ../contracts/EverAirdrop.sol, 175
 GETGLOB 9
 GETGLOB 19
 DUP
@@ -539,8 +855,8 @@ CALLREF {
 }
 SDEQ
 THROWIFNOT 100
-.loc ../contracts/EverAirdrop.sol, 137
-GETGLOB 27
+.loc ../contracts/EverAirdrop.sol, 176
+GETGLOB 29
 PUSH2 S1, S2
 PAIR
 CALLREF {
@@ -558,8 +874,8 @@ ROLLREV 3
 PUSHINT 32
 DICTUSETB
 PAIR
-SETGLOB 27
-.loc ../contracts/EverAirdrop.sol, 141
+SETGLOB 29
+.loc ../contracts/EverAirdrop.sol, 180
 GETGLOB 18
 SWAP
 NEWC
@@ -573,7 +889,7 @@ PUSHINT 32
 DICTUSETB
 PAIR
 SETGLOB 18
-.loc ../contracts/EverAirdrop.sol, 142
+.loc ../contracts/EverAirdrop.sol, 181
 GETGLOB 21
 UNPAIR
 OVER
@@ -594,7 +910,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 145
+.loc ../contracts/EverAirdrop.sol, 184
 LDI 1
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
@@ -612,7 +928,7 @@ THROW 0
 CALL $onRefund_74771669_internal_macro$
 
 .macro onRefund_74771669_internal_macro
-.loc ../contracts/EverAirdrop.sol, 147
+.loc ../contracts/EverAirdrop.sol, 186
 GETGLOB 24
 SWAP
 NEWC
@@ -637,7 +953,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 157
+.loc ../contracts/EverAirdrop.sol, 196
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
 CALLREF {
@@ -653,18 +969,18 @@ THROW 0
 CALL $refund_590e1ae3_internal_macro$
 
 .macro refund_590e1ae3_internal_macro
-.loc ../contracts/EverAirdrop.sol, 58
+.loc ../contracts/EverAirdrop.sol, 59
 NOW
 GETGLOB 12
 GREATER
 THROWIFNOT 107
-.loc ../contracts/EverAirdrop.sol, 59
+.loc ../contracts/EverAirdrop.sol, 60
 ACCEPT
-.loc ../contracts/EverAirdrop.sol, 159
+.loc ../contracts/EverAirdrop.sol, 198
 GETGLOB 20
 FIRST
 PUSHCONT {
-	.loc ../contracts/EverAirdrop.sol, 161
+	.loc ../contracts/EverAirdrop.sol, 200
 	PUSHINT 0
 	PUSHCONT {
 		DUP
@@ -673,7 +989,7 @@ PUSHCONT {
 		LESS
 	}
 	PUSHCONT {
-		.loc ../contracts/EverAirdrop.sol, 163
+		.loc ../contracts/EverAirdrop.sol, 202
 		PUSHINT 243740060
 		SETGLOB 8
 		DUP
@@ -714,7 +1030,7 @@ PUSHCONT {
 			ENDS
 		}
 		DROP
-		.loc ../contracts/EverAirdrop.sol, 161
+		.loc ../contracts/EverAirdrop.sol, 200
 		INC
 		.loc ../contracts/EverAirdrop.sol, 0
 	}
@@ -723,7 +1039,7 @@ PUSHCONT {
 	.loc ../contracts/EverAirdrop.sol, 0
 }
 IF
-.loc ../contracts/EverAirdrop.sol, 167
+.loc ../contracts/EverAirdrop.sol, 206
 GETGLOB 10
 NEWC
 STSLICECONST x42_
@@ -744,7 +1060,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 173
+.loc ../contracts/EverAirdrop.sol, 212
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
 CALLREF {
@@ -786,7 +1102,7 @@ THROW 0
 CALL $getDeployedContracts_aa9a068f_internal_macro$
 
 .macro getDeployedContracts_aa9a068f_internal_macro
-.loc ../contracts/EverAirdrop.sol, 175
+.loc ../contracts/EverAirdrop.sol, 214
 GETGLOB 20
 .loc ../contracts/EverAirdrop.sol, 0
 
@@ -799,7 +1115,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 180
+.loc ../contracts/EverAirdrop.sol, 219
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
 CALLREF {
@@ -837,7 +1153,7 @@ THROW 0
 CALL $getContractNotes_05f50195_internal_macro$
 
 .macro getContractNotes_05f50195_internal_macro
-.loc ../contracts/EverAirdrop.sol, 182
+.loc ../contracts/EverAirdrop.sol, 221
 GETGLOB 23
 .loc ../contracts/EverAirdrop.sol, 0
 
@@ -850,7 +1166,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 187
+.loc ../contracts/EverAirdrop.sol, 226
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
 CALLREF {
@@ -888,7 +1204,7 @@ THROW 0
 CALL $getRefundLockDuration_567d6c61_internal_macro$
 
 .macro getRefundLockDuration_567d6c61_internal_macro
-.loc ../contracts/EverAirdrop.sol, 189
+.loc ../contracts/EverAirdrop.sol, 228
 GETGLOB 12
 .loc ../contracts/EverAirdrop.sol, 0
 
@@ -901,7 +1217,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/EverAirdrop.sol, 194
+.loc ../contracts/EverAirdrop.sol, 233
 ENDS
 .loc ../contracts/EverAirdrop.sol, 0
 CALLREF {
@@ -950,23 +1266,23 @@ THROW 0
 CALL $getStatus_4e69d560_internal_macro$
 
 .macro getStatus_4e69d560_internal_macro
-.loc ../contracts/EverAirdrop.sol, 194
+.loc ../contracts/EverAirdrop.sol, 233
 PUSHINT 0
 NEWDICT
 PAIR
 DUP
-.loc ../contracts/EverAirdrop.sol, 196
+.loc ../contracts/EverAirdrop.sol, 235
 PUSHINT 0
 PUSHCONT {
 	DUP
-	GETGLOB 27
+	GETGLOB 29
 	FIRST
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/EverAirdrop.sol, 198
+	.loc ../contracts/EverAirdrop.sol, 237
 	PUSH2 S2, S0
-	GETGLOB 27
+	GETGLOB 29
 	SECOND
 	PUSHINT 32
 	DICTUGET
@@ -989,9 +1305,9 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	POP S3
-	.loc ../contracts/EverAirdrop.sol, 199
+	.loc ../contracts/EverAirdrop.sol, 238
 	DUP2
-	GETGLOB 27
+	GETGLOB 29
 	SECOND
 	PUSHINT 32
 	DICTUGET
@@ -1012,7 +1328,7 @@ PUSHCONT {
 	DICTUSET
 	PAIR
 	POP S2
-	.loc ../contracts/EverAirdrop.sol, 196
+	.loc ../contracts/EverAirdrop.sol, 235
 	INC
 	.loc ../contracts/EverAirdrop.sol, 0
 }
@@ -1083,6 +1399,19 @@ LDDICT
 ROTREV
 PAIR
 SWAP
+LDREF
+ENDS
+CTOS
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
 PUSHINT 0
 GETGLOBVAR
@@ -1095,10 +1424,10 @@ GETGLOB 6
 GETGLOB 7
 GETGLOB 8
 GETGLOB 9
-PUSHINT 18
+PUSHINT 20
 PUSHINT 10
 BLKSWX
-PUSHINT 28
+PUSHINT 30
 TUPLEVAR
 POP C7
 SETGLOB 3
@@ -1167,8 +1496,8 @@ PUSHCONT {
 	DUP
 	NEWDICT
 	PAIR
-	DUP
-	PUSHINT 28
+	BLKPUSH 3, 0
+	PUSHINT 30
 	TUPLEVAR
 	POP C7
 	PUSHINT 64
@@ -1196,12 +1525,12 @@ IFREFELSE {
 .macro c7_to_c4
 PUSH C7
 FALSE
-PUSHINT 28
+PUSHINT 30
 SETINDEXVARQ
-PUSHINT 29
+PUSHINT 31
 UNTUPLEVAR
 DROP
-PUSHINT 28
+PUSHINT 30
 PUSHINT 0
 REVX
 BLKDROP 10
@@ -1212,14 +1541,14 @@ STU 256
 STU 64
 STSLICECONST xa_
 STSLICE
-PUSHINT 17
+PUSHINT 19
 ROLLREVX
 NEWC
 STSLICE
 STU 256
 STI 1
 STU 128
-ROLLREV 13
+ROLLREV 15
 NEWC
 STU 128
 STU 256
@@ -1235,7 +1564,7 @@ UNPAIR
 XCHG S2
 STU 32
 STDICT
-ROLLREV 7
+ROLLREV 9
 NEWC
 SWAP
 UNPAIR
@@ -1244,7 +1573,7 @@ STU 32
 STDICT
 STREF
 STREF
-ROLLREV 4
+ROLLREV 6
 NEWC
 SWAP
 UNPAIR
@@ -1262,6 +1591,19 @@ UNPAIR
 XCHG S2
 STU 32
 STDICT
+ROTREV
+NEWC
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STBREFR
 STBREFR
 STBREFR
 STBREFR
@@ -1272,12 +1614,12 @@ POPROOT
 .macro c7_to_c4_for_await
 PUSH C7
 FALSE
-PUSHINT 28
+PUSHINT 30
 SETINDEXVARQ
-PUSHINT 29
+PUSHINT 31
 UNTUPLEVAR
 DROP
-PUSHINT 28
+PUSHINT 30
 PUSHINT 0
 REVX
 BLKDROP 10
@@ -1287,7 +1629,7 @@ NEWC
 STU 256
 STU 64
 STSLICECONST xe_
-PUSHINT 19
+PUSHINT 21
 ROLLX
 NEWC
 STSLICE
@@ -1296,16 +1638,16 @@ PUSH c3
 PUSHCONT {
 	SETCONT c3
 	SETCONT c0
-	PUSHINT 18
+	PUSHINT 20
 	ADDCONST 2
 	PUSHINT 1
 	BLKSWX
 	DEPTH
 	ADDCONST -7
-	PUSHINT 18
+	PUSHINT 20
 	SUB
 	PUSHINT 2
-	PUSHINT 18
+	PUSHINT 20
 	ADD
 	BLKSWX
 	GETGLOB 5
@@ -1314,7 +1656,7 @@ PUSHCONT {
 	BLKSWAP 1, 3
 	DEPTH
 	ADDCONST -8
-	PUSHINT 18
+	PUSHINT 20
 	SUB
 	PUSHINT -1
 	SETCONTVARARGS
@@ -1323,14 +1665,14 @@ PUSHCONT {
 	ENDC
 	STREFR
 STSLICE
-PUSHINT 17
+PUSHINT 19
 ROLLREVX
 NEWC
 STSLICE
 STU 256
 STI 1
 STU 128
-ROLLREV 13
+ROLLREV 15
 NEWC
 STU 128
 STU 256
@@ -1346,7 +1688,7 @@ UNPAIR
 XCHG S2
 STU 32
 STDICT
-ROLLREV 7
+ROLLREV 9
 NEWC
 SWAP
 UNPAIR
@@ -1355,7 +1697,7 @@ STU 32
 STDICT
 STREF
 STREF
-ROLLREV 4
+ROLLREV 6
 NEWC
 SWAP
 UNPAIR
@@ -1373,6 +1715,19 @@ UNPAIR
 XCHG S2
 STU 32
 STDICT
+ROTREV
+NEWC
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STBREFR
 STBREFR
 STBREFR
 STBREFR
@@ -1638,13 +1993,37 @@ PUSHCONT {
 IF
 THROW 0
 
+.macro valueArr
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 27
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000e8150a65
+	NEWC
+	STSLICE
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
 .macro distributedAddressArr
 DROP
 ENDS
 CALLREF {
 	CALL $c4_to_c7$
 }
-GETGLOB 26
+GETGLOB 28
 OVER
 PUSHCONT {
 	PUSHSLICE xc0000000000000000000000000eee00066
@@ -1664,11 +2043,11 @@ THROW 0
 
 .macro public_function_selector
 DUP
-PUSHINT 1721231131
+PUSHINT 1435975687
 LEQ
 IFJMPREF {
 	DUP
-	PUSHINT 390601548
+	PUSHINT 525947467
 	LEQ
 	IFJMPREF {
 		DUP
@@ -1690,22 +2069,16 @@ IFJMPREF {
 			CALL $deployedContracts$
 		}
 		DUP
-		PUSHINT 390601548
-		EQUAL
-		IFJMPREF {
-			CALL $getStateInit$
-		}
-	}
-	DUP
-	PUSHINT 750135737
-	LEQ
-	IFJMPREF {
-		DUP
 		PUSHINT 525947467
 		EQUAL
 		IFJMPREF {
 			CALL $contract_notes$
 		}
+	}
+	DUP
+	PUSHINT 858983830
+	LEQ
+	IFJMPREF {
 		DUP
 		PUSHINT 611437273
 		EQUAL
@@ -1724,17 +2097,17 @@ IFJMPREF {
 		IFJMPREF {
 			CALL $nonce$
 		}
-	}
-	DUP
-	PUSHINT 995308319
-	LEQ
-	IFJMPREF {
 		DUP
 		PUSHINT 858983830
 		EQUAL
 		IFJMPREF {
 			CALL $getDistributorAddress$
 		}
+	}
+	DUP
+	PUSHINT 995308319
+	LEQ
+	IFJMPREF {
 		DUP
 		PUSHINT 966922996
 		EQUAL
@@ -1748,6 +2121,12 @@ IFJMPREF {
 			CALL $distribute$
 		}
 		DUP
+		PUSHINT 979959267
+		EQUAL
+		IFJMPREF {
+			CALL $distributerBalance$
+		}
+		DUP
 		PUSHINT 995308319
 		EQUAL
 		IFJMPREF {
@@ -1755,7 +2134,7 @@ IFJMPREF {
 		}
 	}
 	DUP
-	PUSHINT 1721231131
+	PUSHINT 1435975687
 	LEQ
 	IFJMPREF {
 		DUP
@@ -1771,16 +2150,16 @@ IFJMPREF {
 			CALL $getStatus$
 		}
 		DUP
-		PUSHINT 1460331514
+		PUSHINT 1349956533
 		EQUAL
 		IFJMPREF {
-			CALL $getRefundLockDuration$
+			CALL $getDistributorBalanceArr$
 		}
 		DUP
-		PUSHINT 1721231131
+		PUSHINT 1435975687
 		EQUAL
 		IFJMPREF {
-			CALL $constructor$
+			CALL $getEverdropBalance$
 		}
 	}
 }
@@ -1789,28 +2168,85 @@ PUSHINT 2134153166
 LEQ
 IFJMPREF {
 	DUP
-	PUSHINT 1860173926
-	EQUAL
+	PUSHINT 1746209381
+	LEQ
 	IFJMPREF {
-		CALL $distributedAddressArr$
+		DUP
+		PUSHINT 1460331514
+		EQUAL
+		IFJMPREF {
+			CALL $getRefundLockDuration$
+		}
+		DUP
+		PUSHINT 1595296090
+		EQUAL
+		IFJMPREF {
+			CALL $testCallBack$
+		}
+		DUP
+		PUSHINT 1721231131
+		EQUAL
+		IFJMPREF {
+			CALL $constructor$
+		}
+		DUP
+		PUSHINT 1746209381
+		EQUAL
+		IFJMPREF {
+			CALL $valueArr$
+		}
 	}
 	DUP
 	PUSHINT 1984920812
-	EQUAL
+	LEQ
 	IFJMPREF {
-		CALL $getAddr$
-	}
-	DUP
-	PUSHINT 2019437989
-	EQUAL
-	IFJMPREF {
-		CALL $stateInit$
+		DUP
+		PUSHINT 1860173926
+		EQUAL
+		IFJMPREF {
+			CALL $distributedAddressArr$
+		}
+		DUP
+		PUSHINT 1884765659
+		EQUAL
+		IFJMPREF {
+			CALL $getTestFunc$
+		}
+		DUP
+		PUSHINT 1983654955
+		EQUAL
+		IFJMPREF {
+			CALL $getDistributorBalance$
+		}
+		DUP
+		PUSHINT 1984920812
+		EQUAL
+		IFJMPREF {
+			CALL $getAddr$
+		}
 	}
 	DUP
 	PUSHINT 2134153166
-	EQUAL
+	LEQ
 	IFJMPREF {
-		CALL $distributerCode$
+		DUP
+		PUSHINT 1997976338
+		EQUAL
+		IFJMPREF {
+			CALL $getTestCallBackArr$
+		}
+		DUP
+		PUSHINT 2019437989
+		EQUAL
+		IFJMPREF {
+			CALL $stateInit$
+		}
+		DUP
+		PUSHINT 2134153166
+		EQUAL
+		IFJMPREF {
+			CALL $distributerCode$
+		}
 	}
 }
 
