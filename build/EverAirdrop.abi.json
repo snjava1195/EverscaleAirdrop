@@ -19,7 +19,7 @@
 				{"name":"_addresses","type":"address[]"},
 				{"name":"_amounts","type":"uint128[]"},
 				{"name":"_wid","type":"int8"},
-				{"name":"_code","type":"cell"}
+				{"name":"_totalAmount","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -29,8 +29,32 @@
 			"inputs": [
 				{"name":"_wid","type":"int8"},
 				{"name":"_initialBalance","type":"uint128"},
-				{"name":"_code","type":"cell"},
 				{"name":"_totalAmount","type":"uint128"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getAddr",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getStateInit",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "getDistributorAddress",
+			"inputs": [
+				{"name":"_nonce","type":"uint256"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
@@ -102,6 +126,14 @@
 			]
 		},
 		{
+			"name": "distributerCode",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"distributerCode","type":"cell"}
+			]
+		},
+		{
 			"name": "nonce",
 			"inputs": [
 			],
@@ -134,6 +166,14 @@
 			]
 		},
 		{
+			"name": "distributedAddressArr",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"distributedAddressArr","type":"address[]"}
+			]
+		},
+		{
 			"name": "_await_Distributer_refund",
 			"inputs": [
 				{"name":"value0","type":"bool"}
@@ -143,7 +183,8 @@
 		}
 	],
 	"data": [
-		{"key":1,"name":"_randomNonce","type":"uint256"}
+		{"key":1,"name":"_randomNonce","type":"uint256"},
+		{"key":2,"name":"distributerCode","type":"cell"}
 	],
 	"events": [
 	],
@@ -159,15 +200,16 @@
 		{"name":"total_amount","type":"uint128"},
 		{"name":"required_fee","type":"uint128"},
 		{"name":"_randomNonce","type":"uint256"},
+		{"name":"distributerCode","type":"cell"},
 		{"name":"statusArray","type":"bool[]"},
 		{"name":"nonce","type":"uint256"},
 		{"name":"deployedContracts","type":"address[]"},
 		{"name":"distributeAddresses","type":"address[]"},
 		{"name":"stateInit","type":"cell"},
 		{"name":"contract_notes","type":"string"},
-		{"name":"counter","type":"uint256"},
 		{"name":"refunded","type":"bool[]"},
 		{"name":"refundCounter","type":"uint256"},
+		{"name":"distributedAddressArr","type":"address[]"},
 		{"components":[{"name":"distributed","type":"bool"},{"name":"contractAddress","type":"address"}],"name":"distributed_status","type":"tuple[]"}
 	]
 }

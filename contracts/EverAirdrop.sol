@@ -10,15 +10,17 @@ contract EverAirdrop {
     uint128 total_amount = 0;
     uint128 required_fee = 0.5 ever; 
     uint public static _randomNonce;
+    TvmCell public static distributerCode;
     bool[] statusArray;
     uint public nonce = 1;
     address[] public deployedContracts;
     address[] distributeAddresses;
     TvmCell public stateInit;
     string public contract_notes;
-    uint counter=0;
     bool[] refunded;
     uint refundCounter=0;
+
+    address[] public distributedAddressArr;
     struct Status{
 		bool distributed;
 		address contractAddress;
@@ -58,7 +60,7 @@ contract EverAirdrop {
 
         _;
     }
-   
+
    //_contract_notes - name of the contract
    //_refund_destination - address where the remaining gas will be transfered after airdrop
    //_refund_lock_duration - duration for which the user will have to wait until the refund can be called
@@ -80,41 +82,26 @@ contract EverAirdrop {
     /**
      * @dev Distributes contract balance to the receivers from the addresses if there is enough gas on the contract. If it is first distribution with up to 100 addresses, airdrop is the sender, if not, Distributer contracts are deployed and their distribution method is triggered
     */
-    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid, TvmCell _code) /*balanceSufficient*/ public {
+    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid,uint128 _totalAmount) /*balanceSufficient*/ public {
     
         require(_amounts.length == _addresses.length, 101);
         require((_addresses.length > 0) && (_addresses.length < 100), 102);
-    	if(counter==0)
-    	{
+    	tvm.accept();
     	//another airdrop can't be triggered until this one ends
     	//transfer amounts[i] evers to addresses[i] address from this contract
-    		for (uint i=0; i < _addresses.length; i++) {
-            		payable(_addresses[i]).transfer(_amounts[i], false, 1);
-            	}
-       
-        	distributed = true;
-        }
+            uint128 _initialBalance = _totalAmount + required_fee;
         
-        if(counter!=0)
-        {
-        	for (uint i=0; i < _amounts.length; i++) {
-            		total_amount += _amounts[i];
-            	}
-            	uint128 _initialBalance = total_amount + required_fee;
-        
-      		deployWithMsgBody(_wid, _initialBalance, _code, total_amount);
-        	Distributer(deployedContracts[counter-1]).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
-        	total_amount = 0;
-
-      	}
-      	counter++;
+      		address distributer = deployWithMsgBody(_wid, _initialBalance, _totalAmount);
+        	Distributer(distributer).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
+       distributeAddresses.push(distributer);
      }
 
      //Deploys Distributor contract using address.transfer
 	
-	function deployWithMsgBody(int8 _wid,uint128 _initialBalance,TvmCell _code, uint128 _totalAmount) public returns(address){
+	function deployWithMsgBody(int8 _wid,uint128 _initialBalance, uint128 _totalAmount) public returns(address){
+        
 		TvmCell payload = tvm.encodeBody(Distributer);
-		stateInit = tvm.buildStateInit({code: _code,
+		stateInit = tvm.buildStateInit({code: distributerCode,
 			contr: Distributer,
 			varInit: {_randomNonce: nonce, _owner: address(this), totalAmount: _totalAmount},
 			pubkey: 0
@@ -122,14 +109,30 @@ contract EverAirdrop {
 		addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
         	addr.transfer({stateInit:stateInit,body: payload, value: _initialBalance, bounce: false});	 
         	deployedContracts.push(addr);
-		nonce++;
+		
+        
+       distributeAddresses.push(addr);
+        nonce++;
 		return addr;
 	}
 	
+    function getAddr()public view returns(address){
+        return addr;
+    }
+
+    function getStateInit()public view returns(TvmCell){
+        return stateInit;
+
+    }
+    
     //Callback for Distributor's distribute method	
-	
+	 function getDistributorBalance(uint _value) public view returns(uint){
+        return _value;
+    }
     function onDistribute(address _contractAddress, bool _distributed) public  
     {
+
+        require(msg.sender == getDistributorAddress(nonce--));
     	 distributed_status.push(Status({
                 distributed: _distributed,
                 contractAddress: _contractAddress
@@ -143,7 +146,6 @@ contract EverAirdrop {
     	refunded.push(_refunded);
     }    
    
-
      /**
      * @dev Sends all contract's balance to the refund_destination
      *      Can be executed only after
@@ -157,7 +159,7 @@ contract EverAirdrop {
         {
         	for(uint i=0;i<deployedContracts.length;i++)
         	{
-        		Distributer(deployedContracts[i]).refund{value: 1 ever/*, callback: EverAirdrop.onRefund, bounce: false*/}(refund_destination).await;
+        		Distributer(deployedContracts[i]).refund{value: 1 ever/*, callback: EverAirdrop.onRefund, bounce: false*/}().await;
         	}
         }
         

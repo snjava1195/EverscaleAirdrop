@@ -1,4 +1,4 @@
-.version sol 0.63.0
+.version sol 0.62.0
 
 .macro constructor
 DROP
@@ -121,6 +121,7 @@ ENDS
 CALLREF {
 	CALL $receiveTokenWalletAddress_9b3a57ad_internal_macro$
 }
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -210,6 +211,7 @@ ENDS
 CALLREF {
 	CALL $multiTransfer_1c14edea_internal_macro$
 }
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -377,6 +379,7 @@ PUSHCONT {
 	DROP
 }
 IFELSE
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -522,6 +525,7 @@ ENDS
 CALLREF {
 	CALL $transferOwnership_f2fde38b_internal_macro$
 }
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -561,6 +565,7 @@ ENDS
 CALLREF {
 	CALL $renounceOwnership_715018a6_internal_macro$
 }
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }

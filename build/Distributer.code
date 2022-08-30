@@ -1,4 +1,4 @@
-.version sol 0.63.0
+.version sol 0.62.0
 
 .macro constructor
 DROP
@@ -10,7 +10,7 @@ IFREF {
 GETGLOB 6
 THROWIF 51
 ENDS
-.loc ../contracts/Distributer.sol, 12
+.loc ../contracts/Distributer.sol, 11
 ACCEPT
 .loc ../contracts/Distributer.sol, 0
 CALLREF {
@@ -27,7 +27,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Distributer.sol, 14
+.loc ../contracts/Distributer.sol, 13
 LDU 32
 GETGLOB 4
 ROT
@@ -113,13 +113,15 @@ THROW 0
 CALL $distribute_5c3b864b_internal_macro$
 
 .macro distribute_5c3b864b_internal_macro
-.loc ../contracts/Distributer.sol, 15
+.loc ../contracts/Distributer.sol, 14
 GETPARAM 7
 FIRST
-GETGLOB 12
+GETGLOB 11
 GREATER
 THROWIFNOT 105
-.loc ../contracts/Distributer.sol, 19
+.loc ../contracts/Distributer.sol, 15
+ACCEPT
+.loc ../contracts/Distributer.sol, 18
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S2
@@ -127,7 +129,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/Distributer.sol, 21
+	.loc ../contracts/Distributer.sol, 20
 	PUSH2 S0, S1
 	SECOND
 	PUSHINT 32
@@ -149,13 +151,13 @@ PUSHCONT {
 	ENDC
 	PUSHINT 1
 	SENDRAWMSG
-	.loc ../contracts/Distributer.sol, 19
+	.loc ../contracts/Distributer.sol, 18
 	INC
 	.loc ../contracts/Distributer.sol, 0
 }
 WHILE
 BLKDROP 3
-.loc ../contracts/Distributer.sol, 25
+.loc ../contracts/Distributer.sol, 24
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
@@ -177,24 +179,16 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Distributer.sol, 28
+.loc ../contracts/Distributer.sol, 27
 LDU 32
 GETGLOB 4
 ROT
 SETINDEXQ 5
 SETGLOB 4
-OVER
-PUSHCONT {
-	LDREF
-	ENDS
-	CTOS
-}
-IF
-LDMSGADDR
 ENDS
 .loc ../contracts/Distributer.sol, 0
 CALLREF {
-	CALL $refund_fa89401a_internal_macro$
+	CALL $refund_590e1ae3_internal_macro$
 }
 OVER
 PUSHCONT {
@@ -207,7 +201,7 @@ PUSHCONT {
 	NEWC
 	STSLICECONST xc
 	STSLICE
-	PUSHINT 3796139566
+	PUSHINT 3269280861
 	STUR 130
 	STI 1
 	ENDC
@@ -247,12 +241,13 @@ IFREF {
 }
 THROW 0
 
-.globl	refund_fa89401a_internal
-.type	refund_fa89401a_internal, @function
-CALL $refund_fa89401a_internal_macro$
+.globl	refund_590e1ae3_internal
+.type	refund_590e1ae3_internal, @function
+CALL $refund_590e1ae3_internal_macro$
 
-.macro refund_fa89401a_internal_macro
-.loc ../contracts/Distributer.sol, 30
+.macro refund_590e1ae3_internal_macro
+.loc ../contracts/Distributer.sol, 29
+GETGLOB 10
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -261,9 +256,9 @@ STZEROES
 ENDC
 PUSHPOW2 7
 SENDRAWMSG
-.loc ../contracts/Distributer.sol, 31
+.loc ../contracts/Distributer.sol, 30
 TRUE
-.loc ../contracts/Distributer.sol, 32
+.loc ../contracts/Distributer.sol, 31
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
@@ -281,12 +276,12 @@ LDU 256 ; pubkey c4
 LDU 64 ; pubkey timestamp c4
 LDU 1 ; ctor flag
 NIP
-LDU 256
+LDMSGADDR
 LDREF
 ENDS
 CTOS
-LDMSGADDR
 LDU 128
+LDU 256
 ENDS
 SETGLOB 12
 SETGLOB 11
@@ -308,26 +303,26 @@ PUSHCONT {
 	OVER
 	PUSHINT 64
 	DICTUGET
-	ZEROSWAPIFNOT
-	PUSHCONT {
-		PLDU 256
-	}
-	IF
-	PUSHINT 2
-	PUSH S2
-	PUSHINT 64
-	DICTUGET
 	PUSHCONT {
 		PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
 	}
 	IFNOT
+	PUSHINT 2
+	PUSH S2
+	PUSHINT 64
+	DICTUGET
+	ZEROSWAPIFNOT
+	PUSHCONT {
+		PLDU 128
+	}
+	IF
 	PUSHINT 3
 	PUSH S3
 	PUSHINT 64
 	DICTUGET
 	ZEROSWAPIFNOT
 	PUSHCONT {
-		PLDU 128
+		PLDU 256
 	}
 	IF
 	SETGLOB 12
@@ -355,11 +350,11 @@ NEWC
 STU 256
 STU 64
 STONE
-STU 256
+STSLICE
 ROTREV
 NEWC
-STSLICE
 STU 128
+STU 256
 STBREFR
 ENDC
 POPROOT
@@ -463,33 +458,13 @@ CALLREF {
 }
 THROW 60
 
-.macro _randomNonce
-DROP
-ENDS
-CALLREF {
-	CALL $c4_to_c7$
-}
-GETGLOB 10
-OVER
-PUSHCONT {
-	PUSHSLICE xc0000000000000000000000000bb53331f
-	NEWC
-	STSLICE
-	STU 256
-	ENDC
-	PUSHINT 0
-	SENDRAWMSG
-}
-IF
-THROW 0
-
 .macro _owner
 DROP
 ENDS
 CALLREF {
 	CALL $c4_to_c7$
 }
-GETGLOB 11
+GETGLOB 10
 OVER
 PUSHCONT {
 	PUSHSLICE xc00000000000000000000000008fd860ac
@@ -509,7 +484,7 @@ ENDS
 CALLREF {
 	CALL $c4_to_c7$
 }
-GETGLOB 12
+GETGLOB 11
 OVER
 PUSHCONT {
 	PUSHSLICE xc0000000000000000000000000fb7f7621
@@ -523,9 +498,29 @@ PUSHCONT {
 IF
 THROW 0
 
+.macro _randomNonce
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 12
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000bb53331f
+	NEWC
+	STSLICE
+	STU 256
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
 .macro public_function_selector
 DUP
-PUSHINT 1648655918
+PUSHINT 1121797213
 LEQ
 IFJMPREF {
 	DUP
@@ -547,7 +542,7 @@ IFJMPREF {
 		CALL $distribute$
 	}
 	DUP
-	PUSHINT 1648655918
+	PUSHINT 1121797213
 	EQUAL
 	IFJMPREF {
 		CALL $refund$

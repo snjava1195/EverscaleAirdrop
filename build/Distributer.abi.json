@@ -25,19 +25,10 @@
 		{
 			"name": "refund",
 			"inputs": [
-				{"name":"answerId","type":"uint32"},
-				{"name":"refund_destination","type":"address"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"bool"}
-			]
-		},
-		{
-			"name": "_randomNonce",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"_randomNonce","type":"uint256"}
 			]
 		},
 		{
@@ -55,12 +46,20 @@
 			"outputs": [
 				{"name":"totalAmount","type":"uint128"}
 			]
+		},
+		{
+			"name": "_randomNonce",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_randomNonce","type":"uint256"}
+			]
 		}
 	],
 	"data": [
-		{"key":1,"name":"_randomNonce","type":"uint256"},
-		{"key":2,"name":"_owner","type":"address"},
-		{"key":3,"name":"totalAmount","type":"uint128"}
+		{"key":1,"name":"_owner","type":"address"},
+		{"key":2,"name":"totalAmount","type":"uint128"},
+		{"key":3,"name":"_randomNonce","type":"uint256"}
 	],
 	"events": [
 	],
@@ -68,8 +67,8 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
-		{"name":"_randomNonce","type":"uint256"},
 		{"name":"_owner","type":"address"},
-		{"name":"totalAmount","type":"uint128"}
+		{"name":"totalAmount","type":"uint128"},
+		{"name":"_randomNonce","type":"uint256"}
 	]
 }
