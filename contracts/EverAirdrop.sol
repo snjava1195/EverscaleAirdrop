@@ -94,10 +94,11 @@ contract EverAirdrop {
     	//another airdrop can't be triggered until this one ends
     	//transfer amounts[i] evers to addresses[i] address from this contract
             uint128 _initialBalance = _totalAmount + required_fee;
-            
-       // require(address(this).balance > _initialBalance, 105);
+          
+        
       		address distributer = deployWithMsgBody(_wid, _initialBalance, _totalAmount);
         	Distributer(distributer).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
+        	//}
        //distributeAddresses.push(distributer);
  
      }
@@ -106,7 +107,7 @@ contract EverAirdrop {
     //Deploys Distributor contract using address.transfer
 	
 	function deployWithMsgBody(int8 _wid,uint128 _initialBalance, uint128 _totalAmount) public returns(address){
-        
+		
 		TvmCell payload = tvm.encodeBody(Distributer);
 		stateInit = tvm.buildStateInit({code: distributerCode,
 			contr: Distributer,
@@ -120,7 +121,7 @@ contract EverAirdrop {
             deployedContracts.push(addr);
 		
        distributeAddresses.push(addr);
-        nonce++;
+  	nonce = deployedContracts.length+1;
 		return addr;
 	}
 	
@@ -142,7 +143,7 @@ contract EverAirdrop {
         return addr;
     }
 
-   
+
 
 function getEverdropBalance()public view returns(uint){
         return address(this).balance;
@@ -150,8 +151,8 @@ function getEverdropBalance()public view returns(uint){
     }
 
 
-    function getDistributorAddress(uint _nonce) public view returns(address){
-        return distributeAddresses[_nonce];
+    function getDistributorAddress(uint _nonce) public returns(address){
+        return distributeAddresses[_nonce-1];
     }
 
    function distributerBalance() public view{
@@ -185,6 +186,11 @@ function getEverdropBalance()public view returns(uint){
     {
     	refunded.push(_refunded);
     }    
+    
+    function getNonce() public returns(uint _nonce)
+    {
+    	return nonce;
+    }
    
      /**
      * @dev Sends all contract's balance to the refund_destination

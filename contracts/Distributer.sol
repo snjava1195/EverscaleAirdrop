@@ -6,6 +6,7 @@ contract Distributer {
     uint public static _randomNonce;
 	address public static _owner;
 	uint128 public static totalAmount;
+	bool distributed = false;
 	string forLoopResult;
 	constructor() public
 	{
@@ -14,7 +15,7 @@ contract Distributer {
 	function distribute(address[] addresses, uint128[] amounts) public responsible returns (address, bool){
 		//require(address(this).balance>totalAmount, 105);
         tvm.accept();
-        bool distributed = false;
+        
         if (address(this).balance>totalAmount) {
             
 		//require(address(this).balance > total_amount + required_fee, 105);
@@ -34,7 +35,7 @@ contract Distributer {
         }
 
        
-	   return {value: 0, bounce: false, flag: 64} (address(this), distributed);
+	   return {value: 0, bounce: false, flag: 128} (address(this), distributed);
 		
 	
 	}
@@ -60,6 +61,11 @@ contract Distributer {
             uint distributorBalance = address(this).balance;
            return { value: 0, bounce: false, flag: 64 } distributorBalance;
           } 
+          
+          function getDistributed() public view returns(bool)
+          {
+          	return distributed;
+          }
 
 }
 

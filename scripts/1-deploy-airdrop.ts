@@ -88,7 +88,7 @@ console.log(chunkAmounts);
     	//console.log(airdrop);
     	//console.log(tx);
       console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
-      const code = await airdrop.methods.buildAirdropCode({airdropAddress: airdrop.address}).call();//sendExternal({publicKey: signer.publicKey});
+      const code = await airdrop.methods.buildAirdropCode({ownerAddress: airdrop.address}).call();//sendExternal({publicKey: signer.publicKey});
     		
     	console.log(`Airdrop code: ${code.value0}`);
 
@@ -111,14 +111,20 @@ console.log(chunkAmounts);
     		airdrop =>
     			airdrop.methods.distribute({_addresses: chunkAddresses[2][1], _amounts: chunkAmounts[2][1], _wid: 0,_totalAmount:locklift.utils.toNano(1000)}),
     		);  
-         //   const distributedContracts = await airdrop.methods.getDistributorAddress({_nonce: nonce++}).call();
-          
-        //   console.log(distributedContracts);
-        
-    //	console.log(result);
+            
+        const nonceNr = await airdrop.methods.getNonce({}).call();
+     console.log(nonceNr);
+    	//console.log(result);
     //	console.log(result.transaction.outMessages);
     	}
+    	const nonceNr = await airdrop.methods.getNonce({}).call();
+     console.log(nonceNr);
+     	
+    	const distributedContracts = await airdrop.methods.getDeployedContracts({}).call();
+    	console.log(`Distributed contracts: ${distributedContracts.value0}`);
     	
+          
+           
     	const result2 = await owner.runTarget({
             contract: airdrop,
               value: locklift.utils.toNano(2),
@@ -167,8 +173,8 @@ console.log(chunkAmounts);
 
 	const getEverdropBalance = await airdrop.methods.getEverdropBalance({}).call();
      console.log(getEverdropBalance);
+	
 }
-
 main()
   .then(() => process.exit(0))
   .catch(e => {
