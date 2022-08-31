@@ -10,12 +10,15 @@ contract Tip31Distributer {
 	
 	address _tokenRootAddr;
 	address walletAddress;
+	uint public static _randomNonce;
+	address public static _owner;
 	
-	constructor(address tokenRootAddr, address[] recipients, uint128[] amounts, address remainingGasTo, TvmCell _empty) public
+	constructor(address tokenRootAddr, address[] recipients, uint128[] amounts, address remainingGasTo) public
 	{
 		require(recipients.length > 0 && recipients.length <= 100, 1002, "The number of 			recipients error!");
         	require(recipients.length == amounts.length, 1003, "The number of recipients must 			equal to the number of amounts!");
         	tvm.accept();
+        	 TvmCell _empty;
 		_tokenRootAddr = tokenRootAddr;
 		setUpTokenWallet();
 		require(walletAddress.value != 0, 1001, "Wallet address error!");

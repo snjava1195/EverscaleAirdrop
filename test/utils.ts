@@ -1,4 +1,4 @@
-import { Contract, Signer } from "locklift";
+/*import { Contract, Signer } from "locklift";
 import { FactorySource } from "../build/factorySource";
 const chai = require('chai');
 
@@ -25,7 +25,7 @@ const setupAirdrop = async () => {
   		});
   		owner = account;
     owner.publicKey = signer.publicKey;
-    owner.name = 'Airdrop owner';
+    owner.name = 'Airdrop owner';*/
 
  // console.log(`Owner: ${owner.address}`);
 
@@ -60,7 +60,7 @@ const setupAirdrop = async () => {
 	console.log(`Token root: ${root.address}`);*/
 
     // Airdrop
-     const {contract: airdrop, tx} = await locklift.factory.deployContract({
+/*     const {contract: airdrop, tx} = await locklift.factory.deployContract({
         contract: "Tip31Airdrop",
         constructorParams: {
             senderAddr: owner.address,
@@ -82,4 +82,4 @@ const setupAirdrop = async () => {
 module.exports = {
     setupAirdrop,
     expect,
-};
+};*/

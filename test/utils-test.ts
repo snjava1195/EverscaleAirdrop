@@ -1,4 +1,4 @@
-import { expect } from "chai";
+/*import { expect } from "chai";
 import { Contract, Signer } from "locklift";
 import { FactorySource } from "../build/factorySource";
 import { bignumber } from "chai-bignumber";
@@ -112,4 +112,4 @@ describe("Test TIP3.1 airdrop", async function () {
   
 
   
- });
+ });*/

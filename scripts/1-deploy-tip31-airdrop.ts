@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { Contract, Signer } from "locklift";
 import { FactorySource } from "../build/factorySource";
 import { WalletCode } from "../build/Wallet.code";
-import { bignumber } from "chai-bignumber";
+//import { bignumber } from "chai-bignumber";
 let sample: Contract<FactorySource["Sample"]>;
 let airdropCon: Contract<FactorySource["Tip31Airdrop"]>;
 let signer: Signer;
@@ -14,7 +14,7 @@ let airdrop: Contract<FactorySource["Tip31Airdrop"]>;
 let user: Contract<FactorySource["Wallet"]>;
 const amount = locklift.utils.toNano(1000);
 const chai = require('chai');
-chai.use(require('chai-bignumber')());
+//chai.use(require('chai-bignumber')());
 
 /*const {
   expect,
@@ -82,13 +82,13 @@ const main = async () => {
       //expect(await locklift.provider.getBalance(sample.address).then(balance => Number(balance))).to.be.above(0);
     
 
-    	const { contract } = await locklift.factory.deployContract({
+    	const { contract: airdrop, tx } = await locklift.factory.deployContract({
         contract: "Tip31Airdrop",
         constructorParams: {
             senderAddr: owner.address,
             tokenRootAddr: root.address,
-            recipients: ["0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63"],
-            amounts: [100000000],
+           // recipients: ["0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63"],
+           // amounts: [100000000],
         },
         initParams: {
             _randomNonce,
@@ -96,7 +96,7 @@ const main = async () => {
         publicKey: signer.publicKey,
         value: locklift.utils.toNano(10),
     });
-    airdrop = contract;
+   // airdrop = contract;
    // airdrop = await locklift.factory.getDeployedContract("Airdrop", "0:01933cca65ad5699a23d622b5e97117a16a008e44408c5bbe398c69bfb7431a0");
 	console.log(`Airdrop: ${airdrop.address}`);
 	}
