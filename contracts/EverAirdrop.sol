@@ -76,7 +76,7 @@ contract EverAirdrop {
         contract_notes = _contract_notes;
         refund_destination = _refund_destination;
         refund_lock_duration_end = now + _refund_lock_duration;
-
+	buildAirdropCode(msg.sender);
 
     }
 
@@ -206,6 +206,15 @@ function getEverdropBalance()public view returns(uint){
         payable(refund_destination).transfer(0, false, 128);
         
     }
+    
+    //Builds specific contract code based on the owner's address
+    function buildAirdropCode(address ownerAddress) public returns(TvmCell)
+    {
+    	TvmCell airdropCode = tvm.code();
+    	TvmBuilder salt;
+    	salt.store(ownerAddress);
+    	return tvm.setCodeSalt(airdropCode, salt.toCell());
+    }	
     
     //retrieves addresses of the deployed Distributor contracts
     

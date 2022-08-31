@@ -88,7 +88,9 @@ console.log(chunkAmounts);
     	//console.log(airdrop);
     	//console.log(tx);
       console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
-      
+      const code = await airdrop.methods.buildAirdropCode({airdropAddress: airdrop.address}).call();//sendExternal({publicKey: signer.publicKey});
+    		
+    	console.log(`Airdrop code: ${code.value0}`);
 
       console.log("Distribute tokens:");
       
