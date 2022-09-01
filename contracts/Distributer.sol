@@ -24,7 +24,7 @@ contract Distributer {
 		 }
 		 distributed = true;
      
-	   return {value: 0, bounce: false, flag: 128} (address(this), distributed);
+	   return {value: 0, bounce: false, flag: 128} (distributed);
 		
 	
 	}

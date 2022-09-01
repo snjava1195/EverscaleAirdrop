@@ -96,9 +96,10 @@ contract EverAirdrop {
     }
 
     //Callback for Distributor's distribute method
-    function onDistribute(address _contractAddress, bool _distributed) public  
+    function onDistribute(bool _distributed) public  
     {
-        //require(msg.sender == getDistributorAddress(nonce--));
+    	address distributer = getDistributorAddress(nonce-1);
+        require(msg.sender == distributer, 101);
     	 distributedContracts.push(_distributed);
     }
     
@@ -141,6 +142,11 @@ contract EverAirdrop {
     function getRefundLockDuration() public view returns (uint256)
     {
     	return refund_lock_duration_end;
+    }
+    
+    function getDistributedContracts() public view returns(bool[])
+    {
+    	return distributedContracts;
     }
        
  }
