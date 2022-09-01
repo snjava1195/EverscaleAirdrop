@@ -14,41 +14,11 @@ contract EverAirdrop {
     bool[] statusArray;
     uint public nonce = 1;
     address[] public deployedContracts;
-    address[] distributeAddresses;
+    bool[] distributedContracts;
     TvmCell public stateInit;
     string public contract_notes;
 
-    struct Status{
-		bool distributed;
-		address contractAddress;
-	}
-  
-   //Modifier that allows public function to accept external calls only from contract owner
-     modifier checkOwnerAndAccept{
-     	require(msg.pubkey() == tvm.pubkey() , 102);
-     	tvm.accept();
-     	_;
-    }
-    
-    Status[] distributed_status;
-     
-    // 1 ever should be enough for any possible fees
-    // The rest of the balance can always be refunded
-    // Checks whether the contract has enough evers for airdrop along with the sending fee  
-    modifier balanceSufficient {
-        require(address(this).balance > total_amount + required_fee, 105);
-        tvm.accept();
-
-        _;
-    }
-    
-    // Checks the status of the contract, if distributed is false, distribute() method can be triggered, otherwise not
-    modifier distributedStatus(bool status) {
-        require(distributed == status, 108);
-        tvm.accept();
-
-        _;
-    }
+ 
 
     // Checks whether refund lock time has passed and distribution is over
     modifier refundLockPassed() {
@@ -75,81 +45,71 @@ contract EverAirdrop {
 	buildAirdropCode(msg.sender);
 
     }
-
     
-
     /**
-     * @dev Distributes contract balance to the receivers from the addresses if there is enough gas on the contract. If it is first distribution with up to 100 addresses, airdrop is the sender, if not, Distributer contracts are deployed and their distribution method is triggered
+     * @dev Distributes contract balance to the receivers from the addresses if there is enough gas on the contract. Distributer contracts are deployed and their distribution method is triggered
     */
-    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid,uint128 _totalAmount) /*balanceSufficient*/ public {
+    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid,uint128 _totalAmount) public {
     
         require(_amounts.length == _addresses.length, 101);
         require((_addresses.length > 0) && (_addresses.length < 100), 102);
+        tvm.accept();
         
-    	tvm.accept();
-    	//another airdrop can't be triggered until this one ends
+        //everything runs smoothly, continue with distribution
+        if(deployedContracts.length==distributedContracts.length)
+        {
     	//transfer amounts[i] evers to addresses[i] address from this contract
-            uint128 _initialBalance = _totalAmount + required_fee;
-          
+        uint128 _initialBalance = _totalAmount + required_fee;
+        address distributer = deployWithMsgBody(_wid, _initialBalance, _totalAmount);
+        Distributer(distributer).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
+        }
         
-      		address distributer = deployWithMsgBody(_wid, _initialBalance, _totalAmount);
-        	Distributer(distributer).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
-    
- 
+        //if something went wrong and the distribution wasn't triggered but the distributer was deployed and has enough funds for distribution, trigger again
+        else
+        {
+        	uint index = deployedContracts.length-1;
+        	Distributer(deployedContracts[index]).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
+        }
      }
 
-    
     //Deploys Distributor contract using address.transfer
-	
-	function deployWithMsgBody(int8 _wid,uint128 _initialBalance, uint128 _totalAmount) public returns(address){
+    function deployWithMsgBody(int8 _wid,uint128 _initialBalance, uint128 _totalAmount) public returns(address){
 		
-		TvmCell payload = tvm.encodeBody(Distributer);
-		stateInit = tvm.buildStateInit({code: distributerCode,
-			contr: Distributer,
-			varInit: {_randomNonce: nonce, _owner: address(this), totalAmount: _totalAmount},
-			pubkey: 0
-		});
-        
-		addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
-        	addr.transfer({stateInit:stateInit,body: payload, value: _initialBalance, bounce: false});	 
+	TvmCell payload = tvm.encodeBody(Distributer);
+	stateInit = tvm.buildStateInit({code: distributerCode,
+					 contr: Distributer,
+					 varInit: {_randomNonce: nonce, _owner: address(this), totalAmount: _totalAmount},
+					 pubkey: 0
+					});
+        addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
+        addr.transfer({stateInit:stateInit,body: payload, value: _initialBalance, bounce: false});	 
         	
-            deployedContracts.push(addr);
-		
-       distributeAddresses.push(addr);
+        deployedContracts.push(addr);
   	nonce = deployedContracts.length+1;
-		return addr;
-	}
+	return addr;
+    }
 	
 
-    //returns list of all created Distrubers accessible by nonce
+    //returns list of all created Distributers accessible by nonce
     function getDistributorAddress(uint _nonce) public view returns(address){
-        return distributeAddresses[_nonce-1];
+        return deployedContracts[_nonce-1];
     }
 
     //Callback for Distributor's distribute method
     function onDistribute(address _contractAddress, bool _distributed) public  
     {
-
-        require(msg.sender == getDistributorAddress(nonce--));
-    	 distributed_status.push(Status({
-                distributed: _distributed,
-                contractAddress: _contractAddress
-            }));	
-    	 statusArray.push(_distributed);
-    	 distributeAddresses.push(_contractAddress);
+        //require(msg.sender == getDistributorAddress(nonce--));
+    	 distributedContracts.push(_distributed);
     }
     
     
      /**
      * @dev Sends all contract's balance to the refund_destination
-     *      Can be executed only after
-     *      1. Refund lock passed
-     *      2. Distribution finished
+     *      Can be executed only after refund lock passed
      */
-   
     function refund() refundLockPassed public view {
         
-    payable(refund_destination).transfer(0, false, 128);
+    	payable(refund_destination).transfer(0, false, 128);
         
     }
     
@@ -182,18 +142,5 @@ contract EverAirdrop {
     {
     	return refund_lock_duration_end;
     }
-    
-    //gets the retrieved status array from callback, after the distribution is done in Distributor contracts
-    
-    function getStatus() public view returns (bool[] _distributed, address[] _addresses)
-    {
-    	for(uint i=0;i<distributed_status.length;i++)
-    	{
-    		_distributed.push(distributed_status[i].distributed);
-    		_addresses.push(distributed_status[i].contractAddress);
-    	}
-    	return (_distributed, _addresses);
-    }
-    
-        
+       
  }

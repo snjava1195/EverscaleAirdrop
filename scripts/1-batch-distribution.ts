@@ -11,6 +11,8 @@ let airdrop: Contract<FactorySource["EverAirdrop"]>;
 
 let distributer: Contract<FactorySource["Distributer"]>;
 
+//Script used for continuation in case of interrupted distribution
+
 const main = async () => {
 
  const response = await prompts([
@@ -22,24 +24,6 @@ const main = async () => {
         }
     ]);
 
-let records;
-
-    records = parse(fs.readFileSync(response.data));
-const signer = (await locklift.keystore.getSigner("0"))!;
-  let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
-   const _randomNonce = locklift.utils.getRandomNonce();
-   airdrop = await locklift.factory.getDeployedContract(
-  	"EverAirdrop", // name of your contract
-  	"0:dad130f535ee461cbed851a6d4075c7669fec2aad14e9fced52f2718ec61e180",
-	);
-	console.log(`Airdrop: ${airdrop.address}`);
-	owner = 		accountsFactory.getAccount("0:7d4931bef7ff0977410e5174a1d006a1557e599705d51ca1eeab479f9478a0cd", signer.publicKey);
-  	console.log(`Owner: ${owner.address}`);
-  	const nonceNr = await airdrop.methods.getNonce({}).call();
-  	console.log(nonceNr);
-  	
-  	const addresses = records.map(i => i[0]);
-const amounts = records.map(i => parseInt(i[1], 10));
 
 
 function chunk(array, chunkSize) { 
@@ -57,62 +41,86 @@ function chunk(array, chunkSize) {
   return output;
 }
 
-const chunkAddresses = chunk(addresses, 90);
-console.log(chunkAddresses);
-const chunkAmounts = chunk(amounts, 90);
-console.log(chunkAmounts);
-const distributersArray = await airdrop.methods.getDeployedContracts({}).call();
-    		console.log(distributersArray.value0.length);
-    		let counter = distributersArray.value0.length;
-await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10050));
-  	while(chunkAddresses.length>counter)
-  	{
-  		 console.log("Usao");
-      
-  			const result = await owner.runTarget({
-      	contract: airdrop,
-    		value: locklift.utils.toNano(3),
-    		publicKey: signer.publicKey,
-    		//callback: onDistribute,
-    		},
-    		airdrop =>
-    			airdrop.methods.distribute({_addresses: chunkAddresses[counter][1], _amounts: chunkAmounts[counter][1], _wid: 0,_totalAmount:locklift.utils.toNano(1000)}),
-    		);  
-    	//	console.log(result);
-    		const distributers = await airdrop.methods.getDeployedContracts({}).call();
-    		console.log(distributers.value0.length);
-  		const prc = await airdrop.methods.getNonce({}).call();
-  		counter = distributers.value0.length;
-  		console.log(counter);
-  		console.log(prc);
-  	}
+	let records;
+
+    	records = parse(fs.readFileSync(response.data));
+	const signer = (await locklift.keystore.getSigner("0"))!;
+  	let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
+   	const _randomNonce = locklift.utils.getRandomNonce();
+   	
+   	//address of interrupted airdrop (not enough gas...)
+   	airdrop = await locklift.factory.getDeployedContract(
+  		"EverAirdrop", // name of your contract
+  		"0:40fae6229f3c1ff3323beaf8b1d2f1aebc6e17eb65d3452d49c41b33011489df",
+		);
+	console.log(`Airdrop: ${airdrop.address}`);
+	
+	//address of airdrop's caller
+	owner = accountsFactory.getAccount(
+		"0:8601bfa1367da512bd6ce892940b009b8966b0c175c02163e2f76750c8ef82ba", 
+		signer.publicKey
+		);
+  	console.log(`Owner: ${owner.address}`);
   	
+  	const addresses = records.map(i => i[0]);
+	const amounts = records.map(i => parseInt(i[1], 10));
+
+	//array of chunks (99 recipient per chunk)
+	const chunkAddresses = chunk(addresses, 99);
+	console.log(chunkAddresses);
+	
+	//array of chunk amounts
+	const chunkAmounts = chunk(amounts, 99);
+	console.log(chunkAmounts);
+	
+	//array of already deployed distributers
+	const deployedArray = await airdrop.methods.getDeployedContracts({}).call();
+    	console.log(deployedArray.value0.length);
+    		
+ 
+  
+
+    	let counter = deployedArray.value0.length;
+    	
+    	//sends gas to the airdrop
+	await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10050));
+	
+	//if there are less distributers in the array than the number of chunks, start the continuation while the number gets even
+	while(chunkAddresses.length>counter)
+  	{
+  		//calculates amount for deploy of distributer in order to successfully finish the distribution 
+      		let totalAmount=0;
+ 		const amountsArray = chunkAmounts[counter][1];
+ 		for(let i=0;i<amountsArray.length;i++)
+ 		{
+ 			totalAmount+=amountsArray[i];
+ 		}
+ 		
+ 		//calls distribute
+  		const result = await owner.runTarget({
+      					contract: airdrop,
+    					value: locklift.utils.toNano(3),
+    					publicKey: signer.publicKey,
+    					},
+    				airdrop =>
+    					airdrop.methods.distribute({
+    						     _addresses: chunkAddresses[counter][1], 							     _amounts: chunkAmounts[counter][1], 
+    						     _wid: 0,
+    						     _totalAmount:totalAmount
+    						     }),
+    				);  
+    				
+    		const deployers = await airdrop.methods.getDeployedContracts({}).call();
+  		counter = deployers.value0.length;
+  		console.log(counter);
+  	
+  	}
+ 	//logs the addresses of all the distributer addresses after the distribution is done successfully
   	const distributedContracts = await airdrop.methods.getDeployedContracts({}).call();
     	console.log(`Distributed contracts: ${distributedContracts.value0}`);
-  	//const getDistributorBalanceArr = await airdrop.methods.getDistributorBalanceArr({}).call();
-      //console.log(getDistributorBalanceArr);
-
-	const getEverdropBalance = await airdrop.methods.getEverdropBalance({}).call();
-     console.log(getEverdropBalance);
-  	//if(nonceNr<0)
-  //   console.log(nonceNr);
-
-     
-     	//const distributorAddr = await airdrop.methods.getDistributorAddress({_nonce: i}).call();
-     	//console.log(distributorAddr.value0);
-     	//distributer = await locklift.factory.getDeployedContract(
-  	//"Distributer", // name of your contract
-  	//distributorAddr.value0,
-	//);
-	
-	
-	
-     	
-     }
+ 
+}
   	
-   
-
-
 main()
   .then(() => process.exit(0))
   .catch(e => {

@@ -17,24 +17,24 @@ let distributer: Contract<FactorySource["Distributer"]>;
 let nonce=0;
 
 const main = async () => {
-const signer = (await locklift.keystore.getSigner("0"))!;
-  let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
-   const _randomNonce = locklift.utils.getRandomNonce();
-    const response = await prompts([
-        {
-            type: 'text',
-            name: 'data',
-            message: 'Name of the csv file with airdrop addresses and amount, should be placed in the repo root',
-            initial: 'data.csv',
-        }
-    ]);
+	const signer = (await locklift.keystore.getSigner("0"))!;
+  	let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
+   	const _randomNonce = locklift.utils.getRandomNonce();
+    	const response = await prompts([
+        			{
+            				type: 'text',
+            				name: 'data',
+            				message: 'Name of the csv file with airdrop addresses and amount, should be placed in the repo root',
+            				initial: 'data.csv',
+        			}
+    			]);
 
-let records;
+	let records;
 
-    records = parse(fs.readFileSync(response.data));
+    	records = parse(fs.readFileSync(response.data));
     
-const addresses = records.map(i => i[0]);
-const amounts = records.map(i => parseInt(i[1], 10));
+	const addresses = records.map(i => i[0]);
+	const amounts = records.map(i => parseInt(i[1], 10));
 
 
 function chunk(array, chunkSize) { 
@@ -52,118 +52,80 @@ function chunk(array, chunkSize) {
   return output;
 }
 
-const chunkAddresses = chunk(addresses, 90);
-console.log(chunkAddresses);
-const chunkAmounts = chunk(amounts, 90);
-console.log(chunkAmounts);
-      const { account } = await accountsFactory.deployNewAccount({
-        constructorParams: {},
-        initParams: {
-            _randomNonce,
-        },
-        publicKey: signer.publicKey,
-        value:locklift.utils.toNano(5)
-    });
-    owner = account;
-    owner.publicKey = signer.publicKey;
-    console.log(`Account deployed at ${owner.address}`);
+	const chunkAddresses = chunk(addresses, 99);
+	console.log(chunkAddresses);
+	const chunkAmounts = chunk(amounts, 99);
+	console.log(chunkAmounts);
+      	const { account } = await accountsFactory.deployNewAccount({
+        						constructorParams: {},
+        						initParams: {
+            							_randomNonce,
+        						},
+        						publicKey: signer.publicKey,
+        						value:locklift.utils.toNano(5)
+    						});
+    	owner = account;
+    	owner.publicKey = signer.publicKey;
+    	console.log(`Account deployed at ${owner.address}`);
 	
 	
 	const codeDistributer = locklift.factory.getContractArtifacts("Distributer");
-   const { contract, tx } = await locklift.factory.deployContract({
-        contract: "EverAirdrop",
-        publicKey: signer.publicKey,
-        initParams: {
-        	_randomNonce: locklift.utils.getRandomNonce(),
-            distributerCode: codeDistributer.code
-        },
-        constructorParams: {
-             _contract_notes: 'Airdrop',
-             _refund_destination: owner.address,
-             _refund_lock_duration: 2000,
-        },
-        value: locklift.utils.toNano(10),
-    });
+   	const { contract, tx } = await locklift.factory.deployContract({
+        				contract: "EverAirdrop",
+        				publicKey: signer.publicKey,
+        				initParams: {
+        					_randomNonce: locklift.utils.getRandomNonce(),
+						distributerCode: codeDistributer.code
+        				},
+        				constructorParams: {
+             						_contract_notes: 'Airdrop',
+             						_refund_destination: owner.address,
+             						_refund_lock_duration: 2000,
+        				},
+        				value: locklift.utils.toNano(10),
+    					});
     	airdrop = contract;
     	//console.log(airdrop);
     	//console.log(tx);
-      console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
-      const code = await airdrop.methods.buildAirdropCode({ownerAddress: airdrop.address}).call();//sendExternal({publicKey: signer.publicKey});
+      	console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
+      	const code = await airdrop.methods.buildAirdropCode({ownerAddress: airdrop.address}).call();
     		
     	console.log(`Airdrop code: ${code.value0}`);
 
-      console.log("Distribute tokens:");
+      	console.log("Distribute tokens:");
       
-      await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(2500));
+      	await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(2500));
         await locklift.giver.sendTo(owner.address, locklift.utils.toNano(10000));
      
          
- 	for(let i=0; i<8; i++)
+ 	for(let i=0; i<chunkAddresses.length; i++)
  	{
- 
-
-      const result = await owner.runTarget({
-      	contract: airdrop,
-    		value: locklift.utils.toNano(3),
-    		publicKey: signer.publicKey,
-    		//callback: onDistribute,
-    		},
-    		airdrop =>
-    			airdrop.methods.distribute({_addresses: chunkAddresses[2][1], _amounts: chunkAmounts[2][1], _wid: 0,_totalAmount:locklift.utils.toNano(1000)}),
-    		);  
+ 		let totalAmount=0;
+ 		const amountsArray = chunkAmounts[i][1];
+ 		for(let i=0;i<amountsArray.length;i++)
+ 		{
+ 			totalAmount+=amountsArray[i];
+ 		}
+ 		
+ 		console.log(totalAmount);
+      		const result = await owner.runTarget({
+      					contract: airdrop,
+    					value: locklift.utils.toNano(3),
+    					publicKey: signer.publicKey,
+    					},
+    					airdrop =>
+    						airdrop.methods.distribute({
+    							_addresses: chunkAddresses[i][1], 								_amounts: chunkAmounts[i][1], 
+    							_wid: 0,
+    							_totalAmount: totalAmount}),
+    				);  
             
-       // const nonceNr = await airdrop.methods.getNonce({}).call();
-     //console.log(nonceNr);
-    	console.log(result);
-    //	console.log(result.transaction.outMessages);
+    		console.log(result);
     	}
-    	//const nonceNr = await airdrop.methods.getNonce({}).call();
-    // console.log(nonceNr);
-     	
-    //	const distributedContracts = await airdrop.methods.getDeployedContracts({}).call();
-    //	console.log(`Distributed contracts: ${distributedContracts.value0}`);
-    	
-          
-           
-  /*  	const result2 = await owner.runTarget({
-            contract: airdrop,
-              value: locklift.utils.toNano(2),
-              publicKey: signer.publicKey,
-              },
-              airdrop =>
-                  airdrop.methods.distributerBalance({}),
-              );
-              
-          console.log(result2);*/
-    	
-    		
-    		
-     
-     // console.log(result2);*/
-      
-     
-    //  const getAddress = await airdrop.methods.getAddr({}).call();
-     // const amount = await airdrop.methods.getAmount({}).call();
-   //   console.log(getAddress);
-
-     //const getNonce = await airdrop.methods.getNonce({}).call();
-   //   console.log(getNonce);
-     // const refundLock = await airdrop.methods.getRefundLockDuration({}).call();
-     // console.log(refundLock);
-
-
-     
-      
-    
-	   //const distributorBalance1 = await airdrop.methods.distributerBalance({}).sendExternal({publicKey: signer.publicKey});
-     //console.log(distributorBalance1);
-
-      //const getDistributorBalanceArr = await airdrop.methods.getDistributorBalanceArr({}).call();
-     // console.log(getDistributorBalanceArr);
-
-	//const getEverdropBalance = await airdrop.methods.getEverdropBalance({}).call();
-    // console.log(getEverdropBalance);
-	
+    	    	
+        const deployedContracts = await airdrop.methods.getDeployedContracts({}).call();
+    	console.log(`Deployed contracts: ${deployedContracts.value0}`);
+           	
 }
 main()
   .then(() => process.exit(0))
