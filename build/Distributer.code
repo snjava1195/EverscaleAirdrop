@@ -10,7 +10,7 @@ IFREF {
 GETGLOB 6
 THROWIF 51
 ENDS
-.loc ../contracts/Distributer.sol, 12
+.loc ../contracts/Distributer.sol, 13
 ACCEPT
 .loc ../contracts/Distributer.sol, 0
 CALLREF {
@@ -27,7 +27,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Distributer.sol, 14
+.loc ../contracts/Distributer.sol, 17
 LDU 32
 GETGLOB 4
 ROT
@@ -114,392 +114,58 @@ THROW 0
 CALL $distribute_5c3b864b_internal_macro$
 
 .macro distribute_5c3b864b_internal_macro
-.loc ../contracts/Distributer.sol, 16
-ACCEPT
-.loc ../contracts/Distributer.sol, 17
-FALSE
 .loc ../contracts/Distributer.sol, 18
-GETPARAM 7
-FIRST
-GETGLOB 12
-GREATER
+ACCEPT
+.loc ../contracts/Distributer.sol, 21
+PUSHINT 0
 PUSHCONT {
-	.loc ../contracts/Distributer.sol, 21
-	PUSHINT 0
-	PUSHCONT {
-		PUSH2 S0, S3
-		FIRST
-		LESS
-	}
-	PUSHCONT {
-		.loc ../contracts/Distributer.sol, 23
-		PUSH2 S0, S2
-		SECOND
-		PUSHINT 32
-		DICTUGET
-		THROWIFNOT 50
-		PLDU 128
-		PUSH2 S1, S4
-		SECOND
-		PUSHINT 32
-		DICTUGET
-		THROWIFNOT 50
-		NEWC
-		STSLICECONST x42_
-		STSLICE
-		SWAP
-		STGRAMS
-		PUSHINT 107
-		STZEROES
-		ENDC
-		PUSHINT 1
-		SENDRAWMSG
-		.loc ../contracts/Distributer.sol, 21
-		INC
-		.loc ../contracts/Distributer.sol, 0
-	}
-	WHILE
-	DROP2
-	.loc ../contracts/Distributer.sol, 25
-	TRUE
-	.loc ../contracts/Distributer.sol, 27
-	PUSHREF {
-		.blob x6669727374
-	}
-	SETGLOB 13
+	PUSH2 S0, S2
+	FIRST
+	LESS
 }
 PUSHCONT {
-	.loc ../contracts/Distributer.sol, 29
-	DROP
-	FALSE
-	.loc ../contracts/Distributer.sol, 30
-	PUSHREF {
-		.blob x7365636f6e64
-	}
-	SETGLOB 13
-	.loc ../contracts/Distributer.sol, 31
-	MYADDR
+	.loc ../contracts/Distributer.sol, 23
+	PUSH2 S0, S1
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	PUSH2 S1, S3
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
 	NEWC
 	STSLICECONST x42_
 	STSLICE
-	PUSHINT 111
+	SWAP
+	STGRAMS
+	PUSHINT 107
 	STZEROES
 	ENDC
-	PUSHINT 160
+	PUSHINT 1
 	SENDRAWMSG
-	.loc ../contracts/Distributer.sol, 32
-	CALLREF {
-		CALL $refund_590e1ae3_internal_macro$
-	}
-	DROP
+	.loc ../contracts/Distributer.sol, 21
+	INC
+	.loc ../contracts/Distributer.sol, 0
 }
-IFELSE
-.loc ../contracts/Distributer.sol, 37
+WHILE
+BLKDROP 3
+.loc ../contracts/Distributer.sol, 25
+TRUE
+SETGLOB 13
+.loc ../contracts/Distributer.sol, 27
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
 FALSE
 SETINDEXQ 1
-PUSHINT 64
+PUSHPOW2 7
 SETINDEXQ 4
 SETGLOB 4
 MYADDR
-SWAP
-BLKDROP2 2, 2
-.loc ../contracts/Distributer.sol, 0
-
-.macro refund
-DROP
-GETGLOB 6
-THROWIFNOT 76
-GETGLOB 2
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
-.loc ../contracts/Distributer.sol, 41
-LDU 32
-GETGLOB 4
-ROT
-SETINDEXQ 5
-SETGLOB 4
-ENDS
-.loc ../contracts/Distributer.sol, 0
-CALLREF {
-	CALL $refund_590e1ae3_internal_macro$
-}
-OVER
-PUSHCONT {
-	PUSH S3
-	CTOS
-	LDU 2
-	LDMSGADDR
-	DROP
-	NIP
-	NEWC
-	STSLICECONST xc
-	STSLICE
-	PUSHINT 3269280861
-	STUR 130
-	STI 1
-	ENDC
-	PUSHINT 0
-}
-PUSHCONT {
-	GETGLOB 4
-	DUP
-	INDEX 3
-	OVER
-	THIRD
-	GETGLOB 9
-	ROLL 3
-	SECOND
-	NEWC
-	STSLICECONST x2_
-	STI 1
-	STSLICECONST x1_
-	STSLICE
-	SWAP
-	STGRAMS
-	STDICT
-	PUSHINT 106
-	STZEROES
-	GETGLOB 4
-	INDEX 5
-	STUR 32
-	STI 1
-	ENDC
-	GETGLOB 4
-	INDEX 4
-}
-IFELSE
-SENDRAWMSG
-IFREF {
-	CALL $upd_only_time_in_c4$
-}
-THROW 0
-
-.globl	refund_590e1ae3_internal
-.type	refund_590e1ae3_internal, @function
-CALL $refund_590e1ae3_internal_macro$
-
-.macro refund_590e1ae3_internal_macro
-.loc ../contracts/Distributer.sol, 43
-GETGLOB 11
-NEWC
-STSLICECONST x42_
-STSLICE
-PUSHINT 111
-STZEROES
-ENDC
-PUSHPOW2 7
-SENDRAWMSG
-.loc ../contracts/Distributer.sol, 44
-TRUE
-.loc ../contracts/Distributer.sol, 45
-GETGLOB 4
-PUSHINT 0
-SETINDEXQ 2
-FALSE
-SETINDEXQ 1
-PUSHINT 64
-SETINDEXQ 4
-SETGLOB 4
-.loc ../contracts/Distributer.sol, 0
-
-.macro testFunc
-DROP
-GETGLOB 6
-THROWIFNOT 76
-GETGLOB 2
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
-.loc ../contracts/Distributer.sol, 47
-LDU 32
-GETGLOB 4
-ROT
-SETINDEXQ 5
-SETGLOB 4
-ENDS
-.loc ../contracts/Distributer.sol, 0
-CALLREF {
-	CALL $testFunc_037a417c_internal_macro$
-}
-OVER
-PUSHCONT {
-	PUSH S3
-	CTOS
-	LDU 2
-	LDMSGADDR
-	DROP
-	NIP
-	NEWC
-	STSLICECONST xc
-	STSLICE
-	PUSHINT 3330674898
-	STUR 130
-	STREF
-	ENDC
-	PUSHINT 0
-}
-PUSHCONT {
-	GETGLOB 4
-	DUP
-	INDEX 3
-	OVER
-	THIRD
-	GETGLOB 9
-	ROLL 3
-	SECOND
-	NEWC
-	STSLICECONST x2_
-	STI 1
-	STSLICECONST x1_
-	STSLICE
-	SWAP
-	STGRAMS
-	STDICT
-	PUSHINT 106
-	STZEROES
-	GETGLOB 4
-	INDEX 5
-	STUR 32
-	STREF
-	ENDC
-	GETGLOB 4
-	INDEX 4
-}
-IFELSE
-SENDRAWMSG
-DROP
-CALLREF {
-	CALL $c7_to_c4$
-}
-THROW 0
-
-.globl	testFunc_037a417c_internal
-.type	testFunc_037a417c_internal, @function
-CALL $testFunc_037a417c_internal_macro$
-
-.macro testFunc_037a417c_internal_macro
-.loc ../contracts/Distributer.sol, 48
-PUSHREF {
-}
-.loc ../contracts/Distributer.sol, 49
 GETGLOB 13
-HASHCU
-PUSHREF {
-	.blob x6669727374
-}
-HASHCU
-EQUAL
-DROP2
-GETGLOB 13
-.loc ../contracts/Distributer.sol, 54
-GETGLOB 4
-PUSHINT 0
-SETINDEXQ 2
-FALSE
-SETINDEXQ 1
-PUSHINT 64
-SETINDEXQ 4
-SETGLOB 4
-.loc ../contracts/Distributer.sol, 0
-
-.macro getBalance
-DROP
-GETGLOB 6
-THROWIFNOT 76
-GETGLOB 2
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
-.loc ../contracts/Distributer.sol, 58
-LDU 32
-GETGLOB 4
-ROT
-SETINDEXQ 5
-SETGLOB 4
-ENDS
-.loc ../contracts/Distributer.sol, 0
-CALLREF {
-	CALL $getBalance_12065fe0_internal_macro$
-}
-OVER
-PUSHCONT {
-	PUSH S3
-	CTOS
-	LDU 2
-	LDMSGADDR
-	DROP
-	NIP
-	NEWC
-	STSLICECONST xc
-	STSLICE
-	PUSHINT 2254973191
-	STUR 130
-	STU 256
-	ENDC
-	PUSHINT 0
-}
-PUSHCONT {
-	GETGLOB 4
-	DUP
-	INDEX 3
-	OVER
-	THIRD
-	GETGLOB 9
-	ROLL 3
-	SECOND
-	NEWC
-	STSLICECONST x2_
-	STI 1
-	STSLICECONST x1_
-	STSLICE
-	SWAP
-	STGRAMS
-	STDICT
-	PUSHINT 1
-	STUR 106
-	SWAP
-	NEWC
-	GETGLOB 4
-	INDEX 5
-	STUR 32
-	STU 256
-	STBREFR
-	ENDC
-	GETGLOB 4
-	INDEX 4
-}
-IFELSE
-SENDRAWMSG
-DROP
-CALLREF {
-	CALL $c7_to_c4$
-}
-THROW 0
-
-.globl	getBalance_12065fe0_internal
-.type	getBalance_12065fe0_internal, @function
-CALL $getBalance_12065fe0_internal_macro$
-
-.macro getBalance_12065fe0_internal_macro
-.loc ../contracts/Distributer.sol, 59
-ACCEPT
-.loc ../contracts/Distributer.sol, 61
-GETGLOB 4
-PUSHINT 0
-SETINDEXQ 2
-FALSE
-SETINDEXQ 1
-PUSHINT 64
-SETINDEXQ 4
-SETGLOB 4
-GETGLOB 12
 .loc ../contracts/Distributer.sol, 0
 
 .macro c4_to_c7
@@ -515,7 +181,7 @@ ENDS
 CTOS
 LDMSGADDR
 LDU 128
-LDREF
+LDI 1
 ENDS
 SETGLOB 13
 SETGLOB 12
@@ -560,8 +226,7 @@ PUSHCONT {
 		PLDU 128
 	}
 	IF
-	PUSHREF {
-	}
+	PUSHINT 0
 	SETGLOB 13
 	SETGLOB 12
 	SETGLOB 11
@@ -573,6 +238,8 @@ PUSHCONT {
 	SETGLOB 2
 	PUSHINT 0 ; timestamp
 	SETGLOB 3
+	FALSE
+	SETGLOB 13
 }
 IFREFELSE {
 	CALL $c4_to_c7$
@@ -594,7 +261,7 @@ ROLLREV 3
 NEWC
 STSLICE
 STU 128
-STREF
+STI 1
 STBREFR
 ENDC
 POPROOT
@@ -760,15 +427,9 @@ THROW 0
 
 .macro public_function_selector
 DUP
-PUSHINT 1069611132
+PUSHINT 1756716863
 LEQ
 IFJMPREF {
-	DUP
-	PUSHINT 107489543
-	EQUAL
-	IFJMPREF {
-		CALL $getBalance$
-	}
 	DUP
 	PUSHINT 265838764
 	EQUAL
@@ -787,34 +448,17 @@ IFJMPREF {
 	IFJMPREF {
 		CALL $distribute$
 	}
-}
-DUP
-PUSHINT 2071950881
-LEQ
-IFJMPREF {
-	DUP
-	PUSHINT 1121797213
-	EQUAL
-	IFJMPREF {
-		CALL $refund$
-	}
-	DUP
-	PUSHINT 1183191250
-	EQUAL
-	IFJMPREF {
-		CALL $testFunc$
-	}
 	DUP
 	PUSHINT 1756716863
 	EQUAL
 	IFJMPREF {
 		CALL $constructor$
 	}
-	DUP
-	PUSHINT 2071950881
-	EQUAL
-	IFJMPREF {
-		CALL $totalAmount$
-	}
+}
+DUP
+PUSHINT 2071950881
+EQUAL
+IFJMPREF {
+	CALL $totalAmount$
 }
 

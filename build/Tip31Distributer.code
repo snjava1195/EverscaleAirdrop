@@ -31,10 +31,9 @@ LDREF
 ENDS
 CTOS
 LDMSGADDR
-LDREF
 ENDS
-.loc ../contracts/Tip31Distributer.sol, 16
-DROP2
+.loc ../contracts/Tip31Distributer.sol, 18
+DROP
 PUSHREF {
 	.blob x546865206e756d626572206f6620090909726563697069656e7473206572726f7221
 }
@@ -46,7 +45,7 @@ FIRST
 LESSINT 101
 AND
 THROWARGIFNOT 1002
-.loc ../contracts/Tip31Distributer.sol, 17
+.loc ../contracts/Tip31Distributer.sol, 19
 PUSHREF {
 	.blob x546865206e756d626572206f6620726563697069656e7473206d75737420090909657175616c20746f20746865206e756d626572206f6620616d6f756e747321
 }
@@ -56,16 +55,16 @@ PUSH S2
 FIRST
 EQUAL
 THROWARGIFNOT 1003
-.loc ../contracts/Tip31Distributer.sol, 18
+.loc ../contracts/Tip31Distributer.sol, 20
 ACCEPT
-.loc ../contracts/Tip31Distributer.sol, 19
+.loc ../contracts/Tip31Distributer.sol, 22
 ROT
 SETGLOB 10
-.loc ../contracts/Tip31Distributer.sol, 20
+.loc ../contracts/Tip31Distributer.sol, 23
 CALLREF {
 	CALL $setUpTokenWallet_aa46637f_internal_macro$
 }
-.loc ../contracts/Tip31Distributer.sol, 21
+.loc ../contracts/Tip31Distributer.sol, 24
 PUSHREF {
 	.blob x57616c6c65742061646472657373206572726f7221
 }
@@ -75,7 +74,7 @@ INDEX 3
 PLDU 256
 NEQINT 0
 THROWARGIFNOT 1001
-.loc ../contracts/Tip31Distributer.sol, 23
+.loc ../contracts/Tip31Distributer.sol, 26
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S2
@@ -83,13 +82,13 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/Tip31Distributer.sol, 24
+	.loc ../contracts/Tip31Distributer.sol, 27
 	PUSH2 S0, S2
 	SECOND
 	PUSHINT 32
 	DICTUGET
 	THROWIFNOT 50
-	.loc ../contracts/Tip31Distributer.sol, 25
+	.loc ../contracts/Tip31Distributer.sol, 28
 	DROP
 	PUSH2 S0, S1
 	SECOND
@@ -98,7 +97,7 @@ PUSHCONT {
 	THROWIFNOT 50
 	PLDU 128
 	DROP
-	.loc ../contracts/Tip31Distributer.sol, 23
+	.loc ../contracts/Tip31Distributer.sol, 26
 	INC
 	UFITS 128
 	.loc ../contracts/Tip31Distributer.sol, 0
@@ -116,7 +115,7 @@ THROW 0
 CALL $setUpTokenWallet_aa46637f_internal_macro$
 
 .macro setUpTokenWallet_aa46637f_internal_macro
-.loc ../contracts/Tip31Distributer.sol, 33
+.loc ../contracts/Tip31Distributer.sol, 36
 PUSHINT 500000000
 MYADDR
 GETGLOB 10
@@ -146,7 +145,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Distributer.sol, 42
+.loc ../contracts/Tip31Distributer.sol, 45
 OVER
 PUSHCONT {
 	LDREF
@@ -167,13 +166,13 @@ CALLREF {
 THROW 0
 
 .macro receiveTokenWalletAddress_9b3a57ad_internal_macro
-.loc ../contracts/Tip31Distributer.sol, 43
+.loc ../contracts/Tip31Distributer.sol, 46
 PUSHINT 30004
 GETGLOB 9
 GETGLOB 10
 SDEQ
 THROWANYIFNOT
-.loc ../contracts/Tip31Distributer.sol, 44
+.loc ../contracts/Tip31Distributer.sol, 47
 SETGLOB 11
 .loc ../contracts/Tip31Distributer.sol, 0
 
@@ -189,7 +188,14 @@ LDREF
 ENDS
 CTOS
 LDMSGADDR
+LDU 256
+LDREF
 ENDS
+CTOS
+LDMSGADDR
+ENDS
+SETGLOB 13
+SETGLOB 12
 SETGLOB 11
 SETGLOB 10
 SETGLOB 3
@@ -209,6 +215,27 @@ PUSHCONT {
 		.blob x8000000000000000000000000000000000000000000000000000000000000000001_
 	}
 	DUP
+	PUSHINT 1
+	PUSH S3
+	PUSHINT 64
+	DICTUGET
+	ZEROSWAPIFNOT
+	PUSHCONT {
+		PLDU 256
+	}
+	IF
+	PUSHINT 2
+	PUSH S4
+	PUSHINT 64
+	DICTUGET
+	PUSHCONT {
+		PUSHREFSLICE {
+			.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+		}
+	}
+	IFNOT
+	SETGLOB 13
+	SETGLOB 12
 	SETGLOB 11
 	SETGLOB 10
 	PUSHINT 64
@@ -224,6 +251,9 @@ IFREFELSE {
 }
 
 .macro c7_to_c4
+GETGLOB 13
+GETGLOB 12
+GETGLOB 11
 GETGLOB 10
 GETGLOB 3
 GETGLOB 2
@@ -232,9 +262,14 @@ STU 256
 STU 64
 STONE
 STSLICE
-GETGLOB 11
+ROLLREV 3
 NEWC
 STSLICE
+STU 256
+SWAP
+NEWC
+STSLICE
+STBREFR
 STBREFR
 ENDC
 POPROOT
@@ -348,17 +383,69 @@ CALLREF {
 }
 THROW 60
 
+.macro _randomNonce
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 12
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000bb53331f
+	NEWC
+	STSLICE
+	STU 256
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro _owner
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 13
+OVER
+PUSHCONT {
+	PUSHSLICE xc00000000000000000000000008fd860ac
+	NEWC
+	STSLICE
+	STSLICE
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
 .macro public_function_selector
 DUP
-PUSHINT 163761079
+PUSHINT 265838764
 EQUAL
 IFJMPREF {
-	CALL $constructor$
+	CALL $_owner$
+}
+DUP
+PUSHINT 995308319
+EQUAL
+IFJMPREF {
+	CALL $_randomNonce$
 }
 DUP
 PUSHINT 1354746527
 EQUAL
 IFJMPREF {
 	CALL $receiveTokenWalletAddress$
+}
+DUP
+PUSHINT 1853875575
+EQUAL
+IFJMPREF {
+	CALL $constructor$
 }
 

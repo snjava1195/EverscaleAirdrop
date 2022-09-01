@@ -17,11 +17,7 @@ contract EverAirdrop {
     address[] distributeAddresses;
     TvmCell public stateInit;
     string public contract_notes;
-    bool[] refunded;
-    uint refundCounter=0;
-    string[] testArr;
-    uint[] public valueArr;
-    address[] public distributedAddressArr;
+
     struct Status{
 		bool distributed;
 		address contractAddress;
@@ -98,8 +94,7 @@ contract EverAirdrop {
         
       		address distributer = deployWithMsgBody(_wid, _initialBalance, _totalAmount);
         	Distributer(distributer).distribute{value: 0.5 ever, callback: EverAirdrop.onDistribute}(_addresses, _amounts);
-        	//}
-       //distributeAddresses.push(distributer);
+    
  
      }
 
@@ -125,48 +120,10 @@ contract EverAirdrop {
 		return addr;
 	}
 	
-    function getTestFunc() public view{
-        for(uint i=0;i<deployedContracts.length;i++){
-        		Distributer(deployedContracts[i]).testFunc{value: 1 ever, callback: EverAirdrop.testCallBack, bounce: false}();
-        }
-    }
 
-    function testCallBack(string _input) public{
-     testArr.push(_input);
-    }   
-
-    function getTestCallBackArr() public returns(string[]){
-    return testArr;
-    } 
-
-     function getAddr()public view returns(address){
-        return addr;
-    }
-
-
-
-function getEverdropBalance()public view returns(uint){
-        return address(this).balance;
-
-    }
-
-
-    function getDistributorAddress(uint _nonce) public returns(address){
+    //returns list of all created Distrubers accessible by nonce
+    function getDistributorAddress(uint _nonce) public view returns(address){
         return distributeAddresses[_nonce-1];
-    }
-
-   function distributerBalance() public view{
-        for(uint i=0;i<deployedContracts.length;i++){
-        		Distributer(deployedContracts[i]).getBalance{value: 1 ever, callback: EverAirdrop.getDistributorBalance, bounce: false}();
-        }
-    }
-    	
-	 function getDistributorBalance(uint _value) public  {
-       valueArr.push(_value);
-    }
- 
-    function getDistributorBalanceArr() public returns(uint[]) {
-        return valueArr;	
     }
 
     //Callback for Distributor's distribute method
@@ -182,16 +139,7 @@ function getEverdropBalance()public view returns(uint){
     	 distributeAddresses.push(_contractAddress);
     }
     
-    function onRefund(bool _refunded) public
-    {
-    	refunded.push(_refunded);
-    }    
     
-    function getNonce() public returns(uint _nonce)
-    {
-    	return nonce;
-    }
-   
      /**
      * @dev Sends all contract's balance to the refund_destination
      *      Can be executed only after
@@ -201,20 +149,12 @@ function getEverdropBalance()public view returns(uint){
    
     function refund() refundLockPassed public view {
         
-        if(deployedContracts.length!=0)
-        {
-        	for(uint i=0;i<deployedContracts.length;i++)
-        	{
-        		Distributer(deployedContracts[i]).refund{value: 1 ever/*, callback: EverAirdrop.onRefund, bounce: false*/}().await;
-        	}
-        }
-        
-        payable(refund_destination).transfer(0, false, 128);
+    payable(refund_destination).transfer(0, false, 128);
         
     }
     
     //Builds specific contract code based on the owner's address
-    function buildAirdropCode(address ownerAddress) public returns(TvmCell)
+    function buildAirdropCode(address ownerAddress) public pure returns(TvmCell)
     {
     	TvmCell airdropCode = tvm.code();
     	TvmBuilder salt;

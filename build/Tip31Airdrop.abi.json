@@ -31,6 +31,14 @@
 			]
 		},
 		{
+			"name": "onBalance",
+			"inputs": [
+				{"name":"balance","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "multiTransfer",
 			"inputs": [
 				{"name":"recipients","type":"address[]"},
@@ -53,6 +61,14 @@
 			"inputs": [
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "getDistributers",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address[]"}
 			]
 		},
 		{
@@ -85,10 +101,19 @@
 			"outputs": [
 				{"name":"_randomNonce","type":"uint256"}
 			]
+		},
+		{
+			"name": "tip31distributerCode",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"tip31distributerCode","type":"cell"}
+			]
 		}
 	],
 	"data": [
-		{"key":1,"name":"_randomNonce","type":"uint256"}
+		{"key":1,"name":"_randomNonce","type":"uint256"},
+		{"key":2,"name":"tip31distributerCode","type":"cell"}
 	],
 	"events": [
 		{
@@ -116,6 +141,10 @@
 		{"name":"deposit","type":"uint128"},
 		{"name":"transferGas","type":"uint128"},
 		{"name":"transactionFee","type":"uint128"},
-		{"name":"total_amount","type":"uint256"}
+		{"name":"total_amount","type":"uint256"},
+		{"name":"tip31distributerCode","type":"cell"},
+		{"name":"nonce","type":"uint256"},
+		{"name":"stateInit","type":"cell"},
+		{"name":"deployedContracts","type":"address[]"}
 	]
 }

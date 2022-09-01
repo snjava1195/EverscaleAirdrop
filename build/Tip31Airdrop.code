@@ -22,31 +22,31 @@ ENDS
 CTOS
 LDMSGADDR
 ENDS
-.loc ../contracts/Tip31Airdrop.sol, 34
+.loc ../contracts/Tip31Airdrop.sol, 39
 OVER
 PARSEMSGADDR
 INDEX 3
 PLDU 256
 THROWIFNOT 1001
-.loc ../contracts/Tip31Airdrop.sol, 35
+.loc ../contracts/Tip31Airdrop.sol, 40
 DUP
 PARSEMSGADDR
 INDEX 3
 PLDU 256
 THROWIFNOT 1001
-.loc ../contracts/Tip31Airdrop.sol, 36
+.loc ../contracts/Tip31Airdrop.sol, 41
 ACCEPT
-.loc ../contracts/Tip31Airdrop.sol, 38
+.loc ../contracts/Tip31Airdrop.sol, 43
 SWAP
 SETGLOB 12
-.loc ../contracts/Tip31Airdrop.sol, 39
+.loc ../contracts/Tip31Airdrop.sol, 44
 SETGLOB 13
-.loc ../contracts/Tip31Airdrop.sol, 43
+.loc ../contracts/Tip31Airdrop.sol, 48
 GETGLOB 12
 CALLREF {
 	CALL $setOwnership_a7016023_internal_macro$
 }
-.loc ../contracts/Tip31Airdrop.sol, 44
+.loc ../contracts/Tip31Airdrop.sol, 49
 CALLREF {
 	CALL $setUpTokenWallet_aa46637f_internal_macro$
 }
@@ -61,7 +61,7 @@ THROW 0
 CALL $setUpTokenWallet_aa46637f_internal_macro$
 
 .macro setUpTokenWallet_aa46637f_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 50
+.loc ../contracts/Tip31Airdrop.sol, 55
 PUSHINT 500000000
 MYADDR
 GETGLOB 13
@@ -91,7 +91,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Airdrop.sol, 59
+.loc ../contracts/Tip31Airdrop.sol, 64
 OVER
 PUSHCONT {
 	LDREF
@@ -112,13 +112,13 @@ CALLREF {
 THROW 0
 
 .macro receiveTokenWalletAddress_9b3a57ad_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 62
+.loc ../contracts/Tip31Airdrop.sol, 67
 PUSHINT 30004
 GETGLOB 9
 GETGLOB 13
 SDEQ
 THROWANYIFNOT
-.loc ../contracts/Tip31Airdrop.sol, 64
+.loc ../contracts/Tip31Airdrop.sol, 69
 SETGLOB 17
 .loc ../contracts/Tip31Airdrop.sol, 0
 
@@ -131,7 +131,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Airdrop.sol, 67
+.loc ../contracts/Tip31Airdrop.sol, 72
 ENDS
 .loc ../contracts/Tip31Airdrop.sol, 0
 CALLREF {
@@ -168,16 +168,55 @@ PUSHCONT {
 	BLKDROP 3
 }
 IFELSE
-IFREF {
-	CALL $upd_only_time_in_c4$
+DROP
+CALLREF {
+	CALL $c7_to_c4$
 }
 THROW 0
 
 .macro getDetails_fbbf93a0_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 72
+.loc ../contracts/Tip31Airdrop.sol, 78
 GETGLOB 13
 GETGLOB 17
 GETGLOB 18
+.loc ../contracts/Tip31Airdrop.sol, 0
+
+.macro onBalance
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/Tip31Airdrop.sol, 85
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDU 128
+ENDS
+.loc ../contracts/Tip31Airdrop.sol, 0
+CALLREF {
+	CALL $onBalance_a09c35fc_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	onBalance_a09c35fc_internal
+.type	onBalance_a09c35fc_internal, @function
+CALL $onBalance_a09c35fc_internal_macro$
+
+.macro onBalance_a09c35fc_internal_macro
+.loc ../contracts/Tip31Airdrop.sol, 87
+SETGLOB 18
 .loc ../contracts/Tip31Airdrop.sol, 0
 
 .macro multiTransfer
@@ -189,7 +228,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Airdrop.sol, 79
+.loc ../contracts/Tip31Airdrop.sol, 90
 LDU 32
 LDDICT
 ROTREV
@@ -212,59 +251,127 @@ CALLREF {
 THROW 0
 
 .macro multiTransfer_3c9fa8be_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 80
-SWAP
-SETGLOB 14
-.loc ../contracts/Tip31Airdrop.sol, 81
-SETGLOB 15
-.loc ../contracts/Tip31Airdrop.sol, 82
-PUSHREF {
-	.blob x57616c6c65742061646472657373206572726f7221
-}
+.loc ../contracts/Tip31Airdrop.sol, 91
 GETGLOB 17
-PARSEMSGADDR
-INDEX 3
-PLDU 256
-NEQINT 0
-THROWARGIFNOT 1001
-.loc ../contracts/Tip31Airdrop.sol, 83
-PUSHREF {
-	.blob x546865206e756d626572206f6620726563697069656e7473206572726f7221
-}
-GETGLOB 14
-FIRST
-GTINT 0
-GETGLOB 14
-FIRST
-GETGLOB 16
-LEQ
-AND
-THROWARGIFNOT 1002
-.loc ../contracts/Tip31Airdrop.sol, 84
-PUSHREF {
-	.blob x546865206e756d626572206f6620726563697069656e7473206d75737420657175616c20746f20746865206e756d626572206f6620616d6f756e747321
-}
-GETGLOB 14
-FIRST
-GETGLOB 15
-FIRST
-EQUAL
-THROWARGIFNOT 1003
-.loc ../contracts/Tip31Airdrop.sol, 85
-ACCEPT
-.loc ../contracts/Tip31Airdrop.sol, 90
-GETGLOB 15
-CALLREF {
-	CALL $expectTotalAmount_eda240be_internal_macro$
-}
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 52918595092914533405583360223618677092838176014913335960813341
+STUR 207
+ENDC
+PUSHINT 0
+SENDRAWMSG
 .loc ../contracts/Tip31Airdrop.sol, 93
-DROP
-GETGLOB 14
-GETGLOB 15
-GETGLOB 12
+PUSHINT 0
+NEWC
+STU 256
+PUSHINT 0
+NEWDICT
+PUSHINT 64
+DICTUSETB
+GETGLOB 23
+NEWC
+STU 256
+PUSHINT 1
+ROT
+PUSHINT 64
+DICTUSETB
+MYADDR
+PUSHINT 2
+ROT
+PUSHINT 64
+DICTUSET
+NEWC
+STDICT
+ENDC
+GETGLOB 22
+NEWC
+STSLICECONST x2_
+STOPTREF
+STOPTREF
+STZERO
+ENDC
+SETGLOB 24
+.loc ../contracts/Tip31Airdrop.sol, 98
+MYADDR
+XCHG S2
+GETGLOB 13
+GETGLOB 24
+DUP
+HASHCU
+NEWC
+STSLICECONST x801_
+STU 256
+ENDC
+CTOS
+ROLLREV 5
+PUSH S5
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 2949852426645541256083542794369173188247555
+STUR 143
+OVER
 CALLREF {
-	CALL $startTransfer_8bfcba8b_internal_macro$
+	CTOS
+	LDI 1
+	SWAP
+	PUSHCONT {
+		LDI 5
+		NIP
+	}
+	IF
+	LDI 1
+	SWAP
+	PUSHCONT {
+		LDI 2
+		NIP
+	}
+	IF
+	LDOPTREF
+	LDOPTREF
+	LDDICT
+	ENDS
+	BLKDROP 3
 }
+STREF
+STSLICECONST 1
+ROLLREV 4
+NEWC
+STSLICECONST x6e7fe577
+STSLICE
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+SWAP
+NEWC
+STSLICE
+STBREFR
+STBREFR
+ENDC
+PUSHINT 0
+SENDRAWMSG
+.loc ../contracts/Tip31Airdrop.sol, 100
+GETGLOB 25
+UNPAIR
+OVER
+INC
+ROLLREV 3
+PUSHINT 32
+DICTUSET
+PAIR
+SETGLOB 25
+.loc ../contracts/Tip31Airdrop.sol, 101
+GETGLOB 23
+INC
+SETGLOB 23
 .loc ../contracts/Tip31Airdrop.sol, 0
 
 .globl	startTransfer_8bfcba8b_internal
@@ -272,68 +379,8 @@ CALLREF {
 CALL $startTransfer_8bfcba8b_internal_macro$
 
 .macro startTransfer_8bfcba8b_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 97
-PUSHREF {
-}
-.loc ../contracts/Tip31Airdrop.sol, 98
-PUSHINT 0
-PUSHCONT {
-	PUSH2 S0, S4
-	FIRST
-	LESS
-}
-PUSHCONT {
-	.loc ../contracts/Tip31Airdrop.sol, 99
-	PUSH2 S0, S4
-	SECOND
-	PUSHINT 32
-	DICTUGET
-	THROWIFNOT 50
-	.loc ../contracts/Tip31Airdrop.sol, 100
-	PUSH2 S1, S4
-	SECOND
-	PUSHINT 32
-	DICTUGET
-	THROWIFNOT 50
-	PLDU 128
-	.loc ../contracts/Tip31Airdrop.sol, 101
-	PUSH S3
-	FALSE
-	PUSH S6
-	PUSHINT 500000000
-	BLKSWAP 2, 4
-	GETGLOB 19
-	GETGLOB 17
-	NEWC
-	STSLICECONST x62_
-	STSLICE
-	SWAP
-	STGRAMS
-	PUSHINT 1
-	STUR 107
-	ROLLREV 6
-	NEWC
-	STSLICECONST x73e22143
-	STU 128
-	STSLICE
-	STU 128
-	ROLLREV 3
-	NEWC
-	STSLICE
-	STI 1
-	STREF
-	STBREFR
-	STBREFR
-	ENDC
-	PUSHINT 0
-	SENDRAWMSG
-	.loc ../contracts/Tip31Airdrop.sol, 98
-	INC
-	UFITS 128
-	.loc ../contracts/Tip31Airdrop.sol, 0
-}
-WHILE
-BLKDROP 5
+.loc ../contracts/Tip31Airdrop.sol, 119
+BLKDROP 3
 .loc ../contracts/Tip31Airdrop.sol, 0
 
 .macro expectTotalAmount
@@ -345,7 +392,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Airdrop.sol, 105
+.loc ../contracts/Tip31Airdrop.sol, 128
 LDU 32
 LDDICT
 ROTREV
@@ -389,7 +436,7 @@ THROW 0
 CALL $expectTotalAmount_eda240be_internal_macro$
 
 .macro expectTotalAmount_eda240be_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 106
+.loc ../contracts/Tip31Airdrop.sol, 129
 PUSHREF {
 	.blob x546865206e756d626572206f6620616d6f756e7473206572726f7221
 }
@@ -402,17 +449,17 @@ GETGLOB 16
 LEQ
 AND
 THROWARGIFNOT 1002
-.loc ../contracts/Tip31Airdrop.sol, 107
+.loc ../contracts/Tip31Airdrop.sol, 130
 PUSHINT 0
 DUP
-.loc ../contracts/Tip31Airdrop.sol, 108
+.loc ../contracts/Tip31Airdrop.sol, 131
 PUSHCONT {
 	PUSH2 S0, S2
 	FIRST
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/Tip31Airdrop.sol, 109
+	.loc ../contracts/Tip31Airdrop.sol, 132
 	PUSH2 S0, S2
 	SECOND
 	PUSHINT 32
@@ -423,14 +470,14 @@ PUSHCONT {
 	ADD
 	UFITS 128
 	POP S2
-	.loc ../contracts/Tip31Airdrop.sol, 108
+	.loc ../contracts/Tip31Airdrop.sol, 131
 	INC
 	UFITS 128
 	.loc ../contracts/Tip31Airdrop.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/Tip31Airdrop.sol, 112
+.loc ../contracts/Tip31Airdrop.sol, 135
 NIP
 .loc ../contracts/Tip31Airdrop.sol, 0
 
@@ -443,7 +490,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Tip31Airdrop.sol, 115
+.loc ../contracts/Tip31Airdrop.sol, 138
 ENDS
 .loc ../contracts/Tip31Airdrop.sol, 0
 CALLREF {
@@ -459,9 +506,9 @@ THROW 0
 CALL $refund_590e1ae3_internal_macro$
 
 .macro refund_590e1ae3_internal_macro
-.loc ../contracts/Tip31Airdrop.sol, 116
+.loc ../contracts/Tip31Airdrop.sol, 139
 ACCEPT
-.loc ../contracts/Tip31Airdrop.sol, 117
+.loc ../contracts/Tip31Airdrop.sol, 140
 GETGLOB 12
 NEWC
 STSLICECONST x42_
@@ -471,6 +518,62 @@ STZEROES
 ENDC
 PUSHPOW2 7
 SENDRAWMSG
+.loc ../contracts/Tip31Airdrop.sol, 0
+
+.macro getDistributers
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/Tip31Airdrop.sol, 143
+ENDS
+.loc ../contracts/Tip31Airdrop.sol, 0
+CALLREF {
+	CALL $getDistributers_938e95e4_internal_macro$
+}
+OVER
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 2800230794
+	STUR 130
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	DROP
+}
+IFELSE
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	getDistributers_938e95e4_internal
+.type	getDistributers_938e95e4_internal, @function
+CALL $getDistributers_938e95e4_internal_macro$
+
+.macro getDistributers_938e95e4_internal_macro
+.loc ../contracts/Tip31Airdrop.sol, 145
+GETGLOB 25
 .loc ../contracts/Tip31Airdrop.sol, 0
 
 .globl	setOwnership_a7016023_internal
@@ -625,19 +728,30 @@ LDREF
 ENDS
 CTOS
 LDU 256
+LDREF
+LDU 256
+LDREF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
-SETGLOB 21
-SETGLOB 20
-SETGLOB 19
-SETGLOB 18
-SETGLOB 17
-SETGLOB 16
-SETGLOB 15
-SETGLOB 14
-SETGLOB 13
-SETGLOB 12
-SETGLOB 11
-SETGLOB 10
+PUSHINT 0
+GETGLOBVAR
+GETGLOB 1
+GETGLOB 2
+GETGLOB 3
+GETGLOB 4
+GETGLOB 5
+GETGLOB 6
+GETGLOB 7
+GETGLOB 8
+GETGLOB 9
+BLKSWAP 16, 10
+PUSHINT 26
+TUPLEVAR
+POP C7
 SETGLOB 3
 SETGLOB 2
 
@@ -651,11 +765,22 @@ PUSHCONT {
 	PUSHROOT
 	CTOS
 	PLDDICT ; D
+	PUSHINT 0
+	GETGLOBVAR
+	GETGLOB 1
+	GETGLOB 2
+	GETGLOB 3
+	GETGLOB 4
+	GETGLOB 5
+	GETGLOB 6
+	GETGLOB 7
+	GETGLOB 8
+	GETGLOB 9
 	PUSHREFSLICE {
 		.blob x8000000000000000000000000000000000000000000000000000000000000000001_
 	}
 	PUSHINT 1
-	PUSH S2
+	PUSH S12
 	PUSHINT 64
 	DICTUGET
 	ZEROSWAPIFNOT
@@ -677,18 +802,24 @@ PUSHCONT {
 	}
 	PUSHINT 0
 	BLKPUSH 3, 0
-	SETGLOB 21
-	SETGLOB 20
-	SETGLOB 19
-	SETGLOB 18
-	SETGLOB 17
-	SETGLOB 16
-	SETGLOB 15
-	SETGLOB 14
-	SETGLOB 13
-	SETGLOB 12
-	SETGLOB 11
-	SETGLOB 10
+	PUSHINT 2
+	PUSH S23
+	PUSHINT 64
+	DICTUGETREF
+	PUSHCONT {
+		PUSHREF {
+		}
+	}
+	IFNOT
+	PUSHINT 0
+	PUSHREF {
+	}
+	PUSHINT 0
+	NEWDICT
+	PAIR
+	PUSHINT 26
+	TUPLEVAR
+	POP C7
 	PUSHINT 64
 	DICTUGET
 	THROWIFNOT 61
@@ -706,24 +837,25 @@ PUSHCONT {
 	SETGLOB 20
 	PUSHINT 0
 	SETGLOB 21
+	PUSHINT 0
+	SETGLOB 23
 }
 IFREFELSE {
 	CALL $c4_to_c7$
 }
 
 .macro c7_to_c4
-GETGLOB 21
-GETGLOB 20
-GETGLOB 19
-GETGLOB 18
-GETGLOB 17
-GETGLOB 16
-GETGLOB 15
-GETGLOB 14
-GETGLOB 13
-GETGLOB 12
-GETGLOB 11
-GETGLOB 10
+PUSH C7
+FALSE
+PUSHINT 26
+SETINDEXVARQ
+PUSHINT 27
+UNTUPLEVAR
+DROP
+PUSHINT 26
+PUSHINT 0
+REVX
+BLKDROP 10
 GETGLOB 3
 GETGLOB 2
 NEWC
@@ -731,33 +863,41 @@ STU 256
 STU 64
 STONE
 STSLICE
-ROLLREV 11
+ROLLREV 15
 NEWC
 STU 256
 STSLICE
+ROLLREV 13
+NEWC
+STSLICE
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STU 128
 ROLLREV 9
 NEWC
 STSLICE
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
+STU 128
+STU 128
 STU 128
 ROLLREV 5
 NEWC
-STSLICE
-STU 128
-STU 128
-STU 128
-SWAP
-NEWC
 STU 256
+STREF
+STU 256
+STREF
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
 STBREFR
 STBREFR
 STBREFR
@@ -916,9 +1056,29 @@ PUSHCONT {
 IF
 THROW 0
 
+.macro tip31distributerCode
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 22
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000e344947f
+	NEWC
+	STSLICE
+	STREF
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
 .macro public_function_selector
 DUP
-PUSHINT 995308319
+PUSHINT 967336398
 LEQ
 IFJMPREF {
 	DUP
@@ -926,6 +1086,12 @@ IFJMPREF {
 	EQUAL
 	IFJMPREF {
 		CALL $transferOwnership$
+	}
+	DUP
+	PUSHINT 652747146
+	EQUAL
+	IFJMPREF {
+		CALL $getDistributers$
 	}
 	DUP
 	PUSHINT 966922996
@@ -939,17 +1105,17 @@ IFJMPREF {
 	IFJMPREF {
 		CALL $multiTransfer$
 	}
+}
+DUP
+PUSHINT 1251386125
+LEQ
+IFJMPREF {
 	DUP
 	PUSHINT 995308319
 	EQUAL
 	IFJMPREF {
 		CALL $_randomNonce$
 	}
-}
-DUP
-PUSHINT 1354746527
-LEQ
-IFJMPREF {
 	DUP
 	PUSHINT 1178811051
 	EQUAL
@@ -968,17 +1134,23 @@ IFJMPREF {
 	IFJMPREF {
 		CALL $expectTotalAmount$
 	}
+}
+DUP
+PUSHINT 1665438847
+LEQ
+IFJMPREF {
 	DUP
 	PUSHINT 1354746527
 	EQUAL
 	IFJMPREF {
 		CALL $receiveTokenWalletAddress$
 	}
-}
-DUP
-PUSHINT 1729444094
-LEQ
-IFJMPREF {
+	DUP
+	PUSHINT 1423720221
+	EQUAL
+	IFJMPREF {
+		CALL $onBalance$
+	}
 	DUP
 	PUSHINT 1594609630
 	EQUAL
@@ -986,10 +1158,16 @@ IFJMPREF {
 		CALL $owner$
 	}
 	DUP
-	PUSHINT 1729444094
+	PUSHINT 1665438847
 	EQUAL
 	IFJMPREF {
-		CALL $renounceOwnership$
+		CALL $tip31distributerCode$
 	}
+}
+DUP
+PUSHINT 1729444094
+EQUAL
+IFJMPREF {
+	CALL $renounceOwnership$
 }
 

@@ -36,74 +36,12 @@
 			]
 		},
 		{
-			"name": "getTestFunc",
-			"inputs": [
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "testCallBack",
-			"inputs": [
-				{"name":"_input","type":"string"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getTestCallBackArr",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"string[]"}
-			]
-		},
-		{
-			"name": "getAddr",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "getEverdropBalance",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"uint256"}
-			]
-		},
-		{
 			"name": "getDistributorAddress",
 			"inputs": [
 				{"name":"_nonce","type":"uint256"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "distributerBalance",
-			"inputs": [
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getDistributorBalance",
-			"inputs": [
-				{"name":"_value","type":"uint256"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getDistributorBalanceArr",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"uint256[]"}
 			]
 		},
 		{
@@ -116,18 +54,19 @@
 			]
 		},
 		{
-			"name": "onRefund",
+			"name": "refund",
 			"inputs": [
-				{"name":"_refunded","type":"bool"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "refund",
+			"name": "buildAirdropCode",
 			"inputs": [
+				{"name":"ownerAddress","type":"address"}
 			],
 			"outputs": [
+				{"name":"value0","type":"cell"}
 			]
 		},
 		{
@@ -210,30 +149,6 @@
 			"outputs": [
 				{"name":"contract_notes","type":"string"}
 			]
-		},
-		{
-			"name": "valueArr",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"valueArr","type":"uint256[]"}
-			]
-		},
-		{
-			"name": "distributedAddressArr",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"distributedAddressArr","type":"address[]"}
-			]
-		},
-		{
-			"name": "_await_Distributer_refund",
-			"inputs": [
-				{"name":"value0","type":"bool"}
-			],
-			"outputs": [
-			]
 		}
 	],
 	"data": [
@@ -246,7 +161,6 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
-		{"name":"_await","type":"optional(cell)"},
 		{"name":"refund_destination","type":"address"},
 		{"name":"addr","type":"address"},
 		{"name":"refund_lock_duration_end","type":"uint256"},
@@ -261,11 +175,6 @@
 		{"name":"distributeAddresses","type":"address[]"},
 		{"name":"stateInit","type":"cell"},
 		{"name":"contract_notes","type":"string"},
-		{"name":"refunded","type":"bool[]"},
-		{"name":"refundCounter","type":"uint256"},
-		{"name":"testArr","type":"string[]"},
-		{"name":"valueArr","type":"uint256[]"},
-		{"name":"distributedAddressArr","type":"address[]"},
 		{"components":[{"name":"distributed","type":"bool"},{"name":"contractAddress","type":"address"}],"name":"distributed_status","type":"tuple[]"}
 	]
 }

@@ -23,33 +23,6 @@
 			]
 		},
 		{
-			"name": "refund",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"bool"}
-			]
-		},
-		{
-			"name": "testFunc",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"string"}
-			]
-		},
-		{
-			"name": "getBalance",
-			"inputs": [
-				{"name":"answerId","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"value0","type":"uint256"}
-			]
-		},
-		{
 			"name": "_randomNonce",
 			"inputs": [
 			],
@@ -88,6 +61,6 @@
 		{"name":"_randomNonce","type":"uint256"},
 		{"name":"_owner","type":"address"},
 		{"name":"totalAmount","type":"uint128"},
-		{"name":"forLoopResult","type":"string"}
+		{"name":"distributed","type":"bool"}
 	]
 }

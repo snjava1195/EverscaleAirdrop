@@ -112,20 +112,20 @@ console.log(chunkAmounts);
     			airdrop.methods.distribute({_addresses: chunkAddresses[2][1], _amounts: chunkAmounts[2][1], _wid: 0,_totalAmount:locklift.utils.toNano(1000)}),
     		);  
             
-        const nonceNr = await airdrop.methods.getNonce({}).call();
-     console.log(nonceNr);
-    	//console.log(result);
+       // const nonceNr = await airdrop.methods.getNonce({}).call();
+     //console.log(nonceNr);
+    	console.log(result);
     //	console.log(result.transaction.outMessages);
     	}
-    	const nonceNr = await airdrop.methods.getNonce({}).call();
-     console.log(nonceNr);
+    	//const nonceNr = await airdrop.methods.getNonce({}).call();
+    // console.log(nonceNr);
      	
-    	const distributedContracts = await airdrop.methods.getDeployedContracts({}).call();
-    	console.log(`Distributed contracts: ${distributedContracts.value0}`);
+    //	const distributedContracts = await airdrop.methods.getDeployedContracts({}).call();
+    //	console.log(`Distributed contracts: ${distributedContracts.value0}`);
     	
           
            
-    	const result2 = await owner.runTarget({
+  /*  	const result2 = await owner.runTarget({
             contract: airdrop,
               value: locklift.utils.toNano(2),
               publicKey: signer.publicKey,
@@ -134,23 +134,13 @@ console.log(chunkAmounts);
                   airdrop.methods.distributerBalance({}),
               );
               
-          console.log(result2);
+          console.log(result2);*/
     	
     		
-    		 const result3 = await owner.runTarget({
-      	contract: airdrop,
-    		value: locklift.utils.toNano(2.2),
-    		publicKey: signer.publicKey,
-    		},
-    		airdrop =>
-    			airdrop.methods.getTestFunc({  
-    				}),
-    		);
-  
-      console.log(result3);
+    		
+     
      // console.log(result2);*/
-      const getTestCallBackArr = await airdrop.methods.getTestCallBackArr({}).call();
-     console.log(getTestCallBackArr);
+      
      
     //  const getAddress = await airdrop.methods.getAddr({}).call();
      // const amount = await airdrop.methods.getAmount({}).call();
@@ -168,11 +158,11 @@ console.log(chunkAmounts);
 	   //const distributorBalance1 = await airdrop.methods.distributerBalance({}).sendExternal({publicKey: signer.publicKey});
      //console.log(distributorBalance1);
 
-      const getDistributorBalanceArr = await airdrop.methods.getDistributorBalanceArr({}).call();
-      console.log(getDistributorBalanceArr);
+      //const getDistributorBalanceArr = await airdrop.methods.getDistributorBalanceArr({}).call();
+     // console.log(getDistributorBalanceArr);
 
-	const getEverdropBalance = await airdrop.methods.getEverdropBalance({}).call();
-     console.log(getEverdropBalance);
+	//const getEverdropBalance = await airdrop.methods.getEverdropBalance({}).call();
+    // console.log(getEverdropBalance);
 	
 }
 main()
