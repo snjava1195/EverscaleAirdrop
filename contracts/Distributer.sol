@@ -14,7 +14,7 @@ contract Distributer {
 	}
 
     
-	function distribute(address[] addresses, uint128[] amounts) public responsible returns (address, bool){
+	function distribute(address[] addresses, uint128[] amounts) public responsible returns (bool){
         tvm.accept();
     
             

@@ -88,8 +88,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     }
 	
     function multiTransfer(address[] recipients, uint128[] amounts) external {
-    	ITokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
+    	
     	//TvmCell payload = tvm.encodeBody(Tip31Distributer);
+    	TvmCell _empty;
 		stateInit = tvm.buildStateInit({code: tip31distributerCode,
 			contr: Tip31Distributer,
 			varInit: {_randomNonce: nonce, _owner: address(this)},
@@ -99,6 +100,8 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         	//addr.transfer({stateInit:stateInit,body: payload, value: _initialBalance, bounce: false});	 
         	deployedContracts.push(newDistributer);
 		nonce++;
+		ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(amounts[0], deployedContracts[0], 0.5 ever, address(this), false, _empty);
+		ITokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
 		//return addr;
     /*	_recipients = recipients;
     	_amounts = amounts;

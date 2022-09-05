@@ -81,7 +81,7 @@ const main = async () => {
 	console.log(`Token root: ${root.address}`);
       //expect(await locklift.provider.getBalance(sample.address).then(balance => Number(balance))).to.be.above(0);
     
-
+	const distributerCode = await locklift.factory.getContractArtifacts("Tip31Distributer");	
     	const { contract: airdrop, tx } = await locklift.factory.deployContract({
         contract: "Tip31Airdrop",
         constructorParams: {
@@ -92,6 +92,7 @@ const main = async () => {
         },
         initParams: {
             _randomNonce,
+            tip31distributerCode: distributerCode.code
         },
         publicKey: signer.publicKey,
         value: locklift.utils.toNano(10),
