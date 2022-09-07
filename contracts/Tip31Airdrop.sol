@@ -19,22 +19,24 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     address _tokenRootAddr;
     address[] _recipients;
     uint128[] _amounts;
-
+    address[] distributerAddress;
     uint128 private transferNumber = 255;
 
     address private walletAddress;
     uint128 private deposit = 0;
-
+	address[] distAddress;
+	uint128[] distAmount;
+	address distOwner;
     uint128 private transferGas = 0.8 ever;
     uint128 private transactionFee = 0.015 ever;
     uint total_amount = 0;
+    uint publicKey;
     TvmCell public static tip31distributerCode;
    // uint public static _nonce;
     uint nonce=0;
     TvmCell stateInit;
     address[] deployedContracts;
-    constructor(address senderAddr, address tokenRootAddr
-    /*address[] recipients, uint128[] amounts*/) public 
+    constructor(address senderAddr, address tokenRootAddr) public 
     {
         require(senderAddr.value != 0, 1001);
         require(tokenRootAddr.value != 0, 1001);
@@ -42,8 +44,6 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 
         _senderAddr = senderAddr;
         _tokenRootAddr = tokenRootAddr;
-       // _recipients = recipients;
-       // _amounts = amounts;
 
         setOwnership(_senderAddr);
         setUpTokenWallet();
@@ -87,47 +87,27 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     	deposit = balance;
     }
 	
-    function multiTransfer(address[] recipients, uint128[] amounts) external {
-    	
-    	//TvmCell payload = tvm.encodeBody(Tip31Distributer);
+    function multiTransfer(address[] recipients, uint128[] amounts, uint128 totalAmount) public {
+    	TvmCell payload = tvm.encodeBody(Tip31Distributer, _tokenRootAddr, recipients, amounts, address(this), _senderAddr);
+	stateInit = tvm.buildStateInit({code: tip31distributerCode,
+					 contr: Tip31Distributer,
+					 varInit: {_randomNonce: nonce, _owner: address(this)},
+					 pubkey: tvm.pubkey()
+					});
+       address addr = address.makeAddrStd(0, tvm.hash(stateInit));
+        addr.transfer({stateInit:stateInit,body: payload, value: 2 ever, bounce: false});	
     	TvmCell _empty;
-		stateInit = tvm.buildStateInit({code: tip31distributerCode,
-			contr: Tip31Distributer,
-			varInit: {_randomNonce: nonce, _owner: address(this)},
-			pubkey: 0
-		});
-		address newDistributer = new Tip31Distributer{value: 1 ever, stateInit: stateInit}(_tokenRootAddr, recipients, amounts, address(this));
-        	//addr.transfer({stateInit:stateInit,body: payload, value: _initialBalance, bounce: false});	 
-        	deployedContracts.push(newDistributer);
+		
+        	deployedContracts.push(addr);
 		nonce++;
-		ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(amounts[0], deployedContracts[0], 0.5 ever, address(this), false, _empty);
+		
+		ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, deployedContracts[0], 0.5 ever, address(this), true, _empty);
+		
 		ITokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
-		//return addr;
-    /*	_recipients = recipients;
-    	_amounts = amounts;
-        require(walletAddress.value != 0, 1001, "Wallet address error!");
-        require(_recipients.length > 0 && _recipients.length <= transferNumber, 1002, "The number of recipients error!");
-        require(_recipients.length == _amounts.length, 1003, "The number of recipients must equal to the number of amounts!");
-        tvm.accept();
-
-    //    uint128 msgValue = uint128(msg.value);
-     //   require(msgValue >= _amounts.length * (transferGas + transactionFee), 1008, "not sufficient gas!");
-
-        uint128 totalAmount = expectTotalAmount(_amounts);
-       // require(deposit >= totalAmount, 1007, "not sufficient funds!");
-
-        startTransfer(_recipients, _amounts, _senderAddr);*/
+		
     }
 
-    function startTransfer(address[] recipients, uint128[] amounts, address remainingGasTo) private {
-       /* TvmCell _empty;
-        for (uint128 i = 0; i < recipients.length; i++) {
-            address recipient = recipients[i];
-            uint128 amount = amounts[i];
-            ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(amount, recipient, 0.5 ever, remainingGasTo, false, _empty);
-        }*/
-    }
-
+    
     function expectTotalAmount(uint128[] amounts) public returns (uint128) {
         require(amounts.length > 0 && amounts.length <= transferNumber, 1002, "The number of amounts error!");
         uint128 totalAmount;
@@ -148,5 +128,36 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     	return deployedContracts;
     }
     
+    function triggerDistributer() public 
+    {
+    	TvmCell body = tvm.encodeBody(Tip31Distributer.getDetails, onDetails);
+    	deployedContracts[0].transfer({value: 0.5 ever, body: body});
+    	
+    }
+    
+    function onDetails(address[] addresses, uint128[] amounts, address owner) public 
+    {
+    	distAddress = addresses;
+    	distAmount = amounts;
+    	distOwner = owner;
+    	distributerAddress.push(address(this));	
+    
+    }
+    
+    function getDistributerAddress() public returns (address[], uint128[], address)
+    {
+    	return (distAddress, distAmount, distOwner);
+    }
+    
+    function getClbck() public returns (address[])
+    {
+    	return distributerAddress;
+    }
+    
+    function getPubKey() public returns (uint)
+    {
+    	publicKey = tvm.pubkey();
+    	return publicKey;
+    }
 
  }

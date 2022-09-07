@@ -5,29 +5,34 @@ pragma AbiHeader pubkey;
 
 import "ITokenRoot.sol";
 import 'ITokenWallet.sol';
+import "IAcceptTokensTransferCallback.sol";
+import 'InternalOwner.sol';
+import 'CheckPubKey.sol';
+import 'RandomNonce.sol';
 
-contract Tip31Distributer {
+contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensTransferCallback {
 	
 	address _tokenRootAddr;
 	address walletAddress;
-	uint public static _randomNonce;
+	address[] addresses;
+	uint128[] amountss;
 	address public static _owner;
+	address _remainingGasTo;
+	bool public isCallback=false;
+	TvmCell _empty;
+	uint pubKey;
 	
-	constructor(address tokenRootAddr, address[] recipients, uint128[] amounts, address remainingGasTo) public
+	constructor(address tokenRootAddr, address[] recipients, uint128[] amounts, address remainingGasTo, address senderAddr) public
 	{
+		require(msg.sender==_owner, 1001);
 		require(recipients.length > 0 && recipients.length <= 100, 1002, "The number of 			recipients error!");
         	require(recipients.length == amounts.length, 1003, "The number of recipients must 			equal to the number of amounts!");
         	tvm.accept();
-        	 TvmCell _empty;
 		_tokenRootAddr = tokenRootAddr;
+		setOwnership(senderAddr);
 		setUpTokenWallet();
-		require(walletAddress.value != 0, 1001, "Wallet address error!");
-        	
-        	for (uint128 i = 0; i < recipients.length; i++) {
-            		address recipient = recipients[i];
-            		uint128 amount = amounts[i];
-            	//	ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(amount, 				recipient, 0.5 ever, remainingGasTo, false, _empty);
-        	}
+		addresses = recipients;
+		amountss = amounts;
 		
 	}
 	
@@ -46,4 +51,40 @@ contract Tip31Distributer {
 		require(msg.sender == _tokenRootAddr, 30004);
 		walletAddress = wallet;
 	}
+	
+	function getDetails() public responsible returns (address[] _recipients, uint128[] _amounts, address owner)
+	{
+		tvm.accept();
+		return {value: 0, bounce: false, flag: 64} (addresses, amountss, _owner);
+	}
+	
+	function onAcceptTokensTransfer(address tokenRoot, uint128 amount, address sender, address senderWallet, address remainingGasTo, TvmCell payload) external override {
+    tvm.accept();
+    	TvmCell empty;
+    	address remaining = address(this);
+    	//walletAddress = msg.sender;
+    	isCallback=true;
+    	for (uint128 i = 0; i < addresses.length; i++) {
+            		address recipient = addresses[i];
+            		uint128 amount = amountss[i];
+            		
+       ITokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amount, recipient, 0.5 ever, remaining, false, empty);
+       }
+       }
+       
+       function transfer() public returns(address)
+       {
+       	require(walletAddress.value != 0, 1001, "Wallet address error!");
+       	TvmCell empty;
+       	ITokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountss[0], addresses[0], 0.5 ever, _owner, false, empty);
+       	return walletAddress;
+       }
+       
+       function getPublicKey() public returns (uint)
+       {
+       	pubKey = tvm.pubkey();
+       	return pubKey;
+       }
+        	
+    
 }
