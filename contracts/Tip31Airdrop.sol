@@ -24,9 +24,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 
     address private walletAddress;
     uint128 private deposit = 0;
-	address[] distAddress;
-	uint128[] distAmount;
-	address distOwner;
+    address[] distAddress;
+    uint128[] distAmount;
+    address distOwner;
     uint128 private transferGas = 0.8 ever;
     uint128 private transactionFee = 0.015 ever;
     uint total_amount = 0;
@@ -95,13 +95,13 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 					 pubkey: tvm.pubkey()
 					});
        address addr = address.makeAddrStd(0, tvm.hash(stateInit));
-        addr.transfer({stateInit:stateInit,body: payload, value: 2 ever, bounce: false});	
+        addr.transfer({stateInit:stateInit,body: payload, value: 3 ever, bounce: false});	
     	TvmCell _empty;
 		
         	deployedContracts.push(addr);
 		nonce++;
 		
-		ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, deployedContracts[0], 0.5 ever, address(this), true, _empty);
+		ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, addr, 0.5 ever, address(this), true, _empty);
 		
 		ITokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
 		
