@@ -116,9 +116,9 @@ async function main() {
     	console.log("Airdrop address:");
     	console.log(airdrop.address);
     	
-    	const key = await airdrop.methods.getPubKey({}).call();
+    	/*const key = await airdrop.methods.getPubKey({}).call();
     	console.log("Airdrop public key:");
-    	console.log(key);
+    	console.log(key);*/
     	
     	await locklift.giver.sendTo(owner.address, locklift.utils.toNano(100));
     	
@@ -172,7 +172,7 @@ async function main() {
     	console.log(distributed);
     	
     	/**********************Get distributer details************************/
-    	const callback = await user.runTarget(
+    /*	const callback = await user.runTarget(
  	{
  		contract: airdrop,
  		value: locklift.utils.toNano(2.1),
@@ -180,12 +180,8 @@ async function main() {
  	airdrop =>
  		airdrop.methods.triggerDistributer({}),
  	);
+ 	*/
  	
- 	
-    	const getClbck = await airdrop.methods.getClbck({}).call();
-    	console.log("Distributer details: ");
-    	console.log(getClbck);
-    	
     	distributer = await locklift.factory.getDeployedContract(
   	"Tip31Distributer", 
   	distributed.value0[0]
@@ -224,7 +220,7 @@ async function main() {
   	console.log(`Distributers balance: ${balanceWallet.value0}`);
   	
   	const ownerTokenWalletAddress1 = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[1]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress.value0}`);
+  	console.log(`User's token wallet: ${ownerTokenWalletAddress1.value0}`);
   	const ownerTokenWallet1 = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress1.value0);
   	const balanceWallet1 = await ownerTokenWallet1.methods.balance({answerId:0}).call();
   	console.log(`Distributers balance: ${balanceWallet1.value0}`);
@@ -261,8 +257,6 @@ async function main() {
   	
   	const ownerWallet = await ownerTokenWallet.methods.owner({answerId: 0}).call();
   	console.log(ownerWallet);
-  	const disPubKey = await distributer.methods.getPublicKey({}).call();
-  	console.log(disPubKey);
  //	const balanceWallet2 = await ownerTokenWallet.methods.balance({answerId:0}).call();
   //	console.log(balanceWallet2.value0);
 }

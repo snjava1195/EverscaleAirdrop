@@ -30,13 +30,13 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
         	tvm.accept();
 		_tokenRootAddr = tokenRootAddr;
 		setOwnership(senderAddr);
-		setUpTokenWallet();
+		//setUpTokenWallet();
 		addresses = recipients;
 		amountss = amounts;
 		
 	}
 	
-	function setUpTokenWallet() internal view {
+/*	function setUpTokenWallet() internal view {
         	// Deploy token wallet
 		ITokenRoot(_tokenRootAddr).deployWallet{
 		    value: 1 ever,
@@ -50,7 +50,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 	function receiveTokenWalletAddress(address wallet) external {
 		require(msg.sender == _tokenRootAddr, 30004);
 		walletAddress = wallet;
-	}
+	}*/
 	
 	function getDetails() public responsible returns (address[] _recipients, uint128[] _amounts, address owner)
 	{
@@ -62,29 +62,31 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
     tvm.accept();
     	TvmCell empty;
     	address remaining = address(this);
-    	//walletAddress = msg.sender;
+    	walletAddress = msg.sender;
     	isCallback=true;
     	for (uint128 i = 0; i < addresses.length; i++) {
             		address recipient = addresses[i];
-            		uint128 amount = amountss[i];
+            		uint128 amountPerTransfer = amountss[i];
             		
-       ITokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amount, recipient, 0.5 ever, remaining, false, empty);
+       ITokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountPerTransfer, recipient, 0.5 ever, remaining, false, empty);
        }
+       _owner.transfer(0, false, 128);
+       
        }
        
-       function transfer() public returns(address)
+     /*  function transfer() public returns(address)
        {
        	require(walletAddress.value != 0, 1001, "Wallet address error!");
        	TvmCell empty;
        	ITokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountss[0], addresses[0], 0.5 ever, _owner, false, empty);
        	return walletAddress;
        }
-       
-       function getPublicKey() public returns (uint)
+       */
+   /*    function getPublicKey() public returns (uint)
        {
        	pubKey = tvm.pubkey();
        	return pubKey;
-       }
-        	
+       }*/
+        
     
 }
