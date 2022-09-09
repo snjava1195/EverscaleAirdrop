@@ -3,8 +3,10 @@ pragma AbiHeader expire;
 //pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
-import "ITokenRoot.sol";
-import 'ITokenWallet.sol';
+//import "ITokenRoot.sol";
+//import 'ITokenWallet.sol';
+import "TIP31TokenRoot.sol";
+import 'TIP31TokenWallet.sol';
 import "IAcceptTokensTransferCallback.sol";
 import 'InternalOwner.sol';
 import 'CheckPubKey.sol';
@@ -68,7 +70,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
             		address recipient = addresses[i];
             		uint128 amountPerTransfer = amountss[i];
             		
-       ITokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountPerTransfer, recipient, 0.5 ever, remaining, false, empty);
+       TIP31TokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountPerTransfer, recipient, 0.5 ever, remaining, false, empty);
        }
        _owner.transfer(0, false, 128);
        

@@ -9,9 +9,11 @@ import 'RandomNonce.sol';
 import "MsgFlag.sol";
 
 
-import "ITokenRoot.sol";
-import 'ITokenWallet.sol';
+//import "ITokenRoot.sol";
+//import 'ITokenWallet.sol';
 import "Tip31Distributer.sol";
+import "TIP31TokenRoot.sol";
+import "TIP31TokenWallet.sol";
 
 contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 
@@ -52,7 +54,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     
     function setUpTokenWallet() internal view {
         // Deploy token wallet
-        ITokenRoot(_tokenRootAddr).deployWallet{
+        TIP31TokenRoot(_tokenRootAddr).deployWallet{
             value: 1 ever,
             callback: Tip31Airdrop.receiveTokenWalletAddress
         }(
@@ -103,9 +105,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
         	deployedContracts.push(addr);
 		nonce++;
 		
-		ITokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, addr, 0.5 ever, address(this), true, _empty);
+		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, addr, 0.5 ever, address(this), true, _empty);
 		
-		ITokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
+		TIP31TokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
 		
     }
 	
