@@ -10,7 +10,7 @@ import "MsgFlag.sol";
 
 
 //import "ITokenRoot.sol";
-//import 'ITokenWallet.sol';
+import 'TokenWallet.sol';
 import "Tip31Distributer.sol";
 import "TIP31TokenRoot.sol";
 import "TIP31TokenWallet.sol";
@@ -136,6 +136,11 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     
     function refund() public view {
         tvm.accept();
+        for(uint i=0;i<deployedContracts.length;i++)
+        {
+        	Tip31Distributer(deployedContracts[i]).refund{value:0.5 ever, flag:0}();
+        }
+        TokenWallet(walletAddress).sendSurplusGas{value: 0.8 ever, flag: 0}(_senderAddr);
         payable(_senderAddr).transfer(0, false, 128);
     }
     

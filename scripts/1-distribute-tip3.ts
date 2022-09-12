@@ -257,6 +257,15 @@ async function main() {
   	
   	const ownerWallet = await ownerTokenWallet.methods.owner({answerId: 0}).call();
   	console.log(ownerWallet);
+  	const refund = await user.runTarget(
+  	{
+  		contract: airdrop,
+    		value: locklift.utils.toNano(2.1),
+  	},
+  		airdrop =>
+  			airdrop.methods.refund({}),
+  		);
+  	console.log(refund);
  //	const balanceWallet2 = await ownerTokenWallet.methods.balance({answerId:0}).call();
   //	console.log(balanceWallet2.value0);
 }

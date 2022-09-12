@@ -4,7 +4,7 @@ pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
 //import "ITokenRoot.sol";
-//import 'ITokenWallet.sol';
+import 'TokenWallet.sol';
 import "TIP31TokenRoot.sol";
 import 'TIP31TokenWallet.sol';
 import "IAcceptTokensTransferCallback.sol";
@@ -16,6 +16,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 	
 	address _tokenRootAddr;
 	address walletAddress;
+	address _senderAddress;
 	address[] addresses;
 	uint128[] amountss;
 	address public static _owner;
@@ -32,6 +33,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
         	tvm.accept();
 		_tokenRootAddr = tokenRootAddr;
 		setOwnership(senderAddr);
+		_senderAddress = senderAddr;
 		//setUpTokenWallet();
 		addresses = recipients;
 		amountss = amounts;
@@ -71,11 +73,19 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
             		uint128 amountPerTransfer = amountss[i];
             		
        TIP31TokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountPerTransfer, recipient, 0.5 ever, remaining, false, empty);
+       
        }
-       _owner.transfer(0, false, 128);
+       //TokenWallet(walletAddress).sendSurplusGas{value: 0.8 ever, flag: 0}(_senderAddress);
+       
+       //_owner.transfer(0, false, 128);
        
        }
        
+       function refund() public
+       {
+       	TokenWallet(walletAddress).sendSurplusGas{value: 0.8 ever, flag: 0}(_senderAddress);
+       	_owner.transfer(0, false, 128);
+       }
      /*  function transfer() public returns(address)
        {
        	require(walletAddress.value != 0, 1001, "Wallet address error!");
