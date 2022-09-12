@@ -49,6 +49,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 
         setOwnership(_senderAddr);
         setUpTokenWallet();
+        buildAirdropCode(msg.sender);
        
     }
     
@@ -111,6 +112,14 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 		
     }
 	
+    function buildAirdropCode(address ownerAddress) public pure returns(TvmCell)
+    {
+    	TvmCell airdropCode = tvm.code();
+    	TvmBuilder salt;
+    	salt.store(ownerAddress);
+    	return tvm.setCodeSalt(airdropCode, salt.toCell());
+    }	
+    
     function getDistributorAddress(uint _nonce) public view returns(address){
         return deployedContracts[_nonce-1];
     }
