@@ -25,16 +25,12 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     uint128 private transferNumber = 100;
     uint128 deposit;
     address private walletAddress;
-    //address[] distAddress;
-    //uint128[] distAmount;
-    //address distOwner;
     uint128 private transferGas = 0.8 ever;
     uint128 private transactionFee = 0.015 ever;
     uint total_amount = 0;
     uint128 numberOfRecipients;
     uint publicKey;
     TvmCell public static tip31distributerCode;
-   // uint public static _nonce;
     uint nonce=0;
     TvmCell stateInit;
     address[] deployedContracts;
@@ -74,20 +70,13 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     
     function getDetails() external returns(
         address _token,
-        address _token_wallet,
-        uint128 _transferred_count
+        address _token_wallet
     ) {
     	
         return (
             _tokenRootAddr,
-            walletAddress,
-            deposit
+            walletAddress
         );
-    }
-
-    function onBalance(uint128 balance) public
-    {
-    	deposit = balance;
     }
 	
     function multiTransfer(address[] recipients, uint128[] amounts, uint128 totalAmount) public {
@@ -108,8 +97,6 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 		
 		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, addr, 0.5 ever, address(this), true, _empty);
 		
-		TIP31TokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
-		
     }
 	
     function buildAirdropCode(address ownerAddress) public pure returns(TvmCell)
@@ -123,16 +110,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     function getDistributorAddress(uint _nonce) public view returns(address){
         return deployedContracts[_nonce-1];
     }
-    
-   /* function expectTotalAmount(uint128[] amounts) public returns (uint128) {
-        require(amounts.length > 0 && amounts.length <= transferNumber, 1002, "The number of amounts error!");
-        uint128 totalAmount;
-        for (uint128 i = 0; i < amounts.length; i ++) {
-            totalAmount += amounts[i];
-        }
-       
-        return totalAmount;
-    }*/
+
     
     function refund() public view {
         tvm.accept();
@@ -149,25 +127,4 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     	return deployedContracts;
     }
     
-   /* function onDetails(address[] addresses, uint128[] amounts, address owner) public 
-    {
-    	distAddress = addresses;
-    	distAmount = amounts;
-    	distOwner = owner;
-    	distributerAddress.push(address(this));	
-    
-    }
-    
-    function getDistributerAddress() public returns (address[], uint128[], address)
-    {
-    	return (distAddress, distAmount, distOwner);
-    }
-    
-    
-    function getPubKey() public returns (uint)
-    {
-    	publicKey = tvm.pubkey();
-    	return publicKey;
-    }*/
-
  }

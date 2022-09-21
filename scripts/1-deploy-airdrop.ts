@@ -126,7 +126,7 @@ function chunk(array, chunkSize) {
         const deployedContracts = await airdrop.methods.getDeployedContracts({}).call();
     	console.log(`Deployed contracts: ${deployedContracts.value0}`);
            const distributedContracts = await airdrop.methods.getDistributedContracts({}).call();
-    	console.log(`Deployed contracts: ${distributedContracts.value0}`);
+    	console.log(`Distribution is done contracts: ${distributedContracts.value0}`);
 }
 main()
   .then(() => process.exit(0))

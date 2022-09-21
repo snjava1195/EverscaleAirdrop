@@ -18,7 +18,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 	address walletAddress;
 	address _senderAddress;
 	address[] addresses;
-	uint128[] amountss;
+	uint128[] amountsToTransfer;
 	address public static _owner;
 	address _remainingGasTo;
 	bool public isCallback=false;
@@ -36,30 +36,15 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 		_senderAddress = senderAddr;
 		//setUpTokenWallet();
 		addresses = recipients;
-		amountss = amounts;
+		amountsToTransfer = amounts;
 		
 	}
 	
-/*	function setUpTokenWallet() internal view {
-        	// Deploy token wallet
-		ITokenRoot(_tokenRootAddr).deployWallet{
-		    value: 1 ever,
-		    callback: Tip31Distributer.receiveTokenWalletAddress
-		}(
-		    address(this),
-		    0.5 ever
-		);
-    	}
-    
-	function receiveTokenWalletAddress(address wallet) external {
-		require(msg.sender == _tokenRootAddr, 30004);
-		walletAddress = wallet;
-	}*/
 	
 	function getDetails() public responsible returns (address[] _recipients, uint128[] _amounts, address owner)
 	{
 		tvm.accept();
-		return {value: 0, bounce: false, flag: 64} (addresses, amountss, _owner);
+		return {value: 0, bounce: false, flag: 64} (addresses, amountsToTransfer, _owner);
 	}
 	
 	function onAcceptTokensTransfer(address tokenRoot, uint128 amount, address sender, address senderWallet, address remainingGasTo, TvmCell payload) external override {
@@ -70,14 +55,12 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
     	isCallback=true;
     	for (uint128 i = 0; i < addresses.length; i++) {
             		address recipient = addresses[i];
-            		uint128 amountPerTransfer = amountss[i];
+            		uint128 amountPerTransfer = amountsToTransfer[i];
             		
        TIP31TokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountPerTransfer, recipient, 0.5 ever, remaining, false, empty);
        
        }
-       //TokenWallet(walletAddress).sendSurplusGas{value: 0.8 ever, flag: 0}(_senderAddress);
        
-       //_owner.transfer(0, false, 128);
        
        }
        
@@ -86,19 +69,6 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
        	TokenWallet(walletAddress).sendSurplusGas{value: 0.8 ever, flag: 0}(_senderAddress);
        	_owner.transfer(0, false, 128);
        }
-     /*  function transfer() public returns(address)
-       {
-       	require(walletAddress.value != 0, 1001, "Wallet address error!");
-       	TvmCell empty;
-       	ITokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountss[0], addresses[0], 0.5 ever, _owner, false, empty);
-       	return walletAddress;
-       }
-       */
-   /*    function getPublicKey() public returns (uint)
-       {
-       	pubKey = tvm.pubkey();
-       	return pubKey;
-       }*/
         
     
 }
