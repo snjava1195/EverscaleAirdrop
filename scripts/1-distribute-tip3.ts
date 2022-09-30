@@ -76,7 +76,7 @@ async function main() {
   	
 	/*********************User deploy***************************/
 	
-	const {account} = await accountFactory.deployNewAccount({
+	/*const {account} = await accountFactory.deployNewAccount({
   		value: locklift.utils.toNano(3),
   		publicKey: signer.publicKey,
   		initParams: {
@@ -86,8 +86,9 @@ async function main() {
   		});
   	user = account;
     	user.publicKey = signer.publicKey;
-   // owner.afterRun = afterRun;
-    	user.name = 'Regular user';
+    	user.name = 'Regular user';*/
+    	
+    	user = 				accountFactory.getAccount("0:7448b7233c21968949be3ba5fc0c1521dfd3ac81f33cee70836bd72620258c55", signer.publicKey);
   	console.log(`User: ${user.address}`);
     	
     	await locklift.giver.sendTo(user.address, locklift.utils.toNano(100));
@@ -95,7 +96,7 @@ async function main() {
   	const codeDistributer = locklift.factory.getContractArtifacts("Tip31Distributer");
   	
   	/*********************Deploy airdrop***********************/
-  	const { contract: airdrop, tx } = await locklift.factory.deployContract({
+  	/*const { contract: airdrop, tx } = await locklift.factory.deployContract({
         contract: "Tip31Airdrop",
         constructorParams: {
             senderAddr: user.address,
@@ -108,7 +109,13 @@ async function main() {
         },
         publicKey: signer.publicKey,
         value: locklift.utils.toNano(10),
-   	});
+   	});*/
+   	
+   		airdrop = await locklift.factory.getDeployedContract(
+  	"Tip31Airdrop", // name of your contract
+  	"0:baea7204c3c9c074b7d5f5567f174647b7868d749ab7dbc397deb5711bf20409",
+	);
+	console.log(`Token root: ${airdrop.address}`);
     
     
     	await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(100));
@@ -123,21 +130,21 @@ async function main() {
     	await locklift.giver.sendTo(owner.address, locklift.utils.toNano(100));
     	
     	/************************Mint tokens to airdrop***********************/
-    	await owner.runTarget({
+    	/*await owner.runTarget({
   		contract: root,
     		value: locklift.utils.toNano(2.2),
     		publicKey: signer.publicKey,
     		},
     		root =>
     			root.methods.mint({ 
-    				amount: locklift.utils.toNano(10000), 
+    				amount: locklift.utils.toNano(100), 
     				recipient: airdrop.address, 
     				deployWalletValue: locklift.utils.toNano(1), 
     				remainingGasTo: airdrop.address, 
     				notify: false, 
     				payload: '', 
     				}),
-    		);
+    		);*/
     		
     	/*********************Start distribution***********************/	
     	for(let i=0; i<chunkAddresses.length; i++)
@@ -148,7 +155,6 @@ async function main() {
  		{
  			totAmount+=amountsArray[i];
  		}
- 		totAmount+=10000000000
  		console.log(totAmount);	
   	await user.runTarget(
   	{
@@ -266,8 +272,6 @@ async function main() {
   			airdrop.methods.refund({}),
   		);
   	console.log(refund);
- //	const balanceWallet2 = await ownerTokenWallet.methods.balance({answerId:0}).call();
-  //	console.log(balanceWallet2.value0);
 }
 
 main()

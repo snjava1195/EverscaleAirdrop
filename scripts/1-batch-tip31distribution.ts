@@ -7,9 +7,9 @@ const fs  = require("fs");
 const { parse } = require('csv-parse/lib/sync');
 const {load} = require('csv-load-sync');
 let owner: Contract<FactorySource["Wallet"]>;
-let airdrop: Contract<FactorySource["EverAirdrop"]>;
+let airdrop: Contract<FactorySource["Tip31Airdrop"]>;
 
-let distributer: Contract<FactorySource["Distributer"]>;
+let distributer: Contract<FactorySource["Tip31Distributer"]>;
 
 //Script used for continuation in case of interrupted distribution
 
@@ -20,7 +20,7 @@ const main = async () => {
             type: 'text',
             name: 'data',
             message: 'Name of the csv file with airdrop addresses and amount, should be placed in the repo root',
-            initial: 'data.csv',
+            initial: 'proba.csv',
         }
     ]);
 
@@ -50,14 +50,14 @@ function chunk(array, chunkSize) {
    	
    	//address of interrupted airdrop (not enough gas...)
    	airdrop = await locklift.factory.getDeployedContract(
-  		"EverAirdrop", // name of your contract
-  		"0:931dc9da8562eda5f4259840d6b8141490cfe10fd13eee643dd4bca8c583e054",
+  		"Tip31Airdrop", // name of your contract
+  		"0:40fae6229f3c1ff3323beaf8b1d2f1aebc6e17eb65d3452d49c41b33011489df",
 		);
 	console.log(`Airdrop: ${airdrop.address}`);
 	
 	//address of airdrop's caller
 	owner = accountsFactory.getAccount(
-		"0:13e596cafe2e092fddeea4f04bbd91feaac83e4f282b48fb7c76bc45f5c187cd", 
+		"0:8601bfa1367da512bd6ce892940b009b8966b0c175c02163e2f76750c8ef82ba", 
 		signer.publicKey
 		);
   	console.log(`Owner: ${owner.address}`);
@@ -74,7 +74,7 @@ function chunk(array, chunkSize) {
 	console.log(chunkAmounts);
 	
 	//array of already deployed distributers
-	const deployedArray = await airdrop.methods.getDeployedContracts({}).call();
+	const deployedArray = await airdrop.methods.getDistributers({}).call();
     	console.log(deployedArray.value0.length);
     		
  
@@ -83,8 +83,22 @@ function chunk(array, chunkSize) {
     	let counter = deployedArray.value0.length;
     	
     	//sends gas to the airdrop
-	await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10050));
-	
+	//await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10050));
+	await owner.runTarget({
+  		contract: root,
+    		value: locklift.utils.toNano(2.2),
+    		publicKey: signer.publicKey,
+    		},
+    		root =>
+    			root.methods.mint({ 
+    				amount: locklift.utils.toNano(10000), 
+    				recipient: airdrop.address, 
+    				deployWalletValue: locklift.utils.toNano(1), 
+    				remainingGasTo: airdrop.address, 
+    				notify: false, 
+    				payload: '', 
+    				}),
+    		);
 	//if there are less distributers in the array than the number of chunks, start the continuation while the number gets even
 	while(chunkAddresses.length>counter)
   	{
@@ -97,26 +111,25 @@ function chunk(array, chunkSize) {
  		}
  		
  		//calls distribute
-  		const result = await owner.runTarget({
-      					contract: airdrop,
-    					value: locklift.utils.toNano(3),
-    					publicKey: signer.publicKey,
-    					},
-    				airdrop =>
-    					airdrop.methods.distribute({
-    						     _addresses: chunkAddresses[counter][1], 							     _amounts: chunkAmounts[counter][1], 
-    						     _wid: 0,
-    						     _totalAmount:totalAmount
-    						     }),
-    				);  
+  		await user.runTarget(
+  	{
+  		contract: airdrop,
+    		value: locklift.utils.toNano(2.1),
+  	},
+  		airdrop =>
+  			airdrop.methods.multiTransfer({
+  			recipients: chunkAddresses[i][1],
+            		amounts: chunkAmounts[i][1], 
+            		totalAmount: totAmount}),
+  		);
     				
-    		const deployers = await airdrop.methods.getDeployedContracts({}).call();
+    		const deployers = await airdrop.methods.getDistributers({}).call();
   		counter = deployers.value0.length;
   		console.log(counter);
   	
   	}
  	//logs the addresses of all the distributer addresses after the distribution is done successfully
-  	const distributedContracts = await airdrop.methods.getDeployedContracts({}).call();
+  	const distributedContracts = await airdrop.methods.getDistributers({}).call();
     	console.log(`Distributed contracts: ${distributedContracts.value0}`);
  
 }

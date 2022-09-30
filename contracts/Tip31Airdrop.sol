@@ -7,15 +7,13 @@ import 'InternalOwner.sol';
 import 'CheckPubKey.sol';
 import 'RandomNonce.sol';
 import "MsgFlag.sol";
-
-
-//import "ITokenRoot.sol";
 import 'TokenWallet.sol';
 import "Tip31Distributer.sol";
 import "TIP31TokenRoot.sol";
 import "TIP31TokenWallet.sol";
+import "IAcceptTokensTransferCallback.sol";
 
-contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
+contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensTransferCallback {
 
     address _senderAddr;
     address _tokenRootAddr;
@@ -23,7 +21,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     uint128[] _amounts;
     address[] distributerAddress;
     uint128 private transferNumber = 100;
-    uint128 deposit;
+    uint128 deposit = 0;//50000000000;
     address private walletAddress;
     uint128 private transferGas = 0.8 ever;
     uint128 private transactionFee = 0.015 ever;
@@ -34,6 +32,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     uint nonce=0;
     TvmCell stateInit;
     address[] deployedContracts;
+   // uint deposit;
     constructor(address senderAddr, address tokenRootAddr) public 
     {
         require(senderAddr.value != 0, 1001);
@@ -70,14 +69,17 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     
     function getDetails() external returns(
         address _token,
-        address _token_wallet
+        address _token_wallet,
+        uint balance
     ) {
     	
         return (
             _tokenRootAddr,
-            walletAddress
+            walletAddress,
+            deposit
         );
     }
+	
 	
     function multiTransfer(address[] recipients, uint128[] amounts, uint128 totalAmount) public {
     	TvmCell payload = tvm.encodeBody(Tip31Distributer, _tokenRootAddr, recipients, amounts, address(this), _senderAddr);
@@ -89,6 +91,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
        address addr = address.makeAddrStd(0, tvm.hash(stateInit));
        numberOfRecipients = uint128(recipients.length);
        uint128 initialBalance = numberOfRecipients*transferGas;
+      //ITokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
+       
+       require(deposit>=totalAmount, 1001);
         addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	
     	TvmCell _empty;
 		
@@ -96,6 +101,8 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
 		nonce++;
 		
 		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, addr, 0.5 ever, address(this), true, _empty);
+		
+		deposit = deposit-totalAmount;
 		
     }
 	
@@ -125,6 +132,31 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey {
     function getDistributers() public returns (address[])
     {
     	return deployedContracts;
+    }
+    
+    function onBalance(uint128 balance) public
+    {
+    	deposit = balance;
+    }
+    
+   function onAcceptTokensTransfer(
+        address tokenRoot,
+        uint128 amount,
+        address sender,
+        address senderWallet,
+        address remainingGasTo,
+        TvmCell payload
+    ) external override {
+       // require(sender == _senderAddr, 1001, "Sender address error!");
+       // require(tokenRoot == _tokenRootAddr, 1001, "Token root address error!");
+	tvm.accept();
+        walletAddress = msg.sender;
+
+        deposit = deposit + amount;
+    }
+
+    function getDeposit() external view returns (uint128) {
+        return deposit;
     }
     
  }
