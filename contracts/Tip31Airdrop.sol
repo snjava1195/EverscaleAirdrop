@@ -147,8 +147,6 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
         address remainingGasTo,
         TvmCell payload
     ) external override {
-       // require(sender == _senderAddr, 1001, "Sender address error!");
-       // require(tokenRoot == _tokenRootAddr, 1001, "Token root address error!");
 	tvm.accept();
         walletAddress = msg.sender;
 
