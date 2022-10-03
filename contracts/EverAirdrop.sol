@@ -148,5 +148,10 @@ contract EverAirdrop {
     {
     	return distributedContracts;
     }
-       
+    
+    function getCodeHash() public returns(uint256)
+    {
+    	TvmCell contractCode = buildAirdropCode(refund_destination);
+    	return tvm.hash(contractCode);
+      }
  }
