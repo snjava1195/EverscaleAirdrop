@@ -86,26 +86,26 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     }
 	
     //Deploys as many Distributers as there are batches and transfers sufficient amount of tokens to ensure distribution will finish successfully	
-    function distribute(address[] recipients, uint128[] amounts, uint128 totalAmount) public 
+    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid,uint128 _totalAmount) public 
     {
-    	TvmCell payload = tvm.encodeBody(Tip31Distributer, _tokenRootAddr, recipients, amounts, address(this), _senderAddr);
+    	TvmCell payload = tvm.encodeBody(Tip31Distributer, _tokenRootAddr, _addresses, _amounts, address(this), _senderAddr);
 	stateInit = tvm.buildStateInit({code: tip31distributerCode,
 					 contr: Tip31Distributer,
 					 varInit: {_randomNonce: nonce, _owner: address(this)},
 					 pubkey: tvm.pubkey()
 					});
-       address addr = address.makeAddrStd(0, tvm.hash(stateInit));
-       numberOfRecipients = uint128(recipients.length);
+       address addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
+       numberOfRecipients = uint128(_addresses.length);
        uint128 initialBalance = numberOfRecipients*transferGas;
        
-       require(deposit>=totalAmount, 1001);
+       require(deposit>=_totalAmount, 1001);
         addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	
     	TvmCell _empty;
 		
         	deployedContracts.push(addr);
 		nonce++;
 		
-		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(totalAmount, addr, 0.5 ever, address(this), true, _empty);
+		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(_totalAmount, addr, 0.5 ever, address(this), true, _empty);
 		
 		deposit = deposit-totalAmount;
 		
