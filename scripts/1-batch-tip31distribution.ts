@@ -115,7 +115,7 @@ function chunk(array, chunkSize) {
     		value: locklift.utils.toNano(2.1),
   	},
   		airdrop =>
-  			airdrop.methods.multiTransfer({
+  			airdrop.methods.distribute({
   			recipients: chunkAddresses[counter][1],
             		amounts: chunkAmounts[counter][1], 
             		totalAmount: totalAmount}),

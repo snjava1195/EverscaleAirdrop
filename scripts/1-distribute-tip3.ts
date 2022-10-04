@@ -65,7 +65,7 @@ async function main() {
 	/*********************Get airdrop owner***********************/
 	
     	
-    	user = 				accountFactory.getAccount("0:8807e4dbb11b68527877f82214f6ad4e862b2596b2154be5428c95f35a4d5d6a", signer.publicKey);
+    	user = 				accountFactory.getAccount("0:242dc99adfa035c5c2915967f8856f0fd94c27b108c2abcfb67667f4c2d9424e", signer.publicKey);
   	console.log(`User: ${user.address}`);
     	
     	await locklift.giver.sendTo(user.address, locklift.utils.toNano(100));
@@ -74,7 +74,7 @@ async function main() {
    	
    		airdrop = await locklift.factory.getDeployedContract(
   	"Tip31Airdrop", // name of your contract
-  	"0:ea852fdefeaaec1091b845e3dededa33f8809a04d35d7a95b01bbb599e6359ed",
+  	"0:23e7f6d472deef4d86bcf4d0d07ca739d7267890cbf0c347f5b2459b9bb5f357",
 	);
 	console.log(`Token root: ${airdrop.address}`);
     
@@ -84,7 +84,8 @@ async function main() {
     	console.log("Airdrop address:");
     	console.log(airdrop.address);
     	
-    	
+    	const hashCode = await airdrop.methods.getCodeHash({}).call();
+    	console.log(hashCode);
     		
     	/*********************Start distribution***********************/	
     	for(let i=0; i<chunkAddresses.length; i++)
@@ -102,7 +103,7 @@ async function main() {
     		value: locklift.utils.toNano(2.1),
   	},
   		airdrop =>
-  			airdrop.methods.multiTransfer({
+  			airdrop.methods.distribute({
   			recipients: chunkAddresses[i][1],
             		amounts: chunkAmounts[i][1], 
             		totalAmount: totAmount}),

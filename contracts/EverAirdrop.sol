@@ -153,5 +153,5 @@ contract EverAirdrop {
     {
     	TvmCell contractCode = buildAirdropCode(refund_destination);
     	return tvm.hash(contractCode);
-      }
+    }
  }

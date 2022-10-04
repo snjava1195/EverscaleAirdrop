@@ -32,6 +32,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     uint nonce=0;
     TvmCell stateInit;
     address[] deployedContracts;
+    TvmCell airdropCode;
    // uint deposit;
     constructor(address senderAddr, address tokenRootAddr) public 
     {
@@ -44,11 +45,13 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
 
         setOwnership(_senderAddr);
         setUpTokenWallet();
-        buildAirdropCode(msg.sender);
+        airdropCode = buildAirdropCode(msg.sender);
        
     }
     
-    function setUpTokenWallet() internal view {
+    //Deploys token wallet of the airdrop
+    function setUpTokenWallet() internal view 
+    {
         // Deploy token wallet
         TIP31TokenRoot(_tokenRootAddr).deployWallet{
             value: 1 ever,
@@ -59,20 +62,22 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
         );
     }
     
+    //Callback for getting newly deployed token wallet
     function receiveTokenWalletAddress(
         address wallet
-    ) external {
+    ) external 
+    {
         require(msg.sender == _tokenRootAddr, 30004);
-
         walletAddress = wallet;
     }
     
+    //Returns token root, wallet address and balance of the airdrop
     function getDetails() external returns(
         address _token,
         address _token_wallet,
         uint balance
-    ) {
-    	
+    ) 
+    {
         return (
             _tokenRootAddr,
             walletAddress,
@@ -80,8 +85,9 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
         );
     }
 	
-	
-    function multiTransfer(address[] recipients, uint128[] amounts, uint128 totalAmount) public {
+    //Deploys as many Distributers as there are batches and transfers sufficient amount of tokens to ensure distribution will finish successfully	
+    function distribute(address[] recipients, uint128[] amounts, uint128 totalAmount) public 
+    {
     	TvmCell payload = tvm.encodeBody(Tip31Distributer, _tokenRootAddr, recipients, amounts, address(this), _senderAddr);
 	stateInit = tvm.buildStateInit({code: tip31distributerCode,
 					 contr: Tip31Distributer,
@@ -91,7 +97,6 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
        address addr = address.makeAddrStd(0, tvm.hash(stateInit));
        numberOfRecipients = uint128(recipients.length);
        uint128 initialBalance = numberOfRecipients*transferGas;
-      //ITokenWallet(walletAddress).balance{value:0.5 ever, callback: Tip31Airdrop.onBalance}();
        
        require(deposit>=totalAmount, 1001);
         addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	
@@ -106,6 +111,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
 		
     }
 	
+    //Returns contract code specific for the owner of the airdrop
     function buildAirdropCode(address ownerAddress) public pure returns(TvmCell)
     {
     	TvmCell airdropCode = tvm.code();
@@ -114,12 +120,15 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     	return tvm.setCodeSalt(airdropCode, salt.toCell());
     }	
     
-    function getDistributorAddress(uint _nonce) public view returns(address){
+    //Returns distributer address based on the nonce
+    function getDistributorAddress(uint _nonce) public view returns(address)
+    {
         return deployedContracts[_nonce-1];
     }
 
-    
-    function refund() public view {
+    //Returns all the funds left back to the owner
+    function refund() public view 
+    {
         tvm.accept();
         for(uint i=0;i<deployedContracts.length;i++)
         {
@@ -129,16 +138,13 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
         payable(_senderAddr).transfer(0, false, 128);
     }
     
+    //Returns list of all deployed distributers
     function getDistributers() public returns (address[])
     {
     	return deployedContracts;
     }
     
-    function onBalance(uint128 balance) public
-    {
-    	deposit = balance;
-    }
-    
+    //Callback method for accepting tokens transferred to this contract
    function onAcceptTokensTransfer(
         address tokenRoot,
         uint128 amount,
@@ -146,15 +152,25 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
         address senderWallet,
         address remainingGasTo,
         TvmCell payload
-    ) external override {
+    ) external override 
+    {
 	tvm.accept();
         walletAddress = msg.sender;
-
         deposit = deposit + amount;
     }
 
-    function getDeposit() external view returns (uint128) {
+    //Returns contract's balance 
+    function getDeposit() external view returns (uint128) 
+    {
         return deposit;
     }
+    
+    //Returns hash of the contract code
+    function getCodeHash() public returns(uint256)
+    {
+    	//TvmCell contractCode = buildAirdropCode(refund_destination);
+    	return tvm.hash(airdropCode);
+      }
+    
     
  }
