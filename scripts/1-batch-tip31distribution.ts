@@ -129,6 +129,16 @@ function chunk(array, chunkSize) {
  	//logs the addresses of all the distributer addresses after the distribution is done successfully
   	const distributedContracts = await airdrop.methods.getDistributers({}).call();
     	console.log(`Distributed contracts: ${distributedContracts.value0}`);
+    	
+    	const refund = await user.runTarget(
+  	{
+  		contract: airdrop,
+    		value: locklift.utils.toNano(2.1),
+  	},
+  		airdrop =>
+  			airdrop.methods.refund({}),
+  		);
+  	console.log(refund);
  
 }
   	

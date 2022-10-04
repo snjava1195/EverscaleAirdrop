@@ -6,17 +6,10 @@ const _ = require('underscore');
 const fs  = require("fs");
 const { parse } = require('csv-parse/lib/sync');
 const {load} = require('csv-load-sync');
-
+const {setupTip31Airdrop} = require('./utils');
 let root: Contract<FactorySource["TokenRoot"]>;
 let airdrop: Contract<FactorySource["Tip31Airdrop"]>;
 let user: Contract<FactorySource["Wallet"]>;
-/*let distributer: Contract<FactorySource["Tip31Distributer"]>;
-let distributer1: Contract<FactorySource["Tip31Distributer"]>;
-let distributer2: Contract<FactorySource["Tip31Distributer"]>;
-let distributer3: Contract<FactorySource["Tip31Distributer"]>;
-let distributer4: Contract<FactorySource["Tip31Distributer"]>;
-let distributer5: Contract<FactorySource["Tip31Distributer"]>;
-let distributer6: Contract<FactorySource["Tip31Distributer"]>;*/
 let signer: Signer;
 let owner: Contract<FactorySource["Wallet"]>;
 
@@ -69,51 +62,19 @@ async function main() {
 	);
 	console.log(`Token root: ${root.address}`);
 	
-	/*********************Get root owner***********************/
+	/*********************Get airdrop owner***********************/
 	
-	owner = 				accountFactory.getAccount("0:82b691ef4e8e2bd754c76e167bb09bd0125a9e80979ced10b33d43d45f2d874c", signer.publicKey);
-  	console.log(`Owner: ${owner.address}`);
-  	
-	/*********************User deploy***************************/
-	
-	/*const {account} = await accountFactory.deployNewAccount({
-  		value: locklift.utils.toNano(3),
-  		publicKey: signer.publicKey,
-  		initParams: {
-  			_randomNonce: locklift.utils.getRandomNonce(),
-  		},
-  		constructorParams: {},
-  		});
-  	user = account;
-    	user.publicKey = signer.publicKey;
-    	user.name = 'Regular user';*/
     	
-    	user = 				accountFactory.getAccount("0:df51d306b3e672c5f20bb3861d9c398484ed7041bb247a58e640f0e5a7a7e8b8", signer.publicKey);
+    	user = 				accountFactory.getAccount("0:8807e4dbb11b68527877f82214f6ad4e862b2596b2154be5428c95f35a4d5d6a", signer.publicKey);
   	console.log(`User: ${user.address}`);
     	
     	await locklift.giver.sendTo(user.address, locklift.utils.toNano(100));
     	 
   	const codeDistributer = locklift.factory.getContractArtifacts("Tip31Distributer");
-  	
-  	/*********************Deploy airdrop***********************/
-  	/*const { contract: airdrop, tx } = await locklift.factory.deployContract({
-        contract: "Tip31Airdrop",
-        constructorParams: {
-            senderAddr: user.address,
-            tokenRootAddr: root.address,
-        },
-        initParams: {
-            _randomNonce,
-            tip31distributerCode: codeDistributer.code
-            
-        },
-        publicKey: signer.publicKey,
-        value: locklift.utils.toNano(10),
-   	});*/
    	
    		airdrop = await locklift.factory.getDeployedContract(
   	"Tip31Airdrop", // name of your contract
-  	"0:f70cc625b94e205298e67c4814598683adc6fa4941f8b37273f1b2a0bc8d7780",
+  	"0:ea852fdefeaaec1091b845e3dededa33f8809a04d35d7a95b01bbb599e6359ed",
 	);
 	console.log(`Token root: ${airdrop.address}`);
     
@@ -123,28 +84,7 @@ async function main() {
     	console.log("Airdrop address:");
     	console.log(airdrop.address);
     	
-    	/*const key = await airdrop.methods.getPubKey({}).call();
-    	console.log("Airdrop public key:");
-    	console.log(key);*/
     	
-    	await locklift.giver.sendTo(owner.address, locklift.utils.toNano(100));
-    	
-    	/************************Mint tokens to airdrop***********************/
-    	/*await owner.runTarget({
-  		contract: root,
-    		value: locklift.utils.toNano(2.2),
-    		publicKey: signer.publicKey,
-    		},
-    		root =>
-    			root.methods.mint({ 
-    				amount: locklift.utils.toNano(100), 
-    				recipient: airdrop.address, 
-    				deployWalletValue: locklift.utils.toNano(1), 
-    				remainingGasTo: airdrop.address, 
-    				notify: false, 
-    				payload: '', 
-    				}),
-    		);*/
     		
     	/*********************Start distribution***********************/	
     	for(let i=0; i<chunkAddresses.length; i++)
@@ -177,92 +117,7 @@ async function main() {
     	console.log("Deployed distributers: ");
     	console.log(distributed);
     	
-    	/**********************Get distributer details************************/
-    /*	const callback = await user.runTarget(
- 	{
- 		contract: airdrop,
- 		value: locklift.utils.toNano(2.1),
- 	},   	
- 	airdrop =>
- 		airdrop.methods.triggerDistributer({}),
- 	);
- 	*/
- 	
- /*   	distributer = await locklift.factory.getDeployedContract(
-  	"Tip31Distributer", 
-  	distributed.value0[0]
-	);
-	
-	distributer1 = await locklift.factory.getDeployedContract(
-  	"Tip31Distributer", 
-  	distributed.value0[1]
-	);
-	distributer2 = await locklift.factory.getDeployedContract(
-  	"Tip31Distributer", 
-  	distributed.value0[2]
-	);*/
-/*	distributer3 = await locklift.factory.getDeployedContract(
-  	"Tip31Distributer", 
-  	distributed.value0[3]
-	);
-	distributer4 = await locklift.factory.getDeployedContract(
-  	"Tip31Distributer", 
-  	distributed.value0[4]
-	);
-	distributer5 = await locklift.factory.getDeployedContract(
-  	"Tip31Distributer", 
-  	distributed.value0[5]
-	);
-	distributer6 = await locklift.factory.getDeployedContract(
-  	"Tip31Distributer", 
-  	distributed.value0[6]
-	);*/
-	/*console.log(`Token root: ${distributer.address}`);
-	
-  	const ownerTokenWalletAddress = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[0]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress.value0}`);
-  	const ownerTokenWallet = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress.value0);
-  	const balanceWallet = await ownerTokenWallet.methods.balance({answerId:0}).call();
-  	console.log(`Distributers balance: ${balanceWallet.value0}`);
-  	
-  	const ownerTokenWalletAddress1 = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[1]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress1.value0}`);
-  	const ownerTokenWallet1 = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress1.value0);
-  	const balanceWallet1 = await ownerTokenWallet1.methods.balance({answerId:0}).call();
-  	console.log(`Distributers balance: ${balanceWallet1.value0}`);
-  	
-  	const ownerTokenWalletAddress2 = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[2]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress2.value0}`);
-  	const ownerTokenWallet2 = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress2.value0);
-  	const balanceWallet2 = await ownerTokenWallet2.methods.balance({answerId:0}).call();
-  	console.log(`Distributers balance: ${balanceWallet2.value0}`);*/
-  	
-  /*	const ownerTokenWalletAddress3 = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[3]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress3.value0}`);
-  	const ownerTokenWallet3 = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress3.value0);
-  	const balanceWallet3 = await ownerTokenWallet3.methods.balance({answerId:0}).call();
-  	console.log(`Distributers balance: ${balanceWallet3.value0}`);
-  	
-  	const ownerTokenWalletAddress4 = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[4]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress4.value0}`);
-  	const ownerTokenWallet4 = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress4.value0);
-  	const balanceWallet4 = await ownerTokenWallet4.methods.balance({answerId:0}).call();
-  	console.log(`Distributers balance: ${balanceWallet4.value0}`);
-  	
-  	const ownerTokenWalletAddress5 = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[5]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress5.value0}`);
-  	const ownerTokenWallet5 = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress5.value0)
-  	const balanceWallet5 = await ownerTokenWallet5.methods.balance({answerId:0}).call();
-  	console.log(`Distributers balance: ${balanceWallet5.value0}`);
-  	
-  	const ownerTokenWalletAddress6 = await root.methods.walletOf({answerId: 4, walletOwner: distributed.value0[6]}).call();
-  	console.log(`User's token wallet: ${ownerTokenWalletAddress6.value0}`);
-  	const ownerTokenWallet6 = await locklift.factory.getDeployedContract("TokenWallet", ownerTokenWalletAddress6.value0);
-  	const balanceWallet6 = await ownerTokenWallet6.methods.balance({answerId:0}).call();
-  	console.log(`Distributers balance: ${balanceWallet6.value0}`);*/
-  	
-  //	const ownerWallet = await ownerTokenWallet.methods.owner({answerId: 0}).call();
-  //	console.log(ownerWallet);
+    	
   	const refund = await user.runTarget(
   	{
   		contract: airdrop,

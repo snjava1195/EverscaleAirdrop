@@ -1,5 +1,4 @@
 import { Contract, Signer } from "locklift";
-import { getRandomNonce } from "locklift/utils";
 import { FactorySource } from "../build/factorySource";
 
 const {load} = require('csv-load-sync');
@@ -8,18 +7,15 @@ const {use} = require("chai");
 const prompts = require('prompts');
 const _ = require('underscore');
 const fs  = require("fs");
+const {setupAirdrop} = require('./utils');
 const { parse } = require('csv-parse/lib/sync');
 let owner: Contract<FactorySource["Wallet"]>;
 let airdrop: Contract<FactorySource["EverAirdrop"]>;
-let deployedAirdrop: Contract<FactorySource["EverAirdrop"]>;
 
-let distributer: Contract<FactorySource["Distributer"]>;
-let nonce=0;
+
 
 const main = async () => {
-	const signer = (await locklift.keystore.getSigner("0"))!;
-  	let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
-   	const _randomNonce = locklift.utils.getRandomNonce();
+	
     	const response = await prompts([
         			{
             				type: 'text',
@@ -56,37 +52,13 @@ function chunk(array, chunkSize) {
 	console.log(chunkAddresses);
 	const chunkAmounts = chunk(amounts, 99);
 	console.log(chunkAmounts);
-      	const { account } = await accountsFactory.deployNewAccount({
-        						constructorParams: {},
-        						initParams: {
-            							_randomNonce,
-        						},
-        						publicKey: signer.publicKey,
-        						value:locklift.utils.toNano(5)
-    						});
-    	owner = account;
-    	owner.publicKey = signer.publicKey;
-    	console.log(`Account deployed at ${owner.address}`);
+      	
 	
 	
 	const codeDistributer = locklift.factory.getContractArtifacts("Distributer");
-   	const { contract, tx } = await locklift.factory.deployContract({
-        				contract: "EverAirdrop",
-        				publicKey: signer.publicKey,
-        				initParams: {
-        					_randomNonce: locklift.utils.getRandomNonce(),
-						distributerCode: codeDistributer.code
-        				},
-        				constructorParams: {
-             						_contract_notes: 'Airdrop',
-             						_refund_destination: owner.address,
-             						_refund_lock_duration: 2000,
-        				},
-        				value: locklift.utils.toNano(10),
-    					});
-    	airdrop = contract;
-    	//console.log(airdrop);
-    	//console.log(tx);
+   	
+    	[owner, airdrop] = await setupAirdrop('Airdrop', 2000, codeDistributer.code)
+    	
       	console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
       	const code = await airdrop.methods.buildAirdropCode({ownerAddress: airdrop.address}).call();
     		
