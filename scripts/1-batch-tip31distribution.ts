@@ -116,9 +116,10 @@ function chunk(array, chunkSize) {
   	},
   		airdrop =>
   			airdrop.methods.distribute({
-  			recipients: chunkAddresses[counter][1],
-            		amounts: chunkAmounts[counter][1], 
-            		totalAmount: totalAmount}),
+  			_addresses: chunkAddresses[counter][1],
+            		_amounts: chunkAmounts[counter][1], 
+            		_wid: 0,
+            		_totalAmount: totalAmount}),
   		);
     				
     		const deployers = await airdrop.methods.getDistributers({}).call();

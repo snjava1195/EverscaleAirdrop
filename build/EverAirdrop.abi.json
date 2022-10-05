@@ -47,7 +47,6 @@
 		{
 			"name": "onDistribute",
 			"inputs": [
-				{"name":"_contractAddress","type":"address"},
 				{"name":"_distributed","type":"bool"}
 			],
 			"outputs": [
@@ -94,12 +93,19 @@
 			]
 		},
 		{
-			"name": "getStatus",
+			"name": "getDistributedContracts",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"_distributed","type":"bool[]"},
-				{"name":"_addresses","type":"address[]"}
+				{"name":"value0","type":"bool[]"}
+			]
+		},
+		{
+			"name": "getCodeHash",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
 			]
 		},
 		{
@@ -172,9 +178,8 @@
 		{"name":"statusArray","type":"bool[]"},
 		{"name":"nonce","type":"uint256"},
 		{"name":"deployedContracts","type":"address[]"},
-		{"name":"distributeAddresses","type":"address[]"},
+		{"name":"distributedContracts","type":"bool[]"},
 		{"name":"stateInit","type":"cell"},
-		{"name":"contract_notes","type":"string"},
-		{"components":[{"name":"distributed","type":"bool"},{"name":"contractAddress","type":"address"}],"name":"distributed_status","type":"tuple[]"}
+		{"name":"contract_notes","type":"string"}
 	]
 }

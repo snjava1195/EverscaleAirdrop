@@ -1,4 +1,4 @@
-.version sol 0.62.0
+.version sol 0.63.0
 
 .macro constructor
 DROP
@@ -53,7 +53,6 @@ ENDS
 CALLREF {
 	CALL $setState_a9e966b7_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }

@@ -8,8 +8,9 @@ let user: Contract<FactorySource["Wallet"]>;
 async function main() {
  
   	const codeDistributer = locklift.factory.getContractArtifacts("Tip31Distributer");
+  	const refund_lock_duration = 2000;
   	//call setupTip31Airdrop to deploy user and airdrop contract
-  	[user, airdrop] = await setupTip31Airdrop(codeDistributer.code);
+  	[user, airdrop] = await setupTip31Airdrop(codeDistributer.code, refund_lock_duration);
   	 	
 }
 

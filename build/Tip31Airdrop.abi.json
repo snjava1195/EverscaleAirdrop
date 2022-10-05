@@ -7,7 +7,8 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"senderAddr","type":"address"},
-				{"name":"tokenRootAddr","type":"address"}
+				{"name":"tokenRootAddr","type":"address"},
+				{"name":"_refund_lock_duration","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -27,33 +28,36 @@
 			"outputs": [
 				{"name":"_token","type":"address"},
 				{"name":"_token_wallet","type":"address"},
-				{"name":"_transferred_count","type":"uint128"}
+				{"name":"balance","type":"uint256"}
 			]
 		},
 		{
-			"name": "onBalance",
+			"name": "distribute",
 			"inputs": [
-				{"name":"balance","type":"uint128"}
+				{"name":"_addresses","type":"address[]"},
+				{"name":"_amounts","type":"uint128[]"},
+				{"name":"_wid","type":"int8"},
+				{"name":"_totalAmount","type":"uint128"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "multiTransfer",
+			"name": "buildAirdropCode",
 			"inputs": [
-				{"name":"recipients","type":"address[]"},
-				{"name":"amounts","type":"uint128[]"}
+				{"name":"ownerAddress","type":"address"}
 			],
 			"outputs": [
+				{"name":"value0","type":"cell"}
 			]
 		},
 		{
-			"name": "expectTotalAmount",
+			"name": "getDistributorAddress",
 			"inputs": [
-				{"name":"amounts","type":"uint128[]"}
+				{"name":"_nonce","type":"uint256"}
 			],
 			"outputs": [
-				{"name":"value0","type":"uint128"}
+				{"name":"value0","type":"address"}
 			]
 		},
 		{
@@ -69,6 +73,35 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"address[]"}
+			]
+		},
+		{
+			"name": "onAcceptTokensTransfer",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"sender","type":"address"},
+				{"name":"senderWallet","type":"address"},
+				{"name":"remainingGasTo","type":"address"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDeposit",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"}
+			]
+		},
+		{
+			"name": "getCodeHash",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
 			]
 		},
 		{
@@ -135,16 +168,20 @@
 		{"name":"_senderAddr","type":"address"},
 		{"name":"_tokenRootAddr","type":"address"},
 		{"name":"_recipients","type":"address[]"},
-		{"name":"_amounts","type":"uint128[]"},
+		{"name":"distributerAddress","type":"address[]"},
 		{"name":"transferNumber","type":"uint128"},
-		{"name":"walletAddress","type":"address"},
 		{"name":"deposit","type":"uint128"},
+		{"name":"walletAddress","type":"address"},
 		{"name":"transferGas","type":"uint128"},
 		{"name":"transactionFee","type":"uint128"},
 		{"name":"total_amount","type":"uint256"},
+		{"name":"numberOfRecipients","type":"uint128"},
+		{"name":"publicKey","type":"uint256"},
 		{"name":"tip31distributerCode","type":"cell"},
 		{"name":"nonce","type":"uint256"},
 		{"name":"stateInit","type":"cell"},
-		{"name":"deployedContracts","type":"address[]"}
+		{"name":"deployedContracts","type":"address[]"},
+		{"name":"refund_lock_duration_end","type":"uint256"},
+		{"name":"airdropCodeSalted","type":"cell"}
 	]
 }

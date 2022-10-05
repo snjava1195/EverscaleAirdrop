@@ -1,4 +1,4 @@
-.version sol 0.62.0
+.version sol 0.63.0
 
 .macro constructor
 DROP
@@ -255,7 +255,6 @@ ENDS
 CALLREF {
 	CALL $destroy_00f55d9d_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -312,7 +311,6 @@ ENDS
 CALLREF {
 	CALL $burnByRoot_f2bada56_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -359,7 +357,6 @@ ENDS
 CALLREF {
 	CALL $burn_8339e03e_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -758,7 +755,6 @@ ENDS
 CALLREF {
 	CALL $transfer_dd23fbfc_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -896,7 +892,6 @@ ENDS
 CALLREF {
 	CALL $transferToWallet_de45c56e_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -1000,7 +995,6 @@ ENDS
 CALLREF {
 	CALL $acceptTransfer_cd4b2244_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -1114,7 +1108,6 @@ ENDS
 CALLREF {
 	CALL $acceptMint_8c855501_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }

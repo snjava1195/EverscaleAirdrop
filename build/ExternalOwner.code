@@ -1,4 +1,4 @@
-.version sol 0.62.0
+.version sol 0.63.0
 
 .macro constructor
 DROP
@@ -60,7 +60,6 @@ ENDS
 CALLREF {
 	CALL $transferOwnership_d23e8489_internal_macro$
 }
-DROP
 CALLREF {
 	CALL $c7_to_c4$
 }

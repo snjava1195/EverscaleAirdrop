@@ -43,7 +43,7 @@ const setupAirdrop = async(contract_notes, refund_lock_duration, _distributerCod
 };
 
 //Function used for deploying TIP3.1 airdrop contract
-const setupTip31Airdrop = async(_distributerCode) =>
+const setupTip31Airdrop = async(_distributerCode, refund_lock_duration) =>
 {
 	let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
 	const _randomNonce = locklift.utils.getRandomNonce();
@@ -75,6 +75,7 @@ const setupTip31Airdrop = async(_distributerCode) =>
         constructorParams: {
             senderAddr: user.address,
             tokenRootAddr: root.address,
+            _refund_lock_duration: refund_lock_duration
         },
         initParams: {
             _randomNonce,

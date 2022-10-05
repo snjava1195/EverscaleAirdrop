@@ -18,7 +18,6 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     address _senderAddr;
     address _tokenRootAddr;
     address[] _recipients;
-    uint128[] _amounts;
     address[] distributerAddress;
     uint128 private transferNumber = 100;
     uint128 deposit = 0;//50000000000;
@@ -32,12 +31,22 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     uint nonce=0;
     TvmCell stateInit;
     address[] deployedContracts;
-    TvmCell airdropCode;
+    uint256 refund_lock_duration_end;
+    TvmCell airdropCodeSalted;
    // uint deposit;
-    constructor(address senderAddr, address tokenRootAddr) public 
+   
+   modifier refundLockPassed() {
+        require(now > refund_lock_duration_end, 107);
+        tvm.accept();
+
+        _;
+    }
+   
+    constructor(address senderAddr, address tokenRootAddr, uint256 _refund_lock_duration) public 
     {
         require(senderAddr.value != 0, 1001);
         require(tokenRootAddr.value != 0, 1001);
+        require((_refund_lock_duration <= 604800) && (_refund_lock_duration >= 120), 103);
         tvm.accept();
 
         _senderAddr = senderAddr;
@@ -45,7 +54,8 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
 
         setOwnership(_senderAddr);
         setUpTokenWallet();
-        airdropCode = buildAirdropCode(msg.sender);
+        airdropCodeSalted = buildAirdropCode(msg.sender);
+        refund_lock_duration_end = now + _refund_lock_duration;
        
     }
     
@@ -107,7 +117,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
 		
 		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(_totalAmount, addr, 0.5 ever, address(this), true, _empty);
 		
-		deposit = deposit-totalAmount;
+		deposit = deposit-_totalAmount;
 		
     }
 	
@@ -127,7 +137,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     }
 
     //Returns all the funds left back to the owner
-    function refund() public view 
+    function refund() refundLockPassed public view 
     {
         tvm.accept();
         for(uint i=0;i<deployedContracts.length;i++)
@@ -169,7 +179,7 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     function getCodeHash() public returns(uint256)
     {
     	//TvmCell contractCode = buildAirdropCode(refund_destination);
-    	return tvm.hash(airdropCode);
+    	return tvm.hash(airdropCodeSalted);
       }
     
     

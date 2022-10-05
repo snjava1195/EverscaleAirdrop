@@ -71,6 +71,7 @@ const main = async () => {
         constructorParams: {
             senderAddr: owner.address,
             tokenRootAddr: root.address,
+            _refund_lock_duration: 2000,
         },
         initParams: {
             _randomNonce,

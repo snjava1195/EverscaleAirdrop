@@ -104,9 +104,10 @@ async function main() {
   	},
   		airdrop =>
   			airdrop.methods.distribute({
-  			recipients: chunkAddresses[i][1],
-            		amounts: chunkAmounts[i][1], 
-            		totalAmount: totAmount}),
+  			_addresses: chunkAddresses[i][1],
+            		_amounts: chunkAmounts[i][1], 
+            		_wid: 0,
+            		_totalAmount: totAmount}),
   		);
   		
   		}
@@ -118,7 +119,8 @@ async function main() {
     	console.log("Deployed distributers: ");
     	console.log(distributed);
     	
-    	
+    	if(distributed.value0.length==chunkAmounts.length)
+    	{
   	const refund = await user.runTarget(
   	{
   		contract: airdrop,
@@ -128,6 +130,7 @@ async function main() {
   			airdrop.methods.refund({}),
   		);
   	console.log(refund);
+  	}
 }
 
 main()
