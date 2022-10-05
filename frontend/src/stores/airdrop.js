@@ -6,7 +6,7 @@ import airdropTvc from '../../../build/EverAirdrop.base64?raw';
 import tip3Tvc from '../../../build/Tip31Airdrop.base64?raw';
 import distributerTvc from '../../../build/Distributer.base64?raw';
 import tip3DistributerTvc from '../../../build/Tip31Distributer.base64?raw';
-import { toNano, getRandomNonce } from '@/utils';
+import { toNano, fromNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
 const ever = new ProviderRpcClient();
@@ -111,84 +111,6 @@ const rootAbi = {
   events: []
 }
 
-const walletAbi = {
-  'ABI version': 2,
-  version: '2.2',
-  header: ['pubkey', 'time', 'expire'],
-  functions: [
-    {
-      name: 'balance',
-      inputs: [
-        { name: 'answerId', type: 'uint32' }
-      ],
-      outputs: [
-        { name: 'value0', type: 'uint128' }
-      ]
-    },
-    {
-      name: 'transfer',
-      inputs: [
-        { name: 'amount', type: 'uint128' },
-        { name: 'recipient', type: 'address' },
-        { name: 'deployWalletValue', type: 'uint128' },
-        { name: 'remainingGasTo', type: 'address' },
-        { name: 'notify', type: 'bool' },
-        { name: 'payload', type: 'cell' }
-      ],
-      outputs: [
-      ]
-    },
-    {
-      name: 'multiTransfer',
-      inputs: [
-        { name: 'recipients', type: 'address[]' },
-        { name: 'amounts', type: 'uint128[]' }
-      ],
-      outputs: [
-      ]
-    },
-    {
-      name: 'expectTotalAmount',
-      inputs: [
-        { name: 'amounts', type: 'uint128[]' }
-      ],
-      outputs: [
-        { name: 'value0', type: 'uint128' }
-      ]
-    },
-    {
-      name: 'totalTransferGas',
-      inputs: [
-        { name: 'number', type: 'uint128' }
-      ],
-      outputs: [
-        { name: 'value0', type: 'uint128' }
-      ]
-    },
-    {
-      name: 'getDeposit',
-      inputs: [
-      ],
-      outputs: [
-        { name: 'value0', type: 'uint128' }
-      ]
-    },
-    {
-      name: 'deploy',
-      inputs: [
-        { name: 'senderAddr', type: 'address' },
-        { name: 'tokenRootAddr', type: 'address' },
-        { name: 'multiSenderCode', type: 'cell' }
-      ],
-      outputs: [
-        { name: 'value0', type: 'address' }
-      ]
-    }
-  ],
-  data: [],
-  events: []
-}
-
 // const maxNumberOfAddresses = 3;
 const maxNumberOfAddresses = 99;
 
@@ -198,7 +120,7 @@ export const useAirdropStore = defineStore({
     address: null,
     deployOptions: {
       initParams: { _randomNonce: 0 },
-      // tvc: tvc,
+      tvc: null,
     },
     lockDuration: new Date().toLocaleDateString(),
     topUpRequiredAmount: 0,
@@ -223,12 +145,12 @@ export const useAirdropStore = defineStore({
           this.abi = airdropAbi;
           const { code } = await ever.splitTvc(distributerTvc);
           this.deployOptions.initParams['distributerCode'] = code;
-          this.deployOptions['tvc'] = airdropTvc;
+          this.deployOptions.tvc = airdropTvc;
         } else {
           this.abi = tip3Abi;
           const { code } = await ever.splitTvc(tip3DistributerTvc);
           this.deployOptions.initParams['tip31distributerCode'] = code;
-          this.deployOptions['tvc'] = tip3Tvc;
+          this.deployOptions.tvc = tip3Tvc;
         }
         
         address = await ever.getExpectedAddress(this.abi, this.deployOptions);
@@ -374,7 +296,7 @@ export const useAirdropStore = defineStore({
           console.log('rootAcc response:', response.value0._address);
           const userTokenWalletAddress = response.value0._address;
           const tokenWalletAddress = new Address(userTokenWalletAddress);
-          const walletContract = new ever.Contract(walletAbi, tokenWalletAddress);
+          const walletContract = new ever.Contract(giverAbi, tokenWalletAddress);
           sendTransaction = await walletContract.methods
             .transfer({
               amount: toNano(this.topUpRequiredAmount, this.token.decimals),
@@ -386,7 +308,7 @@ export const useAirdropStore = defineStore({
             })
             .send({
               from: walletStore.profile.address,
-              amount: toNano(0.5, 9),
+              amount: toNano(0.8, 9),
               bounce: true,
             });
         }
@@ -419,14 +341,16 @@ export const useAirdropStore = defineStore({
             this.currentBatch++;
           }
           const totalAmount = chunkAmounts[i][1].reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
+            (previousValue, currentValue) => previousValue + fromNano(currentValue, this.token.decimals),
             0
           );
+          console.log('totalAmount:', totalAmount);
+          console.log('totalAmount to nano', toNano(totalAmount, this.token.decimals));
           sendTransaction = await everAirDropContract.methods.distribute({
             _addresses: chunkAddresses[i][1],
             _amounts: chunkAmounts[i][1],
             _wid: 0,
-            _totalAmount: totalAmount
+            _totalAmount: toNano(totalAmount, this.token.decimals)
           }).send({
             from: walletStore.profile.address,
             amount: toNano(0.5, 9),
