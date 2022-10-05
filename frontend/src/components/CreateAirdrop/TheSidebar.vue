@@ -36,7 +36,7 @@
       <div class="flex justify-between items-center font-bold text-black">
         <span>Total tokens</span>
         <span
-          ><span class="text-[20px]">{{ totalTokens }}</span> {{ tokenName }}</span
+          ><span class="text-[20px]">{{ totalTokens }}</span> {{ token ? token.label : 'EVER' }}</span
         >
       </div>
     </header>
@@ -157,7 +157,7 @@
                   ? 'text-[#4AB44A] font-medium'
                   : ''
               "
-              >Top-up {{ topUpRequiredAmount }} {{ tokenName }}</a
+              >Top-up {{ topUpRequiredAmount }} {{ token ? token.label : 'EVER' }}</a
             >
           </div>
 
@@ -319,7 +319,7 @@
         class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
         :class="{ 'is-loading': loading }"
       >
-        Top-up {{ topUpRequiredAmount }} {{ tokenName }}
+        Top-up {{ topUpRequiredAmount }} {{ token.label }}
       </button>
 
       <!-- Step 4 -->
@@ -367,7 +367,7 @@
           totalAmount: totalTokens,
           totalAddresses: recipientsList.length,
           contractAddress: airdropStore.address,
-          tokenName: tokenName,
+          tokenName: token.label,
         }"
       />
     </main>
@@ -393,8 +393,8 @@ const props = defineProps({
   items: {
     type: Array,
   },
-  tokenName: {
-    type: String,
+  token: {
+    type: Object,
   },
   shareNetwork: {
     type: Object,
@@ -472,7 +472,7 @@ function availableToRedeem() {
   clearInterval(redeemPolling.value);
 };
 
-airdropStore.getExpectedAddress();
+// airdropStore.getExpectedAddress(props.token);
 
 async function onTopUpEver() {
   if (!validateAddressAmountList(props.items, totalTokens.value)) return;
@@ -480,7 +480,7 @@ async function onTopUpEver() {
 
   try {
     errors.value.error = false;
-    const data = await airdropStore.getGiverContract();
+    const data = await airdropStore.getGiverContract(recipientsList.value.length);
     transactionId.value.giverContractId = data.id.hash;
     step.value = 2;
   } catch (e) {
@@ -500,7 +500,7 @@ async function onDeployContract() {
     errors.value.error = false;
     airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     console.log('airdropName:', airdropName.value);
-    const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length);
+    const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
     transactionId.value.deployContractId = data.transaction.id.hash;
     step.value = 3;
   } catch (e) {

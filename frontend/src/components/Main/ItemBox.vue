@@ -87,7 +87,7 @@ const transactions = computed(() => {
 });
 
 function everDivider(item) {
-  return item.outMessages.length ? Number(item.outMessages[0].value) / toNano(1) : 0;
+  return item.outMessages.length ? Number(item.outMessages[0].value) / toNano(1, 9) : 0;
 }
 
 function createdAt(item) {

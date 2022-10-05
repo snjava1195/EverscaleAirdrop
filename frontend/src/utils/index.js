@@ -5,8 +5,8 @@ import dayjs from 'dayjs';
 const addressRegex = '^(0|-1):[0-9a-fA-F]{64}$';
 const amountRegex = '^\\d+(\\.\\d+)?$';
 
-export const toNano = (amount) => new BigNumber(amount).shiftedBy(9).toFixed(0);
-export const fromNano = (amount) => parseInt(amount) / Math.pow(10, 9);
+export const toNano = (amount, decimals) => new BigNumber(amount).shiftedBy(decimals).toFixed(0);
+export const fromNano = (amount, decimals) => parseInt(amount) / Math.pow(10, decimals);
 
 export const addressReg = new RegExp(addressRegex);
 export const amountReg = new RegExp(amountRegex);

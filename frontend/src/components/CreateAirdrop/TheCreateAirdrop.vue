@@ -20,6 +20,7 @@
                 :options="tokenList"
                 :option-height="104"
                 :show-labels="false"
+                @update:modelValue="onChange(token)"
               >
                 <template v-slot:singleLabel="props"
                   ><img
@@ -201,7 +202,7 @@
 
       <TheSidebar
         :items="items"
-        :tokenName="token ? token.label : 'WEVER'"
+        :token="token"
         :shareNetwork="{
           airdropName: airdropName
         }"
@@ -308,5 +309,8 @@ function readFile(file) {
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
+}
+async function onChange(token) {
+  await airdropStore.getExpectedAddress(token);
 }
 </script>
