@@ -135,6 +135,15 @@ export const useAirdropStore = defineStore({
   actions: {
     async getExpectedAddress(token) {
       console.log('token:', token);
+      // const walletStore = useWalletStore();
+      // const accounts = await ever.getAccountsByCodeHash({codeHash:'a5cc2ff5420d6f66fa1f31edd01be2187644e7b106a400dc7ebb0b9a15d42237'});
+      // console.log('tvc:', tip3Tvc);
+      // const { code } = await ever.splitTvc(tip3Tvc);
+      // const salt = await ever.getCodeSalt({code: code});
+      // const hash = await ever.setCodeSalt({code: code, salt: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'});
+      // console.log('hash:', hash);
+      // console.log('salt:', salt);
+      // console.log('accounts:', accounts);
       try {
         this.token = token;
         this.deployOptions.initParams._randomNonce = getRandomNonce();
@@ -292,7 +301,8 @@ export const useAirdropStore = defineStore({
             .walletOf({
               answerId: 1,
               walletOwner: walletStore.profile.address
-            }).call();
+            })
+            .call();
           console.log('rootAcc response:', response.value0._address);
           const userTokenWalletAddress = response.value0._address;
           const tokenWalletAddress = new Address(userTokenWalletAddress);

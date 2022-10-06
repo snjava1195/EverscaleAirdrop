@@ -3,13 +3,19 @@ export default [
     label: 'EVER',
     decimals: 9,
     address: '0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d',
-    icon: 'https://app.flatqube.io/assets/992f1244bd3cbc67.svg',
+    icon: 'https://app.flatqube.io/assets/992f1244bd3cbc67afa8.svg',
   },
   {
     label: 'WEVER',
     decimals: 9,
     address: '0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d',
     icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/WEVER/logo.svg',
+  },
+  {
+    label: 'stEVER',
+    decimals: 9,
+    address: "0:6d42d0bc4a6568120ea88bf642edb653d727cfbd35868c47877532de128e71f2",
+    icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/stEVER/logo.svg'
   },
   {
     label: 'DAI',
@@ -60,18 +66,6 @@ export default [
     icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/FRAX/logo.svg',
   },
   {
-    label: 'FXS',
-    decimals: 18,
-    address: '0:c14e2f026feaae0f99b92c04ee421051a782fff60156ac8a586a12f63d7facef',
-    icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/FXS/logo.svg',
-  },
-  {
-    label: 'DAF',
-    decimals: 18,
-    address: '0:f48054939064d686a9ad68d96d9ab79e409b095557c06ab7f073097dade7057f',
-    icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/DAF/logo.svg',
-  },
-  {
     label: 'EUPi',
     decimals: 8,
     address: '0:0cfa60f9454b1b619938c4da6a138b1cc62da937b3f6c0506405daf2a88e0115',
@@ -82,12 +76,6 @@ export default [
     decimals: 18,
     address: '0:9d49206b0eaadc5125c6b5e30410505db7740f827857915922cdb7efe199b622',
     icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/PURR/logo.svg',
-  },
-  {
-    label: 'INF',
-    decimals: 18,
-    address: '0:2f84387836c950ce35ecacac5b86040961571aaf4630ecb68ccc85ff218213c1',
-    icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/INF/logo.svg',
   },
   {
     label: 'EVS',
@@ -102,34 +90,10 @@ export default [
     icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/SOON/logo.svg',
   },
   {
-    label: 'GRE',
-    decimals: 5,
-    address: '0:fde4c629d6447fecd86d2cffe363d5f334030351022bad019e0f472212e9dc99',
-    icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/GRE/logo.svg',
-  },
-  {
-    label: 'BAPBAPA',
-    decimals: 9,
-    address: '0:9e0350c13cafe2bb55d906553fde5f357612e6dcb46c0c3440c7bfdda273ffdd',
-    icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/BAPBAPA/logo.svg',
-  },
-  {
-    label: 'RUM',
-    decimals: 9,
-    address: '0:38a4c196c7fe22cbf0cda034ddda284aa208e2dba7707b96f65914420ba3f580',
-    icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/RUM/logo.svg',
-  },
-  {
     label: 'DUSA',
     decimals: 2,
     address: '0:b3ed4b9402881c7638566b410dda055344679b065dce19807497c62202ba9ce3',
     icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/DUSA/logo.svg',
-  },
-  {
-    label: 'COLA',
-    decimals: 9,
-    address: '0:9dd2cd82cbfd74a963be1ef1fd1a1f3e25f60e0b8c742f8b862df378b9a5e265',
-    icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/COLA/logo.svg',
   },
   {
     label: 'LEND',
@@ -137,4 +101,22 @@ export default [
     address: '0:679a05316a324d0daa2724ab7d8e9768a2d1042863299323e969a174a8412a58',
     icon: 'https://raw.githubusercontent.com/broxus/ton-assets/master/icons/LEND/logo.svg',
   },
+  {
+    label: 'START',
+    decimals: 9,
+    address: '0:7d7af239168cfd06353c224aa8b5e805846ae5e556f66fa8e045b5e1ba29e82a',
+    icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/START/logo.svg',
+  },
+  {
+    label: 'INK',
+    decimals: 9,
+    address: '0:ba3df9da063c400bc934e35dc16c0ef13b4ca0bf44fa49501f0b5d628aa82fb2',
+    icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/INK/logo.svg',
+  },
+  {
+    label: 'PILE',
+    decimals: 9,
+    address: '0:dbba0028173f5b8d09eb597e0cca88cb41a4875efdf8a1815bb31292f150f800',
+    icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/PILE/logo.svg',
+  }
 ];
