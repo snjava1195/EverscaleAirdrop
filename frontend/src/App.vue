@@ -7,9 +7,9 @@
 
     <RouterView />
 
-    <AppFooter />
     <notifications position="bottom right" />
   </div>
+  <AppFooter />
 </template>
 
 <script setup>
