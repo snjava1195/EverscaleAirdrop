@@ -4,7 +4,11 @@
     <div
       class="mobTable lg:hidden w-full border border-[#E4E5EA] px-[12px] divide-y divide-[#E4E5EA] mt-[16px] mb-[310px] font-pt_root"
     >
-      <div v-for="(item, i) in transactions.transactions" :key="i" class="space-y-[8px] py-[16px]">
+      <div
+        v-for="(item, i) in transactions.transactions"
+        :key="i"
+        class="space-y-[8px] py-[16px] cursor-pointer"
+      >
         <div class="flex items-center justify-between">
           <h3>Some unique name</h3>
 
@@ -41,7 +45,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="(item, i) in transactions.transactions" :key="i">
+        <tr v-for="(item, i) in transactions.transactions" :key="i" class="cursor-pointer">
           <td class="h-[58px] pl-[12px] border-[#E4E5EA] border-t">
             <div>
               Some unique name

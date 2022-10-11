@@ -69,6 +69,9 @@
   .footer-menu {
     @apply space-x-[16px] md:space-x-[40px] text-[14px] text-[#8B909A] font-pt_root;
   }
+  button {
+    @apply font-pt_root;
+  }
 
   /* airdrop */
   .main {
@@ -254,4 +257,9 @@
   font-weight: normal;
   font-size: 14px;
   line-height: 14px;
+}
+
+.main-title {
+  font-feature-settings: 'ss10' on;
+  font-style: normal;
 }

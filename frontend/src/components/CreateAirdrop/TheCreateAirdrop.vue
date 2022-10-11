@@ -61,26 +61,26 @@
           </div>
         </form>
 
+        <form class="form">
+          <div class="w-full">
+            <label for="airdropName" class="form-label">Lock duration</label>
+            <Datepicker
+              v-model="airdropStore.lockDuration"
+              inputClassName="dp-custom-input"
+              placeholder="Date and time of unlock"
+              :minDate="new Date()"
+              :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"
+            ></Datepicker>
+          </div>
+
+          <div class="w-full">
+            <div class="message text-[#4D4F55] bg-[#F0F1F5] border-[#C6C9CF] h-[40px]">
+              <p>The tokens won’t be redeemed during this period.</p>
+            </div>
+          </div>
+        </form>
+
         <template v-if="token">
-          <form class="form">
-            <div class="w-full">
-              <label for="airdropName" class="form-label">Lock duration</label>
-              <Datepicker
-                v-model="airdropStore.lockDuration"
-                inputClassName="dp-custom-input"
-                placeholder="Date and time of unlock"
-                :minDate="new Date()"
-                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"
-              ></Datepicker>
-            </div>
-
-            <div class="w-full">
-              <div class="message text-[#4D4F55] bg-[#F0F1F5] border-[#C6C9CF] h-[40px]">
-                <p>The tokens won’t be redeemed during this period.</p>
-              </div>
-            </div>
-          </form>
-
           <div class="mt-[48px]">
             <header>
               <h2 class="recipients-list-subtitle">Recipients list</h2>
@@ -204,7 +204,7 @@
         :items="items"
         :token="token"
         :shareNetwork="{
-          airdropName: airdropName
+          airdropName: airdropName,
         }"
       />
     </div>
