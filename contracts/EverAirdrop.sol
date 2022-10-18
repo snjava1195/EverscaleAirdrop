@@ -42,7 +42,7 @@ contract EverAirdrop {
         contract_notes = _contract_notes;
         refund_destination = _refund_destination;
         refund_lock_duration_end = now + _refund_lock_duration;
-	buildAirdropCode(msg.sender);
+	   // buildAirdropCode(msg.sender);
 
     }
     

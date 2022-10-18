@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ProviderRpcClient } from 'everscale-inpage-provider';
 import router from '@/router';
-
+import { useAirdropStore } from '@/stores/airdrop';
 const ever = new ProviderRpcClient();
 
 export const useWalletStore = defineStore({
@@ -35,6 +35,7 @@ export const useWalletStore = defineStore({
   },
   actions: {
     async login() {
+      const airdropStore = useAirdropStore();
       try {
         if (!(await ever.hasProvider())) {
           throw new Error('Extension is not installed');
@@ -49,8 +50,6 @@ export const useWalletStore = defineStore({
         this.profile.loading = true;
         this.profile.address = accountInteraction.address._address;
         await this.getBalance();
-        await this.getTransactions(10, 1);
-
         return accountInteraction.address;
       } catch (e) {
         console.log('e: ', e);
@@ -68,6 +67,7 @@ export const useWalletStore = defineStore({
 
       return accountInteraction;
     },
+   
     async getTransactions(limit, page) {
       const existingPage = this.getExistingPage(page);
       if (page > this.currentPage) {
@@ -127,6 +127,12 @@ export const useWalletStore = defineStore({
       this.resetPagination();
       router.push('/');
     },
+
+    
+
+    
+
+    
   },
   persist: true,
 });

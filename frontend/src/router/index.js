@@ -16,6 +16,11 @@ const router = createRouter({
       component: () => import('@/views/CreateAirdropView.vue'),
     },
     {
+      path: '/edit-airdrop',
+      name: 'EditAirdrop',
+      component: () => import('@/views/EditAirdropView.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/',
     }

@@ -378,6 +378,7 @@
 import { ref, computed, onUnmounted } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router'
 import { useAirdropStore } from '@/stores/airdrop';
+import { useWalletStore } from '@/stores/wallet';
 import { useClipboard } from '@vueuse/core';
 import dayjs from 'dayjs';
 import { validateAddressAmountList, validateLockDuration, fromNano } from '@/utils';
@@ -416,6 +417,7 @@ onBeforeRouteLeave((to, from) => {
 onUnmounted(() => clearInterval(redeemPolling.value));
 
 const airdropStore = useAirdropStore();
+const walletStore = useWalletStore();
 const { copy } = useClipboard();
 const step = ref(1);
 const loading = ref(false);
@@ -490,6 +492,11 @@ async function onTopUpEver() {
   } finally {
     loading.value = false;
   }
+}
+
+async function calculateStep()
+{
+  
 }
 async function onDeployContract() {
   if (!validateAddressAmountList(props.items, totalTokens.value)) return;

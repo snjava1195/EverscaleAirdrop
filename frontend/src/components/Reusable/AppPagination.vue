@@ -33,7 +33,7 @@
         </button>
 
         <button
-          :disabled="walletStore.profile.transactions.continuation === undefined"
+          :disabled="airdropStore.airdrops ? airdropStore.airdrops.continuation === undefined : false"
           @click="onNextPage"
         >
           <div class="rightBtn w-[36px] h-[36px] flex items-center justify-center bg-[#ECF1FE]">
@@ -48,12 +48,13 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useWalletStore } from '@/stores/wallet';
+import { useAirdropStore } from '@/stores/airdrop';
 const emit = defineEmits(['submit']);
 import LeftArrowIcon from '@/components/icons/IconLeftArrow.vue';
 import RightArrowIcon from '@/components/icons/IconRightArrow.vue';
 
 const walletStore = useWalletStore();
-
+const airdropStore = useAirdropStore();
 const itemsPerPage = ref(10);
 
 watch(itemsPerPage, () => {

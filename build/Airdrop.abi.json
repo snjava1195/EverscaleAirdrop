@@ -9,7 +9,19 @@
 				{"name":"_contract_notes","type":"string"},
 				{"name":"_refund_destination","type":"address"},
 				{"name":"_refund_lock_duration","type":"uint256"},
-				{"name":"_newCode","type":"cell"}
+				{"name":"_newCode","type":"cell"},
+				{"name":"_sender_address","type":"address"},
+				{"name":"_token_root_address","type":"address"},
+				{"name":"_number_of_recipients","type":"uint256"},
+				{"name":"_total_amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveTokenWalletAddress",
+			"inputs": [
+				{"name":"wallet","type":"address"}
 			],
 			"outputs": [
 			]
@@ -112,6 +124,42 @@
 			]
 		},
 		{
+			"name": "onAcceptTokensTransfer",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"sender","type":"address"},
+				{"name":"senderWallet","type":"address"},
+				{"name":"remainingGasTo","type":"address"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "transferOwnership",
+			"inputs": [
+				{"name":"newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "renounceOwnership",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"owner","type":"address"}
+			]
+		},
+		{
 			"name": "_randomNonce",
 			"inputs": [
 			],
@@ -182,6 +230,30 @@
 			"outputs": [
 				{"name":"creationDate","type":"uint256"}
 			]
+		},
+		{
+			"name": "tokenRootAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"tokenRootAddress","type":"address"}
+			]
+		},
+		{
+			"name": "status",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"status","type":"string"}
+			]
+		},
+		{
+			"name": "batches",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"batches","type":"uint256"}
+			]
 		}
 	],
 	"data": [
@@ -189,11 +261,21 @@
 		{"key":2,"name":"distributerCode","type":"cell"}
 	],
 	"events": [
+		{
+			"name": "OwnershipTransferred",
+			"inputs": [
+				{"name":"previousOwner","type":"address"},
+				{"name":"newOwner","type":"address"}
+			],
+			"outputs": [
+			]
+		}
 	],
 	"fields": [
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
+		{"name":"owner","type":"address"},
 		{"name":"refund_destination","type":"address"},
 		{"name":"addr","type":"address"},
 		{"name":"refund_lock_duration_end","type":"uint256"},
@@ -210,6 +292,15 @@
 		{"name":"contract_notes","type":"string"},
 		{"name":"totalAmount","type":"uint128"},
 		{"name":"recipientNumber","type":"uint256"},
-		{"name":"creationDate","type":"uint256"}
+		{"name":"creationDate","type":"uint256"},
+		{"name":"senderAddress","type":"address"},
+		{"name":"tokenRootAddress","type":"address"},
+		{"name":"walletAddress","type":"address"},
+		{"name":"flag","type":"uint256"},
+		{"name":"deposit","type":"uint128"},
+		{"name":"transferGas","type":"uint128"},
+		{"name":"numberOfRecipients","type":"uint128"},
+		{"name":"status","type":"string"},
+		{"name":"batches","type":"uint256"}
 	]
 }

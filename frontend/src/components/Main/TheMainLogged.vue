@@ -29,18 +29,17 @@
     </div>
 
     <template
-      v-if="transactions && transactions.transactions.length && !walletStore.profile.loading"
+      v-if="transactions && transactions.length && !airdropStore.airdropsLoading" 
     >
       <ItemBox />
 
       <div class="hidden xl:flex items-center justify-between mt-[16px] mb-[100px]">
         <ExportItems />
-
         <AppPagination @submit="getTransactions" />
       </div>
     </template>
 
-    <ItemLoading v-else-if="walletStore.profile.loading" />
+    <ItemLoading v-else-if="airdropStore.airdropsLoading" />
 
     <EmptyItemBox v-else />
   </main>
@@ -53,14 +52,17 @@ import EmptyItemBox from '@/components/Main/EmptyItemBox.vue';
 import ItemLoading from '@/components/Main/ItemLoading.vue';
 import AppPagination from '@/components/Reusable/AppPagination.vue';
 import ExportItems from '@/components/Main/ExportItems.vue';
+import { useAirdropStore } from '@/stores/airdrop';
 
 const walletStore = useWalletStore();
-
+const airdropStore = useAirdropStore();
+getTransactions(10, 1);
 const transactions = computed(() => {
-  return walletStore.profile.transactions;
+  return airdropStore.airdropData;
 });
 
 function getTransactions(value, page) {
-  walletStore.getTransactions(value, page);
+  
+  airdropStore.getAirdropTransactions(value, page);
 }
 </script>

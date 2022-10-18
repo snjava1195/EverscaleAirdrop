@@ -48,9 +48,9 @@ ENDS
 CALLREF {
 	CALL $distribute_5c3b864b_internal_macro$
 }
-OVER
+PUSH S3
 PUSHCONT {
-	PUSH S3
+	PUSH S5
 	CTOS
 	LDU 2
 	LDMSGADDR
@@ -59,9 +59,15 @@ PUSHCONT {
 	NEWC
 	STSLICECONST xc
 	STSLICE
-	PUSHINT 3059120704
-	STUR 130
+	PUSHINT 1
+	STUR 98
+	REVERSE 4, 0
+	NEWC
+	STSLICECONST x99b46e8e
 	STI 1
+	STU 128
+	STU 256
+	STBREFR
 	ENDC
 	PUSHINT 0
 }
@@ -82,12 +88,17 @@ PUSHCONT {
 	SWAP
 	STGRAMS
 	STDICT
-	PUSHINT 106
-	STZEROES
+	PUSHINT 1
+	STUR 106
+	REVERSE 4, 0
+	NEWC
 	GETGLOB 4
 	INDEX 5
 	STUR 32
 	STI 1
+	STU 128
+	STU 256
+	STBREFR
 	ENDC
 	GETGLOB 4
 	INDEX 4
@@ -106,7 +117,7 @@ CALL $distribute_5c3b864b_internal_macro$
 .macro distribute_5c3b864b_internal_macro
 .loc ../contracts/Distributer.sol, 18
 ACCEPT
-.loc ../contracts/Distributer.sol, 21
+.loc ../contracts/Distributer.sol, 20
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S2
@@ -114,7 +125,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/Distributer.sol, 23
+	.loc ../contracts/Distributer.sol, 22
 	PUSH2 S0, S1
 	SECOND
 	PUSHINT 32
@@ -136,13 +147,13 @@ PUSHCONT {
 	ENDC
 	PUSHINT 1
 	SENDRAWMSG
-	.loc ../contracts/Distributer.sol, 21
+	.loc ../contracts/Distributer.sol, 20
 	INC
 	.loc ../contracts/Distributer.sol, 0
 }
 WHILE
-BLKDROP 3
-.loc ../contracts/Distributer.sol, 25
+DROP2
+.loc ../contracts/Distributer.sol, 24
 TRUE
 SETGLOB 13
 .loc ../contracts/Distributer.sol, 27
@@ -155,6 +166,9 @@ PUSHPOW2 7
 SETINDEXQ 4
 SETGLOB 4
 GETGLOB 13
+GETGLOB 12
+ROT
+FIRST
 .loc ../contracts/Distributer.sol, 0
 
 .macro c4_to_c7
@@ -426,7 +440,7 @@ IFJMPREF {
 		CALL $_owner$
 	}
 	DUP
-	PUSHINT 911637056
+	PUSHINT 431255182
 	EQUAL
 	IFJMPREF {
 		CALL $distribute$

@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
-import airdropAbi from '../../../build/EverAirdrop.abi.json';
-import tip3Abi from '../../../build/Tip31Airdrop.abi.json';
-import airdropTvc from '../../../build/EverAirdrop.base64?raw';
-import tip3Tvc from '../../../build/Tip31Airdrop.base64?raw';
 import distributerTvc from '../../../build/Distributer.base64?raw';
 import tip3DistributerTvc from '../../../build/Tip31Distributer.base64?raw';
+import airdrop2Abi from '../../../build/Airdrop.abi.json';
+import airdrop2Tvc from '../../../build/Airdrop.base64?raw';
 import { toNano, fromNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
@@ -129,37 +127,43 @@ export const useAirdropStore = defineStore({
     maxBatches: 0,
     abi: null,
     token: null,
-    airdropsList: []
+    token_root_address: "",
+    hash2: "",
+    airdrops: null,
+    airdropData: [],
+    airdropsLoading: false,
+    step: 1,
   }),
   getters: {},
   actions: {
     async getExpectedAddress(token) {
       console.log('token:', token);
-      // const walletStore = useWalletStore();
-      // const accounts = await ever.getAccountsByCodeHash({codeHash:'a5cc2ff5420d6f66fa1f31edd01be2187644e7b106a400dc7ebb0b9a15d42237'});
-      // console.log('tvc:', tip3Tvc);
-      // const { code } = await ever.splitTvc(tip3Tvc);
-      // const salt = await ever.getCodeSalt({code: code});
-      // const hash = await ever.setCodeSalt({code: code, salt: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'});
-      // console.log('hash:', hash);
-      // console.log('salt:', salt);
-      // console.log('accounts:', accounts);
+       const walletStore = useWalletStore();
+     
+       const code2  = await ever.splitTvc(airdrop2Tvc);
+       console.log(code2);
+       this.hash2 = await ever.setCodeSalt({code: code2.code, salt: { structure: [{name:'ownerAddress', type: 'address'}], data: {ownerAddress: walletStore.profile.address}}});
+      
       try {
         this.token = token;
         this.deployOptions.initParams._randomNonce = getRandomNonce();
         this.topUpRequiredAmount = 0;
         this.lockDuration = null;
         let address;
+        this.abi = airdrop2Abi;
+        this.deployOptions.tvc = airdrop2Tvc;
         if (token.label === 'EVER') {
-          this.abi = airdropAbi;
+        //  this.abi = airdropAbi;
           const { code } = await ever.splitTvc(distributerTvc);
           this.deployOptions.initParams['distributerCode'] = code;
-          this.deployOptions.tvc = airdropTvc;
+          this.token_root_address="0:0000000000000000000000000000000000000000000000000000000000000000";
+         // this.deployOptions.tvc = airdropTvc;
         } else {
-          this.abi = tip3Abi;
+        //  this.abi = tip3Abi;
           const { code } = await ever.splitTvc(tip3DistributerTvc);
           this.deployOptions.initParams['tip31distributerCode'] = code;
-          this.deployOptions.tvc = tip3Tvc;
+          this.token_root_address = token.address._address;
+         // this.deployOptions.tvc = tip3Tvc;
         }
         
         address = await ever.getExpectedAddress(this.abi, this.deployOptions);
@@ -230,17 +234,20 @@ export const useAirdropStore = defineStore({
 
         console.log('token address', token.address);
 
-        const data = token.label === 'EVER' ? {
+        const data = /*token.label === 'EVER' ?*/ {
           _contract_notes: airdropName,
           _refund_destination: walletStore.profile.address,
-          // _addresses: addresses,
-          // _amounts: amounts,
           _refund_lock_duration: getSeconds(this.lockDuration),
-        } : {
+          _newCode: this.hash2.code,
+          _sender_address: walletStore.profile.address,
+          _token_root_address: this.token_root_address,
+          _number_of_recipients: totalRecipients,
+          _total_amount: totalTokens,
+        }; /*: {
           senderAddr: walletStore.profile.address,
           tokenRootAddr: token.address,
           _refund_lock_duration: getSeconds(this.lockDuration),
-        };
+        };*/
 
         console.log('data:', data);
 
@@ -252,6 +259,12 @@ export const useAirdropStore = defineStore({
             withoutSignature: true,
             // local: true,
           });
+        /*  if(sendTransaction.transaction.aborted==false)
+          {
+          this.creationTimes.push(sendTransaction.transaction.createdAt);
+          console.log('Usao u creation times: ', this.creationTimes);
+          }
+          console.log(sendTransaction.transaction.createdAt);*/
 
         this.getRequiredAmount(totalTokens, totalRecipients);
 
@@ -403,6 +416,115 @@ export const useAirdropStore = defineStore({
     },
     getAirdrops() {
       // Treba da se zove neka funkcija koja daje sve airdropove (kontrakte) sa walleta logovanog usera
-    }
+    },
+
+    async getAirdropTransactions(limit, page) {
+      const transactions = await ever.getTransactions({address:"0:b7fc4427d121e5449518b863dbc0633ad591aa5f98dd03e6fa40c2294ce70233", limit: 10});
+      console.log(transactions);
+      const walletStore = useWalletStore();
+      const existingPage = walletStore.getExistingPage(page);
+      let accounts;
+      this.airdropsLoading = true;
+      if (page > walletStore.currentPage) {
+        if (existingPage !== undefined) {
+          walletStore.continuation = existingPage.continuation;
+        }
+      } else {
+        await walletStore.getPagination(page);
+      }
+      this.currentPage = page;
+      try {
+        
+        const codeEver = await ever.splitTvc(airdrop2Tvc);
+        console.log(codeEver);
+        const hashEver = await ever.setCodeSalt({ code: codeEver.code, salt: { structure: [{ name: 'ownerAddress', type: 'address' }], data: { ownerAddress: walletStore.profile.address } } });
+        const bocHashEver = await ever.getBocHash(hashEver.code);
+        const paginationObject = { codeHash: bocHashEver, limit: limit }
+        console.log('Page:', page);
+        if(page>1)
+        {
+          paginationObject.continuation = walletStore.continuation; 
+        }
+
+        accounts = await ever.getAccountsByCodeHash(paginationObject);
+        this.airdrops =accounts;
+        console.log(this.airdrops);
+        console.log(this.airdrops.accounts);
+        this.airdropData=[];
+        for (let i = 0; i < this.airdrops.accounts.length; i++) {
+
+          const contract = new ever.Contract(airdrop2Abi, this.airdrops.accounts[i]._address);
+          const names = await contract.methods.contract_notes({}).call();
+          const status = await contract.methods.status({}).call();
+          const recipientsNr = await contract.methods.recipientNumber({}).call();
+          const totalAmount = await contract.methods.totalAmount({}).call();
+          const date = await contract.methods.creationDate({}).call();
+          const batches = await contract.methods.batches({}).call();
+          const distributed = await contract.methods.getDistributedContracts({}).call();
+          let workDone = "";//status.status + " " + distributed.value0.length + "/" + batches.batches;
+          if(batches.batches==1)
+          {
+            workDone = status.status + " " + distributed.value0.length *recipientsNr.recipientNumber +"/" + batches.batches*recipientsNr.recipientNumber;
+          }
+          else if(batches.batches>1)
+          {
+            workDone = status.status + " " + distributed.value0.length * maxNumberOfAddresses + "/" + recipientsNr.recipientNumber;
+          }
+          //const workDone = status.status + " " + distributed.value0.length + "/" + batches.batches;
+          let finalStatus=""
+          if(status.status=="Executing")
+          {
+            finalStatus=workDone;
+          }
+          else
+          {
+            finalStatus = status.status;
+          }
+          console.log(finalStatus);
+          console.log(names);
+          //console.log(date);
+          console.log(this.airdrops.accounts[0]._address);
+          let createdStatus = "";
+          if(status.status!="Executed")
+          {
+            createdStatus = "Created";
+          }
+          else
+          {
+            createdStatus="Executed";
+          }
+          this.airdropData.push({
+                                      airdropName:names.contract_notes, 
+                                      status: finalStatus, 
+                                      //status: "Deployed",
+                                      amount: totalAmount.totalAmount,
+                                      recipientsNumber: recipientsNr.recipientNumber,
+                                      dateCreated: date.creationDate,
+                                      statusCreated: createdStatus,
+                                      address: this.airdrops.accounts[i]._address,
+                                    });
+        }
+        console.log(accounts);
+       
+
+
+        //address: accounts.accounts,
+        //...(Object.keys(accounts.continuation).length !== 0 && {
+        //  continuation: { hash: accounts.continuation.hash, lt: accounts.continuation.lt },
+        //}),
+        //limit: limit,
+        // });
+        const existingPage = walletStore.getExistingPage(walletStore.nextPage);
+        if (existingPage === undefined) {
+          await walletStore.updatePagination(walletStore.nextPage, this.airdrops.continuation);
+        }
+        this.airdropsLoading = false;
+        //await this.setAirdropData();
+      } catch (e) {
+        console.log('e: ', e);
+        this.airdropsLoading = false;
+      }
+      console.log(this.airdrops);
+    },
   },
 });
