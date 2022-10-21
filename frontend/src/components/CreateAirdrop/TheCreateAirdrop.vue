@@ -243,7 +243,7 @@ const airdropStore = useAirdropStore();
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
-
+reset();
 function addItem() {
   items.value.push({
     address: null,
@@ -312,5 +312,12 @@ function readFile(file) {
 }
 async function onChange(token) {
   await airdropStore.getExpectedAddress(token);
+  //airdropStore.step =1;
+}
+
+function reset()
+{
+  airdropStore.address = '';
+  airdropStore.step=1;
 }
 </script>

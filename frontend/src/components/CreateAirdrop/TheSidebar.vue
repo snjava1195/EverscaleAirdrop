@@ -36,7 +36,7 @@
       <div class="flex justify-between items-center font-bold text-black">
         <span>Total tokens</span>
         <span
-          ><span class="text-[20px]">{{ totalTokens }}</span> {{ token ? token.label : 'EVER' }}</span
+          ><span class="text-[20px]">{{ totalTokens }}</span>{{ token ? token.label : 'EVER' }}</span
         >
       </div>
     </header>
@@ -71,7 +71,7 @@
                   ? 'text-[#4AB44A] font-medium'
                   : ''
               "
-              >Top-up 1 EVER</a
+              >{{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}</a
             >
           </div>
 
@@ -292,7 +292,7 @@
         ]"
         :disabled="!recipientsList.length"
       >
-        Top-up 1 EVER
+      {{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}
       </button>
 
       <!-- Step 2 -->
@@ -319,7 +319,7 @@
         class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
         :class="{ 'is-loading': loading }"
       >
-        Top-up {{ topUpRequiredAmount }} {{ token.label }}
+        Top-up {{ topUpRequiredAmount }} {{ token ? token.label : 'EVER' }}
       </button>
 
       <!-- Step 4 -->
@@ -375,7 +375,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, onUnmounted, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router'
 import { useAirdropStore } from '@/stores/airdrop';
 import { useWalletStore } from '@/stores/wallet';
@@ -419,7 +419,7 @@ onUnmounted(() => clearInterval(redeemPolling.value));
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
 const { copy } = useClipboard();
-const step = ref(1);
+//const step = ref(1);
 const loading = ref(false);
 const error = ref(false);
 const errors = ref({
@@ -438,9 +438,14 @@ const reedemText = ref('');
 const redeemRemainingSeconds = ref(null);
 const airdropName = ref(null);
 
+const step = computed(() => {
+  return airdropStore.step;
+});
+
 const recipientsList = computed(() => {
   return props.items.filter((item) => item.address && item.amount);
 });
+
 const totalTokens = computed(() => {
   return recipientsList.value.reduce((accumulator, object) => {
     return accumulator + Number(object.amount);
@@ -450,6 +455,8 @@ const topUpRequiredAmount = computed(() => {
   const tempTopUpRequiredAmount = recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
   return airdropStore.topUpRequiredAmount === 0 ? tempTopUpRequiredAmount : airdropStore.topUpRequiredAmount;
 })
+
+
 const redeemExpired = computed(() => {
   if (redeemRemainingSeconds.value <= 0) {
     return true;
@@ -463,6 +470,14 @@ const currentBatch = computed(() => {
 const maxBatches = computed(() => {
   return airdropStore.maxBatches;
 });
+
+watch(props.items, (newX) => {
+  if(airdropStore.step<=3)
+  {
+    airdropStore.getRequiredAmount(totalTokens.value, recipientsList.value.length);
+    console.log('Required amount: ', airdropStore.topUpRequiredAmount);
+  }
+})
 
 function availableToRedeem() {
   redeemRemainingSeconds.value = getSeconds(airdropStore.lockDuration);
@@ -482,9 +497,9 @@ async function onTopUpEver() {
 
   try {
     errors.value.error = false;
-    const data = await airdropStore.getGiverContract(recipientsList.value.length);
+    const data = await airdropStore.getGiverContract2(props.token.label);
     transactionId.value.giverContractId = data.id.hash;
-    step.value = 2;
+    airdropStore.step = 2;
   } catch (e) {
     console.log('e: ', e);
     errors.value.error = true;
@@ -494,12 +509,8 @@ async function onTopUpEver() {
   }
 }
 
-async function calculateStep()
-{
-  
-}
 async function onDeployContract() {
-  if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+ // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
   if (!validateLockDuration(airdropStore.lockDuration)) return;
   loading.value = true;
 
@@ -508,8 +519,11 @@ async function onDeployContract() {
     airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     console.log('airdropName:', airdropName.value);
     const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
+   // const fees = await airdropStore.getEstimatedFee();
     transactionId.value.deployContractId = data.transaction.id.hash;
-    step.value = 3;
+ //   await airdropStore.setRecipients(recipientsList.value);
+ //   await airdropStore.setAmounts(recipientsList.value);
+    airdropStore.step = 3;
   } catch (e) {
     errors.value.error = true;
     errors.value.message = e.message;
@@ -524,7 +538,7 @@ async function onTopUpToken() {
     errors.value.error = false;
     const data = await airdropStore.topUp();
     transactionId.value.amountContractId = data.id.hash;
-    step.value = 4;
+    airdropStore.step = 4;
   } catch (e) {
     console.log('onTopUpToken e:', e);
     errors.value.error = true;
@@ -539,6 +553,7 @@ async function onResumeAirdrop(isResumed) {
   try {
     errors.value.error = false;
     error.value = false;
+    console.log('Recipients list:', recipientsList.value);
     const data = await airdropStore.distribute(recipientsList.value, isResumed);
     transactionId.value.distributeContractId = data.id.hash;
     availableToRedeem();
@@ -546,7 +561,7 @@ async function onResumeAirdrop(isResumed) {
       console.log('interval');
       availableToRedeem();
     }, 1000);
-    step.value = 5;
+    airdropStore.step = 5;
   } catch (e) {
     console.log('onResumeAirdrop e:', e);
     errors.value.error = true;
@@ -565,7 +580,7 @@ async function onRedeemFunds() {
     const data = await airdropStore.redeemFunds();
     transactionId.value.redeemContractId = data.id.hash;
     // error.value = true;
-    step.value = 6;
+    airdropStore.step = 6;
   } catch (e) {
     console.log('onRedeemFunds e:', e);
     errors.value.error = true;

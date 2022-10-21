@@ -137,6 +137,22 @@
 			]
 		},
 		{
+			"name": "setRecipients",
+			"inputs": [
+				{"name":"recipients","type":"address[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setAmounts",
+			"inputs": [
+				{"name":"amounts","type":"uint128[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "transferOwnership",
 			"inputs": [
 				{"name":"newOwner","type":"address"}
@@ -254,6 +270,30 @@
 			"outputs": [
 				{"name":"batches","type":"uint256"}
 			]
+		},
+		{
+			"name": "allRecipients",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"allRecipients","type":"address[]"}
+			]
+		},
+		{
+			"name": "allAmounts",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"allAmounts","type":"uint128[]"}
+			]
+		},
+		{
+			"name": "messageValue",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"messageValue","type":"uint256"}
+			]
 		}
 	],
 	"data": [
@@ -301,6 +341,9 @@
 		{"name":"transferGas","type":"uint128"},
 		{"name":"numberOfRecipients","type":"uint128"},
 		{"name":"status","type":"string"},
-		{"name":"batches","type":"uint256"}
+		{"name":"batches","type":"uint256"},
+		{"name":"allRecipients","type":"address[]"},
+		{"name":"allAmounts","type":"uint128[]"},
+		{"name":"messageValue","type":"uint256"}
 	]
 }

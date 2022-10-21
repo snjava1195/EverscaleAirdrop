@@ -13,7 +13,7 @@
     <div v-if="walletStore.isLogged" class="right-menu">
       <img
         class="mr-[10px] w-6 h-6"
-        :src="`avatar/${walletStore.profile.address.substr(
+        :src="`/avatar/${walletStore.profile.address.substr(
           walletStore.profile.address.length - 1,
           1
         )}.svg`"
