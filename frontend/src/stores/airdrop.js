@@ -161,7 +161,7 @@ export const useAirdropStore = defineStore({
         } else {
         //  this.abi = tip3Abi;
           const { code } = await ever.splitTvc(tip3DistributerTvc);
-          this.deployOptions.initParams['tip31distributerCode'] = code;
+          this.deployOptions.initParams['distributerCode'] = code;
           this.token_root_address = token.address._address;
          // this.deployOptions.tvc = tip3Tvc;
         }
