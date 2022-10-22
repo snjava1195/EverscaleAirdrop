@@ -71,7 +71,7 @@
                   ? 'text-[#4AB44A] font-medium'
                   : ''
               "
-              >{{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}</a
+              >Top up {{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}</a
             >
           </div>
 

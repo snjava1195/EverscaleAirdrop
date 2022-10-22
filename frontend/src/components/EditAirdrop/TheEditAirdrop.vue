@@ -2,7 +2,7 @@
   <div
     class="w-full xl:max-w-[1160px] mx-auto mt-[64px] px-[20px] md:px-[40px] lg:px-[10px] xl:px-0 mb-[109px] md:mb-[100px] lg:mb-0"
   >
-    <h2 class="font-semibold text-[28px] text-left mb-[48px]">Create new airdrop</h2>
+    <h2 class="font-semibold text-[28px] text-left mb-[48px]">{{airdropName}}</h2>
 
     <div class="flex flex-col lg:flex-row lg:justify-between">
       <main class="main">
@@ -367,7 +367,7 @@ async function getAirdrop()
               {
                 airdropStore.step = 4;
               }
-              else if(airdropStore.airdropData[i].status == "Finished")
+              else if(airdropStore.airdropData[i].status == "Redeemed")
               {
                 airdropStore.step = 6;
               }
@@ -383,22 +383,26 @@ async function getAirdrop()
           const date = await contract.methods.creationDate({}).call();
           const batches = await contract.methods.batches({}).call();
           const distributed = await contract.methods.getDistributedContracts({}).call();
-          /*const recipients = await contract.methods.allRecipients({}).call();
+          const recipients = await contract.methods.allRecipients({}).call();
           console.log(recipients.allRecipients);
           const zaAirdrop=[];
+         
+          const amounts = await contract.methods.allAmounts({}).call();
+          console.log(amounts);
           for(let i=0;i<recipients.allRecipients.length;i++)
           {
             console.log('Za airdrop: ', recipients.allRecipients[i]._address)
             zaAirdrop.push(recipients.allRecipients[i]._address);
+           /* items.value.push({
+    address: recipients.allRecipients[i]._address,
+    amount: fromNano(amounts.allAmounts[i],9),
+  });*/
+    items.value[i].address = recipients.allRecipients[i]._address;
+    items.value[i].amount = fromNano(amounts.allAmounts[i],9);
           }
           console.log(zaAirdrop);
-          const amounts = await contract.methods.allAmounts({}).call();
-          console.log(amounts);
-          items.value.push({
-    address: zaAirdrop,
-    amount: fromNano(amounts.allAmounts,9),
-  });*/
-    //      console.log('Items: ', items.value);
+          
+         console.log('Items: ', items.value);
           airdropStore.loopCount = batches.batches;
           airdropStore.currentBatch = distributed.value0.length;
           airdropStore.maxBatches = batches.batches;

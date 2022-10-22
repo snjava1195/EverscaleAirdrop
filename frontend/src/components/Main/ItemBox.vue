@@ -56,6 +56,7 @@
                           'bg-[#DEF1DE]': item.status=='Executed', 'text-[#398A39]': item.status == 'Executed',
                           'bg-[#FEF2CD]': item.status=='Executing', 'text-[#B28501]': item.status == 'Executing',
                           'bg-[#E4E5EA]': item.status=='Preparing', 'text-[#6C7078]': item.status == 'Preparing',
+                          'bg-[#DEF1DE]': item.status=='Redeemed', 'text-[#398A39]': item.status == 'Redeemed',
 
 
               }"
@@ -67,7 +68,8 @@
         </router-link>
           <td class="h-[58px] pl-[12px] border-[#E4E5EA] border-t flex items-center">
             <span class="mr-[6px]">
-              <EverIcon />
+              <img :src="item.tokenIcon" width="20" height="20"/>
+              <!--<EverIcon />-->
             </span>
             {{ item.amount }} {{item.tokenLabel}}
           </td>
@@ -118,7 +120,7 @@ function creationTime(date)
   //let date = walletStore.profile.creationTimes[i];
   console.log(date);
   //if(date==null)
-  return dayjs.unix(date).format('DD MMM YYYY hh MM');
+  return dayjs.unix(date).format('DD MMM YYYY hh:mm');
 }
 
 

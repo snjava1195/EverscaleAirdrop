@@ -7,6 +7,7 @@ import airdrop2Tvc from '../../../build/Airdrop.base64?raw';
 import { toNano, fromNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
+import tokensList from '@/utils/tokens-list';
 const ever = new ProviderRpcClient();
 // const walletStore = useWalletStore();
 
@@ -141,7 +142,7 @@ export const useAirdropStore = defineStore({
        const walletStore = useWalletStore();
      
        const code2  = await ever.splitTvc(airdrop2Tvc);
-       console.log(code2);
+       //(code2);
        this.hash2 = await ever.setCodeSalt({code: code2.code, salt: { structure: [{name:'ownerAddress', type: 'address'}], data: {ownerAddress: walletStore.profile.address}}});
       
       try {
@@ -167,7 +168,7 @@ export const useAirdropStore = defineStore({
          // this.deployOptions.tvc = tip3Tvc;
         }
         
-        console.log(this.deployOptions.initParams);
+      //  console.log(this.deployOptions.initParams);
 
         address = await ever.getExpectedAddress(this.abi, this.deployOptions);
         this.address = address._address;
@@ -444,14 +445,14 @@ export const useAirdropStore = defineStore({
       console.log('Total recipients', totalRecipients);
       if (this.token.label !== 'EVER') {
         this.topUpRequiredAmount = totalTokens;
-        console.log('Nije Ever usao');
+      //  console.log('Nije Ever usao');
       } else {
         this.loopCount = Math.floor(totalRecipients / maxNumberOfAddresses);
           if (totalRecipients % maxNumberOfAddresses !== 0) {
             this.loopCount++;
           }
         this.topUpRequiredAmount = totalTokens + ((this.loopCount - 1) * 0.5);
-        console.log('Je ever usao');
+      //  console.log('Je ever usao');
       }
       this.maxBatches = this.loopCount;
     },
@@ -463,7 +464,7 @@ export const useAirdropStore = defineStore({
         // console.log('this.topUpRequiredAmount + 0.5:', toNano(this.topUpRequiredAmount));
         let sendTransaction;
         if (this.token.label === 'EVER') {
-          console.log('Ever!!!!');
+         // console.log('Ever!!!!');
           sendTransaction = await giverContract.methods
             .sendTransaction({
               value: toNano(1, 9),
@@ -476,7 +477,7 @@ export const useAirdropStore = defineStore({
               bounce: false,
             });
         } else {
-          console.log('Not Ever!!!!');
+         // console.log('Not Ever!!!!');
           const rootAcc = new ever.Contract(rootAbi, this.token.address);
           const response = await rootAcc.methods
             .walletOf({
@@ -517,14 +518,14 @@ export const useAirdropStore = defineStore({
       const walletStore = useWalletStore();
       try {
         const addresses = arr.map((address) => address.address);
-        console.log('Mapirane adrese:', addresses);
+       // console.log('Mapirane adrese:', addresses);
 
         const amounts = arr.map((amount) => toNano(amount.amount, this.token.decimals));
-        console.log('Mapirane amounts:', amounts);
+       // console.log('Mapirane amounts:', amounts);
         const chunkAddresses = chunk(addresses, maxNumberOfAddresses);
-        console.log('Cankovane adrese', chunkAddresses);
+       // console.log('Cankovane adrese', chunkAddresses);
         const chunkAmounts = chunk(amounts, maxNumberOfAddresses);
-        console.log('Cankovani amounti', chunkAmounts);
+       // console.log('Cankovani amounti', chunkAmounts);
 
         const everAirDropContract = await new ever.Contract(this.abi, new Address(this.address));
         console.log('Address: ', this.address);
@@ -613,11 +614,11 @@ export const useAirdropStore = defineStore({
       try {
         
         const codeEver = await ever.splitTvc(airdrop2Tvc);
-        console.log(codeEver);
+       // console.log(codeEver);
         const hashEver = await ever.setCodeSalt({ code: codeEver.code, salt: { structure: [{ name: 'ownerAddress', type: 'address' }], data: { ownerAddress: walletStore.profile.address } } });
         const bocHashEver = await ever.getBocHash(hashEver.code);
         const paginationObject = { codeHash: bocHashEver, limit: limit }
-        console.log('Page:', page);
+       // console.log('Page:', page);
         if(page>1)
         {
           paginationObject.continuation = walletStore.continuation; 
@@ -625,8 +626,8 @@ export const useAirdropStore = defineStore({
 
         accounts = await ever.getAccountsByCodeHash(paginationObject);
         this.airdrops =accounts;
-        console.log(this.airdrops);
-        console.log(this.airdrops.accounts);
+       // console.log(this.airdrops);
+       // console.log(this.airdrops.accounts);
         this.airdropData=[];
         for (let i = 0; i < this.airdrops.accounts.length; i++) {
 
@@ -638,6 +639,26 @@ export const useAirdropStore = defineStore({
           const date = await contract.methods.creationDate({}).call();
           const batches = await contract.methods.batches({}).call();
           const distributed = await contract.methods.getDistributedContracts({}).call();
+          const tokenAddress = await contract.methods.tokenRootAddress({}).call();
+          console.log('Token list:', tokensList);
+          console.log('Token root address: ', tokenAddress.tokenRootAddress);
+          let tokensLabel = "";
+          let icon ="";
+          for(let i=0;i<tokensList.length;i++)
+          {
+            if(tokenAddress.tokenRootAddress._address=="0:0000000000000000000000000000000000000000000000000000000000000000")
+            {
+              tokensLabel = 'EVER';
+              icon = tokensList[0].icon;
+              console.log('Usao u ever');
+            }
+            else if(tokenAddress.tokenRootAddress._address==tokensList[i].address)
+            {
+              tokensLabel = tokensList[i].label;
+              icon = tokensList[i].icon;
+              console.log('Usao u tip3');
+            }
+          }
           let workDone = "";//status.status + " " + distributed.value0.length + "/" + batches.batches;
           if(batches.batches==1)
           {
@@ -669,7 +690,7 @@ export const useAirdropStore = defineStore({
             const executedBalance = await ever.getBalance(this.airdrops.accounts[i]._address);
             if(fromNano(executedBalance, 9)==0)
             {
-              finalStatus = "Finished";
+              finalStatus = "Redeemed";
             }
             else
             {
@@ -677,10 +698,10 @@ export const useAirdropStore = defineStore({
             }
           }
         
-          console.log(finalStatus);
-          console.log(names);
+          //console.log(finalStatus);
+          //console.log(names);
           //console.log(date);
-          console.log(this.airdrops.accounts[0]._address);
+         // console.log(this.airdrops.accounts[0]._address);
           let createdStatus = "";
           if(status.status!="Executed")
           {
@@ -699,6 +720,8 @@ export const useAirdropStore = defineStore({
                                       dateCreated: date.creationDate,
                                       statusCreated: createdStatus,
                                       address: this.airdrops.accounts[i]._address,
+                                      tokenLabel: tokensLabel,
+                                      tokenIcon: icon,
                                     });
         }
         console.log(accounts);
