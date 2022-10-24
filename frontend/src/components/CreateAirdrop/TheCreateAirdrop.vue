@@ -319,5 +319,12 @@ function reset()
 {
   airdropStore.address = '';
   airdropStore.step=1;
+  airdropStore.topUpRequiredAmount=0;
+  for(let i=0;i<items.value.length;i++)
+  {
+    items.value[i].address = "";
+    items.value[i].amount = "";
+  }
+  //recipientsList=null;
 }
 </script>

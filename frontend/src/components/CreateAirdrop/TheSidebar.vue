@@ -10,7 +10,7 @@
         </div>
 
         <div class="flex items-center space-x-[10px]">
-          <a class="text-[#2B63F1]">{{ $filters.addressFormat(airdropStore.address) }}</a>
+          <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/accounts/accountDetails?id=${airdropStore.address}`">{{ $filters.addressFormat(airdropStore.address) }}</a>
 
           <span @click="copy(airdropStore.address)" class="cursor-pointer">
             <CopyIcon />
@@ -30,7 +30,7 @@
 
       <div class="flex justify-between">
         <span class="text-[#8B909A]">Estimated gas fee</span>
-        <span>{{ 0.1 * totalTokens }} EVER</span>
+        <span>{{ airdropStore.fees }} EVER</span>
       </div>
 
       <div class="flex justify-between items-center font-bold text-black">
@@ -76,9 +76,9 @@
           </div>
 
           <div v-if="step > 1" class="flex items-center space-x-[6px]">
-            <span class="text-[#2B63F1]">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.giverContractId}`">{{
               $filters.addressFormat(transactionId.giverContractId)
-            }}</span>
+            }}</a>
             <span @click="copy(transactionId.giverContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
@@ -119,9 +119,9 @@
           </div>
 
           <div v-if="step > 2" class="flex items-center space-x-[6px]">
-            <span class="text-[#2B63F1]">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.deployContractId}`">{{
               $filters.addressFormat(transactionId.deployContractId)
-            }}</span>
+            }}</a>
 
             <span @click="copy(transactionId.deployContractId)" class="cursor-pointer">
               <CopyIcon />
@@ -162,9 +162,12 @@
           </div>
 
           <div v-if="step > 3" class="flex items-center space-x-[6px]">
-            <span class="text-[#2B63F1]">{{
-              $filters.addressFormat(transactionId.amountContractId)
-            }}</span>
+            <!-- <a class="text-[#2B63F1]" :href="`https://everscan.io/transactions/${transactionId.amountContractId}`">{{ -->
+              <!-- $filters.addressFormat(transactionId.amountContractId) -->
+            <!-- }}</a> -->
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.amountContractId}`">{{
+               $filters.addressFormat(transactionId.amountContractId) 
+             }}</a> 
             <span @click="copy(transactionId.amountContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
@@ -208,9 +211,9 @@
           </div>
 
           <div v-if="step > 4" class="flex items-center space-x-[6px]">
-            <span class="text-[#2B63F1]">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.distributeContractId}`">{{
               $filters.addressFormat(transactionId.distributeContractId)
-            }}</span>
+            }}</a>
             <span @click="copy(transactionId.distributeContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
@@ -256,9 +259,9 @@
           </div>
 
           <div v-if="step > 5" class="flex items-center space-x-[6px]">
-            <span class="text-[#2B63F1]">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.redeemContractId}`">{{
               $filters.addressFormat(transactionId.redeemContractId)
-            }}</span>
+            }}</a>
             <span @click="copy(transactionId.redeemContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
@@ -292,7 +295,7 @@
         ]"
         :disabled="!recipientsList.length"
       >
-      {{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}
+      Top up {{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}
       </button>
 
       <!-- Step 2 -->
@@ -447,12 +450,15 @@ const recipientsList = computed(() => {
 });
 
 const totalTokens = computed(() => {
-  return recipientsList.value.reduce((accumulator, object) => {
+  const totalRecipientsTokens = recipientsList.value.reduce((accumulator, object) => {
     return accumulator + Number(object.amount);
   }, 0);
+  
+  return Number(Math.round(totalRecipientsTokens+'e2')+'e-2');
 });
 const topUpRequiredAmount = computed(() => {
   const tempTopUpRequiredAmount = recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
+  console.log(airdropStore.topUpRequiredAmount);
   return airdropStore.topUpRequiredAmount === 0 ? tempTopUpRequiredAmount : airdropStore.topUpRequiredAmount;
 })
 
@@ -521,8 +527,10 @@ async function onDeployContract() {
     const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
    // const fees = await airdropStore.getEstimatedFee();
     transactionId.value.deployContractId = data.transaction.id.hash;
- //   await airdropStore.setRecipients(recipientsList.value);
- //   await airdropStore.setAmounts(recipientsList.value);
+    await airdropStore.setRecipients(recipientsList.value);
+    await airdropStore.setAmounts(recipientsList.value);
+    await airdropStore.calculateFees("topup", "giver", '', []);
+    console.log('Fees calculated: ', airdropStore.fees);
     airdropStore.step = 3;
   } catch (e) {
     errors.value.error = true;
@@ -535,6 +543,7 @@ async function onTopUpToken() {
   loading.value = true;
 
   try {
+    await airdropStore.calculateFees("distribute", "everAirdrop", '', recipientsList.value);
     errors.value.error = false;
     const data = await airdropStore.topUp();
     transactionId.value.amountContractId = data.id.hash;
@@ -561,6 +570,7 @@ async function onResumeAirdrop(isResumed) {
       console.log('interval');
       availableToRedeem();
     }, 1000);
+    await airdropStore.calculateFees("redeem", "everAirdrop", '', []);
     airdropStore.step = 5;
   } catch (e) {
     console.log('onResumeAirdrop e:', e);
@@ -590,4 +600,5 @@ async function onRedeemFunds() {
     // error.value = true;
   }
 }
+
 </script>

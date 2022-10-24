@@ -9,6 +9,7 @@ import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
 import tokensList from '@/utils/tokens-list';
 const ever = new ProviderRpcClient();
+
 // const walletStore = useWalletStore();
 
 const giverAbi = {
@@ -134,6 +135,7 @@ export const useAirdropStore = defineStore({
     airdropData: [],
     airdropsLoading: false,
     step: 1,
+    fees: 0,
   }),
   getters: {},
   actions: {
@@ -226,6 +228,89 @@ export const useAirdropStore = defineStore({
       }
     },
 
+    async calculateFees(method, contract, tokenLabel, arr)
+    {
+      const walletStore = useWalletStore();
+      let sendTransaction;
+      if(contract == "giver")
+      {
+        const giverContract = new ever.Contract(giverAbi, this.address);
+        
+        if(method=="deploy")
+        {
+          
+          if(tokenLabel=='EVER')
+          {
+            
+            sendTransaction = await giverContract.methods.sendTransaction({
+              value: toNano(0.5, 9),
+              dest: this.address,
+              bounce: bounce,
+            }).estimateFees({from: walletStore.profile.address, amount: toNano(0.5, 9)});
+            this.fees = fromNano(sendTransaction, 9);
+            console.log('Transaction fees: ', this.fees);
+          }
+          else
+          {
+             sendTransaction = await giverContract.methods.sendTransaction({
+              value: toNano(1.5, 9),
+              dest: this.address,
+              bounce: bounce,
+            }).estimateFees({from: walletStore.profile.address, amount: toNano(1.5, 9)});
+            this.fees = fromNano(sendTransaction, 9);
+            console.log('Transaction fees: ', this.fees);
+          }
+        }
+        else
+        {
+          sendTransaction = await giverContract.methods
+            .sendTransaction({
+              value: toNano(1, 9),
+              dest: this.address,
+              bounce: false,
+            })
+            .estimateFees({from: walletStore.profile.address, amount: toNano(this.topUpRequiredAmount, 9)});
+            this.fees = fromNano(sendTransaction, 9);
+            console.log('Transaction fees: ', this.fees);
+        }
+      }
+      else
+      {
+        const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
+        if(method=="distribute")
+        {
+          const addresses = arr.map((address) => address.address);
+       // console.log('Mapirane adrese:', addresses);
+
+        const amounts = arr.map((amount) => toNano(amount.amount, this.token.decimals));
+       // console.log('Mapirane amounts:', amounts);
+        const chunkAddresses = chunk(addresses, maxNumberOfAddresses);
+       // console.log('Cankovane adrese', chunkAddresses);
+        const chunkAmounts = chunk(amounts, maxNumberOfAddresses);
+        for(let i=0; i<this.loopCount; i++) {
+        const totalAmount = chunkAmounts[i][1].reduce(
+          (previousValue, currentValue) => previousValue + fromNano(currentValue, this.token.decimals),
+          0
+        );
+          sendTransaction = await everAirDropContract.methods.distribute({
+            _addresses: chunkAddresses[i][1],
+            _amounts: chunkAmounts[i][1],
+            _wid: 0,
+            _totalAmount: toNano(totalAmount, this.token.decimals)
+          }).estimateFees({from: walletStore.profile.address, amount: toNano(0.8, 9)});
+          this.fees = fromNano(sendTransaction,9);
+          console.log('Transaction fees: ', this.fees);
+        }
+        }
+        else if(method=="redeem")
+        {
+          sendTransaction = await everAirDropContract.methods.refund({}).estimateFees({from: walletStore.profile.address, amount: toNano(0.5, 9)});
+          this.fees = fromNano(sendTransaction,9);
+          console.log('Transaction fees: ', this.fees);
+        }
+      }
+    },
+
     async getGiverContract2(tokenLabel)
     {
       try {
@@ -235,6 +320,14 @@ export const useAirdropStore = defineStore({
         //if(th)
         if(tokenLabel=='EVER')
         {
+          const trx = await giverContract.methods.sendTransaction({
+            value: toNano(0.5, 9),
+            dest: this.address,
+            bounce: false,
+          }).estimateFees({from: walletStore.profile.address, amount: toNano(0.5, 9)});
+          this.fees = fromNano(trx, 9);
+          console.log('Transaction fees: ', this.fees);
+
         sendTransaction = await giverContract.methods
           .sendTransaction({
             value: toNano(0.5, 9),
@@ -246,9 +339,19 @@ export const useAirdropStore = defineStore({
             amount: toNano(0.5, 9),
             bounce: false,
           });
+
+         
         }
         else
         {
+          const trx = await giverContract.methods.sendTransaction({
+            value: toNano(0.5, 9),
+            dest: this.address,
+            bounce: false,
+          }).estimateFees({from: walletStore.profile.address, amount: toNano(0.5, 9)});
+          this.fees = fromNano(trx, 9);
+          console.log('Transaction fees: ', this.fees);
+
           sendTransaction = await giverContract.methods
           .sendTransaction({
             value: toNano(1.5, 9),
@@ -293,7 +396,7 @@ export const useAirdropStore = defineStore({
           _sender_address: walletStore.profile.address,
           _token_root_address: this.token_root_address,
           _number_of_recipients: totalRecipients,
-          _total_amount: totalTokens,
+          _total_amount: toNano(totalTokens,9),
         }; /*: {
           senderAddr: walletStore.profile.address,
           tokenRootAddr: token.address,
@@ -355,7 +458,15 @@ export const useAirdropStore = defineStore({
          // const sendTransactionAmount = chunkAmounts[i][1].length*0.1;
           //console.log('totalAmount:', totalAmount);
           //console.log('totalAmount to nano', toNano(totalAmount, this.token.decimals));
-          const amount = chunkAddresses[i][1].length*0.02;
+          let amount = 0;
+          if(chunkAddresses[i][1].length>1)
+          {
+            amount = 0.02+(chunkAddresses[i][1].length*0.006);
+          }
+          else
+          {
+            amount = chunkAddresses[i][1].length*0.02;
+          }
           sendTransaction = await everAirDropContract.methods.setRecipients({
             recipients: chunkAddresses[i][1]
           }).send({
@@ -411,7 +522,16 @@ export const useAirdropStore = defineStore({
          // const sendTransactionAmount = chunkAmounts[i][1].length*0.1;
           //console.log('totalAmount:', totalAmount);
           //console.log('totalAmount to nano', toNano(totalAmount, this.token.decimals));
-          const amount = chunkAddresses[i][1].length*0.02;
+          let amount = 0;
+          if(chunkAddresses[i][1].length>1)
+          {
+            amount = 0.02+(chunkAddresses[i][1].length*0.006);
+          }
+          else
+          {
+            amount = chunkAddresses[i][1].length*0.02;
+          }
+          
           sendTransaction = await everAirDropContract.methods.setAmounts({
             amounts: chunkAmounts[i][1]
           }).send({
@@ -597,10 +717,11 @@ export const useAirdropStore = defineStore({
     },
 
     async getAirdropTransactions(limit, page) {
-      const transactions = await ever.getTransactions({address:"0:b7fc4427d121e5449518b863dbc0633ad591aa5f98dd03e6fa40c2294ce70233", limit: 10});
-      console.log(transactions);
+     // const transactions = await ever.getTransactions({address:"0:b7fc4427d121e5449518b863dbc0633ad591aa5f98dd03e6fa40c2294ce70233", limit: 10});
+     // console.log(transactions);
       const walletStore = useWalletStore();
       const existingPage = walletStore.getExistingPage(page);
+      console.log('Existing page', existingPage);
       let accounts;
       this.airdropsLoading = true;
       if (page > walletStore.currentPage) {
@@ -625,7 +746,10 @@ export const useAirdropStore = defineStore({
         }
 
         accounts = await ever.getAccountsByCodeHash(paginationObject);
+
         this.airdrops =accounts;
+        
+        
        // console.log(this.airdrops);
        // console.log(this.airdrops.accounts);
         this.airdropData=[];
@@ -640,25 +764,28 @@ export const useAirdropStore = defineStore({
           const batches = await contract.methods.batches({}).call();
           const distributed = await contract.methods.getDistributedContracts({}).call();
           const tokenAddress = await contract.methods.tokenRootAddress({}).call();
+          
           console.log('Token list:', tokensList);
           console.log('Token root address: ', tokenAddress.tokenRootAddress);
           let tokensLabel = "";
           let icon ="";
-          for(let i=0;i<tokensList.length;i++)
-          {
+          let token=null;
+          
             if(tokenAddress.tokenRootAddress._address=="0:0000000000000000000000000000000000000000000000000000000000000000")
             {
-              tokensLabel = 'EVER';
-              icon = tokensList[0].icon;
+             token = tokensList.find(token=>token.label=='EVER');
+              tokensLabel = token.label;
+              icon = token.icon;
               console.log('Usao u ever');
             }
-            else if(tokenAddress.tokenRootAddress._address==tokensList[i].address)
+            else //if(tokenAddress.tokenRootAddress._address==tokensList[i].address)
             {
-              tokensLabel = tokensList[i].label;
-              icon = tokensList[i].icon;
-              console.log('Usao u tip3');
+             token = tokensList.find(token=>token.address == tokenAddress.tokenRootAddress._address);
+              tokensLabel = token.label;
+              icon = token.icon;
+              console.log('Usao u tip3', icon);
             }
-          }
+          
           let workDone = "";//status.status + " " + distributed.value0.length + "/" + batches.batches;
           if(batches.batches==1)
           {
@@ -715,7 +842,7 @@ export const useAirdropStore = defineStore({
                                       airdropName:names.contract_notes, 
                                       status: finalStatus, 
                                       //status: "Deployed",
-                                      amount: totalAmount.totalAmount,
+                                      amount: fromNano(totalAmount.totalAmount,9),
                                       recipientsNumber: recipientsNr.recipientNumber,
                                       dateCreated: date.creationDate,
                                       statusCreated: createdStatus,
@@ -735,9 +862,31 @@ export const useAirdropStore = defineStore({
         //limit: limit,
         // });
         const existingPage = walletStore.getExistingPage(walletStore.nextPage);
+        console.log('Existing page: ', existingPage);
         if (existingPage === undefined) {
-          await walletStore.updatePagination(walletStore.nextPage, this.airdrops.continuation);
-        }
+          if(accounts.length<limit)
+          {
+          //const idx = walletStore.findIndex(p=>p.page==page);
+          await walletStore.updatePagination(walletStore.nextPage, undefined);
+          }
+          else
+          {
+            const temp = { 
+              codeHash: bocHashEver, 
+              limit: limit,
+              continuation: accounts.continuation
+
+            }
+            const accByCodeHash = await ever.getAccountsByCodeHash(temp);
+            if(accByCodeHash.length!=0)
+            {
+              await walletStore.updatePagination(walletStore.nextPage, this.airdrops.continuation);
+            }
+            
+            console.log('existing page undefined');
+          }
+      }
+        
         this.airdropsLoading = false;
         //await this.setAirdropData();
       } catch (e) {

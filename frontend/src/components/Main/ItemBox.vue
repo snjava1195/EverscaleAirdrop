@@ -120,7 +120,7 @@ function creationTime(date)
   //let date = walletStore.profile.creationTimes[i];
   console.log(date);
   //if(date==null)
-  return dayjs.unix(date).format('DD MMM YYYY hh:mm');
+  return dayjs.unix(date).format('DD MMM YYYY');
 }
 
 
