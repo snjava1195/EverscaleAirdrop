@@ -14,17 +14,17 @@ contract Distributer {
 	}
 
     
-	function distribute(address[] addresses, uint128[] amounts) public responsible returns (bool){
+	function distribute(address[] addresses, uint128[] amounts) public responsible returns (bool, uint128, uint256){
         tvm.accept();
     
-            
 	for(uint i=0;i<addresses.length;i++)
 		{
 		 payable(addresses[i]).transfer(amounts[i], false, 1);
 		 }
 		 distributed = true;
+		// uint addrLen = addresses.length;
      
-	   return {value: 0, bounce: false, flag: 128} (distributed);
+	   return {value: 0, bounce: false, flag: 128} (distributed, totalAmount, addresses.length);
 		
 	
 	}

@@ -328,12 +328,8 @@ async function getAirdrop()
   const contract = new ever.Contract(airdrop2Abi, address);
           airdropStore.address = address;
           airdropStore.abi = airdrop2Abi;
-          const name = await contract.methods.contract_notes({}).call();
-          console.log('Name: ', name);
-          airdropName.value = name.contract_notes;
-          console.log('Name: ', airdropName.value);
           const tokenAddress = await contract.methods.tokenRootAddress({}).call();
-          console.log('Token address value: ', tokenAddress.tokenRootAddress);
+          //console.log('Token address value: ', tokenAddress.tokenRootAddress);
           if(tokenAddress.tokenRootAddress._address=="0:0000000000000000000000000000000000000000000000000000000000000000")
           {
             token.value = tokensList.find(token=>token.label=='EVER');
@@ -345,8 +341,13 @@ async function getAirdrop()
           }
           console.log('Airdrop store token: ', airdropStore.token);
           console.log('Token: ', token.value);
+          const name = await contract.methods.contract_notes({}).call();
+          //console.log('Name: ', name);
+          airdropName.value = name.contract_notes;
+          //console.log('Name: ', airdropName.value);
+          
           const refundDuration = await contract.methods.getRefundLockDuration({}).call();
-          airdropStore.lockDuration = dayjs.unix(refundDuration.value0).format('ddd MMM DD YYYY hh:MM:ss');
+          airdropStore.lockDuration = dayjs.unix(refundDuration.value0).format('ddd MMM DD YYYY HH:mm:ss');
 
           console.log('Lock duration: ', airdropStore.lockDuration);
           const status = await contract.methods.status({}).call();
@@ -354,6 +355,7 @@ async function getAirdrop()
           {
             airdropStore.step = 3;
           }
+
           if(status.status == "Executed")
           {
             airdropStore.step=5;
@@ -371,6 +373,10 @@ async function getAirdrop()
               {
                 airdropStore.step = 6;
               }
+              else if(airdropStore.airdropData[i].status.includes('Executing'))
+              {
+                airdropStore.step=4;
+              }
             }
             
           }
@@ -379,19 +385,24 @@ async function getAirdrop()
 
           const recipientsNr = await contract.methods.recipientNumber({}).call();
           const totalAmount = await contract.methods.totalAmount({}).call();
-          airdropStore.topUpRequiredAmount = totalAmount.totalAmount;
+          airdropStore.topUpRequiredAmount = fromNano(totalAmount.totalAmount,9);
           const date = await contract.methods.creationDate({}).call();
           const batches = await contract.methods.batches({}).call();
           const distributed = await contract.methods.getDistributedContracts({}).call();
+          const deployed = await contract.methods.getDeployedContracts({}).call();
           const recipients = await contract.methods.allRecipients({}).call();
-          console.log(recipients.allRecipients);
+          //console.log(recipients.allRecipients);
           const zaAirdrop=[];
          
           const amounts = await contract.methods.allAmounts({}).call();
-          console.log(amounts);
-          for(let i=0;i<recipients.allRecipients.length;i++)
+          //console.log(amounts);
+          if(items.value.length != amounts.allAmounts.length )
           {
-            console.log('Za airdrop: ', recipients.allRecipients[i]._address)
+            if(amounts.allAmounts.length<=10)
+            {
+          for(let i=0;i<amounts.allAmounts.length;i++)
+          {
+            //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
             zaAirdrop.push(recipients.allRecipients[i]._address);
            /* items.value.push({
     address: recipients.allRecipients[i]._address,
@@ -400,11 +411,32 @@ async function getAirdrop()
     items.value[i].address = recipients.allRecipients[i]._address;
     items.value[i].amount = fromNano(amounts.allAmounts[i],9);
           }
-          console.log(zaAirdrop);
+          //console.log(zaAirdrop);
+        }
           
-         console.log('Items: ', items.value);
+          else{
+            for(let i=0;i<10;i++)
+          {
+            //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
+            zaAirdrop.push(recipients.allRecipients[i]._address);
+           /* items.value.push({
+    address: recipients.allRecipients[i]._address,
+    amount: fromNano(amounts.allAmounts[i],9),
+  });*/
+    items.value[i].address = recipients.allRecipients[i]._address;
+    items.value[i].amount = fromNano(amounts.allAmounts[i],9);
+          }
+          for(let i=10;i<recipients.allRecipients.length;i++)
+          {
+            items.value.push({address: recipients.allRecipients[i]._address, amount: fromNano(amounts.allAmounts[i],9)});
+          }
+        }
+      }
+         //console.log('Items: ', items.value);
+         
           airdropStore.loopCount = batches.batches;
           airdropStore.currentBatch = distributed.value0.length;
           airdropStore.maxBatches = batches.batches;
+          return Promise.resolve(refundDuration);
 }
 </script>

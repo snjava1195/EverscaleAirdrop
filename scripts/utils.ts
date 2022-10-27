@@ -13,7 +13,7 @@ const setupAirdrop = async(contract_notes, refund_lock_duration, _distributerCod
 		    							_randomNonce,
 								},
 								publicKey: signer.publicKey,
-								value:locklift.utils.toNano(5)
+								value:locklift.utils.toNano(2)
 	    						});
     	const owner = account;
     	owner.publicKey = signer.publicKey;
@@ -21,6 +21,7 @@ const setupAirdrop = async(contract_notes, refund_lock_duration, _distributerCod
 	
 	//deploys EverAirdrop contract
 	const codeDistributer = locklift.factory.getContractArtifacts("Distributer");
+	const codeAirdrop = locklift.factory.getContractArtifacts("EverAirdrop");
    	const { contract, tx } = await locklift.factory.deployContract({
         				contract: "EverAirdrop",
         				publicKey: signer.publicKey,
@@ -32,8 +33,9 @@ const setupAirdrop = async(contract_notes, refund_lock_duration, _distributerCod
              						_contract_notes: contract_notes,
              						_refund_destination: owner.address,
              						_refund_lock_duration: refund_lock_duration,
+             						_newCode: codeAirdrop.code,
         				},
-        				value: locklift.utils.toNano(10),
+        				value: locklift.utils.toNano(2),
     					});
     	const airdrop = contract;
     	console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
@@ -56,7 +58,7 @@ const setupTip31Airdrop = async(_distributerCode, refund_lock_duration) =>
 		    							_randomNonce,
 								},
 								publicKey: signer.publicKey,
-								value:locklift.utils.toNano(5)
+								value:locklift.utils.toNano(1)
 	    						});
     	const user = account;
     	user.publicKey = signer.publicKey;
@@ -83,11 +85,11 @@ const setupTip31Airdrop = async(_distributerCode, refund_lock_duration) =>
             
         },
         publicKey: signer.publicKey,
-        value: locklift.utils.toNano(10),
+        value: locklift.utils.toNano(2),
    	});
    	
    	//topup airdrop with some evers in order to ensure enough gas for transactions
-   	await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(100));
+   	await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10));
     
     	console.log("Airdrop address:");
     	console.log(airdrop.address);

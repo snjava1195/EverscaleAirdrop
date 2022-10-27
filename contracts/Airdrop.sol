@@ -147,7 +147,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 					});
        addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
        numberOfRecipients = uint128(_addresses.length);
-       uint128 initialBalance = numberOfRecipients*transferGas;
+       uint128 initialBalance = numberOfRecipients*0.08 ever;
        
        require(deposit>=_totalAmount, 1001);
         addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	
@@ -159,6 +159,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(_totalAmount, addr, 0.5 ever, address(this), true, _empty);
 		
 		deposit = deposit-_totalAmount;
+		status = "Executed";
         }
         
         messageValue = msg.value;
@@ -210,21 +211,23 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
      * @dev Sends all contract's balance to the refund_destination
      *      Can be executed only after refund lock passed
      */
-    function refund() refundLockPassed public view {
+    function refund() refundLockPassed public {
         
         if(flag==0)
         {
     		payable(refund_destination).transfer(0, false, 128);
+    		status = "Redeemed";
         }
         else
         {
         	tvm.accept();
         	for(uint i=0;i<deployedContracts.length;i++)
         	{
-        		Tip31Distributer(deployedContracts[i]).refund{value:0.5 ever, flag:0}();
+        		Tip31Distributer(deployedContracts[i]).refund{value:0.1 ever, flag:0}();
         	}
-        	TokenWallet(walletAddress).sendSurplusGas{value: 0.8 ever, flag: 0}(senderAddress);
+        	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 0}(senderAddress);
         	payable(senderAddress).transfer(0, false, 128);
+        	status="Redeemed";
         
         }
     }
@@ -286,6 +289,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     
     function setRecipients(address[] recipients/*, uint128[] amounts*/) public /*returns (address[])*/
     {
+        tvm.accept();
     	for(uint i=0;i<recipients.length;i++)
     	{
     	allRecipients.push(recipients[i]);
@@ -297,6 +301,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     
     function setAmounts(uint128[] amounts) public
     {
+        tvm.accept();
     	for(uint i=0;i<amounts.length;i++)
     	{
     		allAmounts.push(amounts[i]);

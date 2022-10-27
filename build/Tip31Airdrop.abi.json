@@ -105,6 +105,15 @@
 			]
 		},
 		{
+			"name": "getTokenRootAddrValue",
+			"inputs": [
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
 			"name": "transferOwnership",
 			"inputs": [
 				{"name":"newOwner","type":"address"}

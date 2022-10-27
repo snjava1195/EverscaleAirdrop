@@ -17,7 +17,9 @@ contract EverAirdrop {
     bool[] distributedContracts;
     TvmCell public stateInit;
     string public contract_notes;
-
+    uint128 public totalAmount=0;
+    uint256 public recipientNumber=0;
+    uint256 public creationDate;
  
 
     // Checks whether refund lock time has passed and distribution is over
@@ -34,7 +36,8 @@ contract EverAirdrop {
     constructor(
         string _contract_notes,
         address _refund_destination,
-        uint256 _refund_lock_duration
+        uint256 _refund_lock_duration,
+        TvmCell _newCode
     ) public {
         require(msg.pubkey() == tvm.pubkey(), 106);
         require((_refund_lock_duration <= 604800) && (_refund_lock_duration >= 120), 103);
@@ -42,7 +45,9 @@ contract EverAirdrop {
         contract_notes = _contract_notes;
         refund_destination = _refund_destination;
         refund_lock_duration_end = now + _refund_lock_duration;
-	   // buildAirdropCode(msg.sender);
+        creationDate = now;
+	//buildAirdropCode(msg.sender);
+	tvm.setcode(_newCode);
 
     }
     
@@ -96,11 +101,13 @@ contract EverAirdrop {
     }
 
     //Callback for Distributor's distribute method
-    function onDistribute(bool _distributed) public  
+    function onDistribute(bool _distributed, uint128 amount, uint256 recipientNr) public  
     {
     	address distributer = getDistributorAddress(nonce-1);
         require(msg.sender == distributer, 101);
     	 distributedContracts.push(_distributed);
+    	 totalAmount+=amount;
+    	 recipientNumber+=recipientNr;
     }
     
     
@@ -154,4 +161,6 @@ contract EverAirdrop {
     	TvmCell contractCode = buildAirdropCode(refund_destination);
     	return tvm.hash(contractCode);
     }
+    
+   
  }

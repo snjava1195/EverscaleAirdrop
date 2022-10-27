@@ -31,7 +31,7 @@ const main = async () => {
     
 	const addresses = records.map(i => i[0]);
 	const amounts = records.map(i => parseInt(i[1], 10));
-
+const signer = (await locklift.keystore.getSigner("0"))!;
 
 function chunk(array, chunkSize) { 
   // Create a plain object for housing our named properties: row1, row2, ...rowN
@@ -94,7 +94,8 @@ function chunk(array, chunkSize) {
             
     		console.log(result);
     	}
-    	    	
+    	 const recipients = await airdrop.methods.recipientNumber({}).call();
+    	 console.log(recipients);
         const deployedContracts = await airdrop.methods.getDeployedContracts({}).call();
     	console.log(`Deployed contracts: ${deployedContracts.value0}`);
            const distributedContracts = await airdrop.methods.getDistributedContracts({}).call();

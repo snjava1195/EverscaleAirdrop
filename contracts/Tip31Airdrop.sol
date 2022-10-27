@@ -182,5 +182,10 @@ contract Tip31Airdrop is InternalOwner, RandomNonce, CheckPubKey, IAcceptTokensT
     	return tvm.hash(airdropCodeSalted);
       }
     
+    function getTokenRootAddrValue(address addr) public returns(uint)
+    {
+    	
+    	return addr.value;
+    }
     
  }

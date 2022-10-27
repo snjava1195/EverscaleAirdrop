@@ -30,7 +30,7 @@ export const validateAddressAmountList = (arr, totalTokens) => {
         });
         return false;
       }
-      if (!amountReg.test(row.amount) && row.address) {
+      if (/*!amountReg.test(row.amount) &&*/ row.address) {
         notify({
           text: `Incorrect amount format in row: ${i + 1}'`,
           type: 'error',

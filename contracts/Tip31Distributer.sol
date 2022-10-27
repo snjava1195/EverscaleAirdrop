@@ -50,15 +50,15 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 		    	address recipient = addresses[i];
 		    	uint128 amountPerTransfer = amountsToTransfer[i];
 		    		
-	       	TIP31TokenWallet(walletAddress).transfer{value: 0.8 ever, flag: 0}(amountPerTransfer, recipient, 0.5 ever, remaining, false, empty);
+	       	TIP31TokenWallet(walletAddress).transfer{value: 0.05 ever, flag: 0}(amountPerTransfer, recipient, 0, remaining, false, empty);
 	       }
        }
        
        //Returns all the funds left back to the airdrop contract
        function refund() public
        {
-       	TokenWallet(walletAddress).sendSurplusGas{value: 0.8 ever, flag: 0}(_senderAddress);
-       	_owner.transfer(0, false, 128);
+       	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 0}(_senderAddress);
+       	_senderAddress.transfer(0, false, 128);
        }
        
        

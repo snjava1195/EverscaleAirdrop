@@ -71,7 +71,7 @@
                   ? 'text-[#4AB44A] font-medium'
                   : ''
               "
-              >Top up {{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}</a
+              >Top up {{(token == null || token.label == 'EVER') ? topUpValue+0.5 + " EVER" : topUpValue+1.5 +" "+ " EVER"}}</a
             >
           </div>
 
@@ -295,7 +295,7 @@
         ]"
         :disabled="!recipientsList.length"
       >
-      Top up {{(token == null || token.label == 'EVER') ? 0.5 + " EVER" : 1.5 +" "+ " EVER"}}
+      Top up {{((token == null  || !recipientsList)|| token.label == 'EVER') ? topUpValue+0.5 + " EVER" : topUpValue+1.5 +" "+ " EVER"}}
       </button>
 
       <!-- Step 2 -->
@@ -450,11 +450,33 @@ const recipientsList = computed(() => {
 });
 
 const totalTokens = computed(() => {
+  //if(recipientsList.value.)
   const totalRecipientsTokens = recipientsList.value.reduce((accumulator, object) => {
     return accumulator + Number(object.amount);
   }, 0);
-  
-  return Number(Math.round(totalRecipientsTokens+'e2')+'e-2');
+  console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
+  return totalRecipientsTokens>0.01 ? Number(Math.round(totalRecipientsTokens+'e2')+'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
+});
+const topUpValue = computed(() => {
+  let loopCount = Math.floor(recipientsList.value.length / 99);
+        if (recipientsList.value.length % 99 !== 0) {
+          loopCount++;
+        }
+        let amountForSetting=0;
+        
+          if(recipientsList.value.length==1)
+          {
+            amountForSetting = 0.02;
+            //console.log('Usao u jednog');
+          }
+          else 
+          {
+            amountForSetting = 0.02+((recipientsList.value.length*0.006)*2);
+            //console.log('Usao u 99');
+          }
+          
+        
+        return recipientsList.value.length !=0 ? amountForSetting : 0;
 });
 const topUpRequiredAmount = computed(() => {
   const tempTopUpRequiredAmount = recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
@@ -464,6 +486,7 @@ const topUpRequiredAmount = computed(() => {
 
 
 const redeemExpired = computed(() => {
+  redeemRemainingSeconds.value = getSeconds(airdropStore.lockDuration);
   if (redeemRemainingSeconds.value <= 0) {
     return true;
   }
@@ -498,12 +521,12 @@ function availableToRedeem() {
 // airdropStore.getExpectedAddress(props.token);
 
 async function onTopUpEver() {
-  if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+ // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
   loading.value = true;
 
   try {
     errors.value.error = false;
-    const data = await airdropStore.getGiverContract2(props.token.label);
+    const data = await airdropStore.getGiverContract2(props.token.label, recipientsList.value.length);
     transactionId.value.giverContractId = data.id.hash;
     airdropStore.step = 2;
   } catch (e) {
@@ -523,7 +546,7 @@ async function onDeployContract() {
   try {
     errors.value.error = false;
     airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
-    console.log('airdropName:', airdropName.value);
+   // console.log('airdropName:', airdropName.value);
     const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
    // const fees = await airdropStore.getEstimatedFee();
     transactionId.value.deployContractId = data.transaction.id.hash;
@@ -543,7 +566,7 @@ async function onTopUpToken() {
   loading.value = true;
 
   try {
-    await airdropStore.calculateFees("distribute", "everAirdrop", '', recipientsList.value);
+    //await airdropStore.calculateFees("distribute", "everAirdrop", '', recipientsList.value);
     errors.value.error = false;
     const data = await airdropStore.topUp();
     transactionId.value.amountContractId = data.id.hash;
@@ -587,6 +610,7 @@ async function onRedeemFunds() {
 
   try {
     errors.value.error = false;
+    
     const data = await airdropStore.redeemFunds();
     transactionId.value.redeemContractId = data.id.hash;
     // error.value = true;

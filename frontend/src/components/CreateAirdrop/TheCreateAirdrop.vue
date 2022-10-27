@@ -81,6 +81,7 @@
         </form>
 
         <template v-if="token">
+          <!--<template  :disabled="token==null">-->
           <div class="mt-[48px]">
             <header>
               <h2 class="recipients-list-subtitle">Recipients list</h2>
@@ -198,6 +199,130 @@
             </div>
           </div>
         </template>
+        <template v-else >
+          <!--<template  :disabled="token==null">-->
+          <div class="mt-[48px]">
+            <header>
+              <h2 class="recipients-list-subtitle">Recipients list</h2>
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div
+                  class="flex space-x-[8px] sm:space-x-0 sm:justify-between md:justify-start md:space-x-[8px]"
+                >
+                  <h3 class="text-[14px] font-pt_root">
+                    Fill out the form manually or upload the CSV file.
+                  </h3>
+
+                  <span>
+                    <InfoIcon title="Lorem  Ipsum, Lorem Ipsum" />
+                  </span>
+                </div>
+
+                <div
+                  @click="downloadTemplate"
+                  class="flex items-center space-x-[6px] cursor-pointer"
+                  
+                >
+                  <span class="downloadSign">
+                    <DownloadIcon />
+                  </span>
+                  <p class="text-[#8B909A]">Download template</p>
+                </div>
+              </div>
+            </header>
+
+            <div ref="dropZoneRef" class="upload-file bg-[#ECF1FE] relative">
+              <span class="upload-sign">
+                <UploadIcon v-if="!loading && !uploadSuccessful" />
+
+                <ProgressIcon v-else-if="loading" />
+
+                <SuccessIcon v-else />
+              </span>
+
+              <input
+                :disabled="true"
+                ref="file"
+                @change="onFileChanged($event)"
+                type="file"
+                name="file"
+                class="upload-csv"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                @click="$event.target.value = ''"
+              />
+
+              <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
+                {{
+                  !loading && !uploadSuccessful
+                    ? 'Click to upload or drag and drop'
+                    : loading
+                    ? `Checking the file ${fileName}...`
+                    : uploadSuccessful
+                    ? 'List has been successfully imported'
+                    : ''
+                }}
+              </h2>
+              <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle">
+                Only CSV format is supported.
+              </h3>
+            </div>
+          </div>
+
+          <div class="table w-full">
+            <div
+              class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] border-[#E4E5EA] font-pt_root"
+            >
+              <div
+                v-for="(item, i) in items"
+                :key="i"
+                @mouseover="hoverItem = i"
+                @mouseleave="hoverItem = null"
+                class="row grid grid-cols-2 md:grid-cols-[64px_1fr_1fr_68px] h-[90px] md:h-[44px] text-[14px] border border-b-[#E4E5EA]]"
+                :class="{ 'bg-[#F0F1F5]': hoverItem === i }"
+              >
+                <div class="h-full w-full flex items-center px-[12px]">{{ i + 1 }}</div>
+
+                <div
+                  class="h-full w-full flex items-center justify-end px-[12px] space-x-[17px] md:order-4 md:bg-white"
+                >
+                  <span v-if="hoverItem === i" @click="addItem" class="plusSign cursor-pointer">
+                    <PlusIcon />
+                  </span>
+
+                  <span
+                    v-if="hoverItem === i && items.length > 1"
+                    @click="removeItem(i)"
+                    class="deleteSign cursor-pointer"
+                  >
+                    <TrashIcon />
+                  </span>
+                </div>
+
+                <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
+                  <input
+                  :disabled="true"
+                    v-model="item.address"
+                    class="h-full w-full px-[12px]"
+                    type="text"
+                    name="address"
+                    placeholder="Recipient address"
+                  />
+                </div>
+
+                <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
+                  <input
+                    :disabled="true"
+                    v-model="item.amount"
+                    type="number"
+                    name="amount"
+                    class="h-full w-full px-[12px]"
+                    :placeholder="`Amount`"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+        
       </main>
 
       <TheSidebar
@@ -227,6 +352,7 @@ import SuccessIcon from '@/components/icons/Upload/IconSuccess.vue';
 import InfoIcon from '@/components/icons/IconInfo.vue';
 import Multiselect from 'vue-multiselect';
 import { useAirdropStore } from '@/stores/airdrop';
+import {fromNano} from '@/utils';
 
 const items = ref(recipientsList);
 const airdropName = ref(null);
@@ -294,7 +420,7 @@ function CSVToJSON(data, delimiter = ',') {
           items.value.push({
             address: values[0].replace(/^"(.*)"$/, '$1'),
             // address: addressFormat(values[0]),
-            amount: values[1].replace(/^"(.*)"$/, '$1'),
+            amount: fromNano(values[1].replace(/^"(.*)"$/, '$1'),9),
           });
         }
       })
@@ -320,11 +446,14 @@ function reset()
   airdropStore.address = '';
   airdropStore.step=1;
   airdropStore.topUpRequiredAmount=0;
+  items.value.length = 10;
+  airdropStore.currentBatch=0;
   for(let i=0;i<items.value.length;i++)
   {
     items.value[i].address = "";
     items.value[i].amount = "";
   }
   //recipientsList=null;
+  airdropStore.loopCount=0;
 }
 </script>

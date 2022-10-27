@@ -118,5 +118,11 @@ export default [
     decimals: 9,
     address: '0:dbba0028173f5b8d09eb597e0cca88cb41a4875efdf8a1815bb31292f150f800',
     icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/PILE/logo.svg',
-  }
+  }/*,
+  {
+    label: 'AIRDROP',
+    decimals: 9,
+    address: '0:a50def2df0f7f531b82b7ffec7baf8e7ce4279605726b94927c9ee6ded09f5c2',
+    icon: '',
+  }*/
 ];

@@ -7,6 +7,7 @@ declare global {
 }
 
 const LOCAL_NETWORK_ENDPOINT = "http://localhost/graphql";
+const TESTNET_NETWORK_ENDPOINT = "https://net.ton.dev/";
 
 const config: LockliftConfig = {
   compiler: {
@@ -60,16 +61,36 @@ const config: LockliftConfig = {
       },
     },
     
-    	dev: {
-      connection: "testnet",
+    	devnet: {
+    	connection: {
+        group: "testnet",
+        type: "graphql",
+        data: {
+          endpoints: ["https://devnet.evercloud.dev/80e68294d373477dbfb3d3f732237723/graphql"],
+          latencyDetectionInterval: 1000,
+          local: false,
+        },
+        },
       giver: {
         address: "0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63",
-        key: "31bef135705c120185b04b700105c6814eb8e3264c0202f071e36755e0a1fd1a",
+        phrase: "bring glove spirit aisle angry knock enemy average check fatigue glass beach",
         giverFactory: (ever, keyPair, address) => new GiverWallet(ever, keyPair, address),
+        accountId: 0
       },
       keys: {
         amount: 20,
       },
+      //giver: {
+      	//giverFactory: (ever, keyPair, address) => new GiverWallet(ever, keyPair, address),
+        //address: "0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63",
+        //key: "31bef135705c120185b04b700105c6814eb8e3264c0202f071e36755e0a1fd1a",
+        
+        //phrase: "bring glove spirit aisle angry knock enemy average check fatigue glass beach",
+        //accountId: 0,
+      //},
+      //keys: {
+        //amount: 20,
+      //},
     },
     		
     mainnet: {

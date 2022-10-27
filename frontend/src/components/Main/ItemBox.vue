@@ -5,30 +5,33 @@
       class="mobTable lg:hidden w-full border border-[#E4E5EA] px-[12px] divide-y divide-[#E4E5EA] mt-[16px] mb-[310px] font-pt_root"
     >
       <div v-for="(item, i) in transactions" :key="i" class="space-y-[8px] py-[16px] cursor-pointer">
-        <div class="flex items-center justify-between">
-          <h3>Some unique name</h3>
+        <router-link :to="'/edit-airdrop/' + item.address" custom v-slot="{ navigate }">
+
+        <div class="flex items-center justify-between" @click="navigate">
+          <h3>{{item.airdropName}}</h3>
 
           <span class="px-[8px] py-[4px] bg-[#DEF1DE] text-[#398A39] rounded-full text-[12px]">
-            Executed
+            {{item.status}}
           </span>
         </div>
-       <!-- <div class="flex items-center space-x-[8px]">
+        </router-link>
+        <div class="flex items-center space-x-[8px]">
           <EverIcon />
-          <h2>{{ everDivider(item) }} EVER</h2>
+          <h2>{{ item.amount }} {{item.tokenLabel}}</h2>
         </div>
 
         <div class="flex items-center justify-between">
           <p class="text-[14px] text-[#A6AAB2]">Receipents number</p>
-          <p>{{ item.id.lt }}</p>
+          <p>{{ item.recipientsNumber }}</p>
         </div>
 
         <div class="flex items-start justify-between">
           <p class="text-[14px] text-[#A6AAB2]">Date</p>
           <div class="text-right">
-            <p class="text-[14px]">{{ createdAt(item) }}</p>
-            <p class="text-[12px] text-[#6C7078]">Created</p>
+            <p class="text-[14px]">{{ creationTime(item.dateCreated) }}</p>
+            <p class="text-[12px] text-[#6C7078]">{{item.statusCreated}}</p>
           </div>
-        </div>-->
+        </div>
       </div>
     </div>
 

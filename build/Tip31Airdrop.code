@@ -972,6 +972,67 @@ GETGLOB 29
 HASHCU
 .loc ../contracts/Tip31Airdrop.sol, 0
 
+.macro getTokenRootAddrValue
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/Tip31Airdrop.sol, 185
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+ENDS
+.loc ../contracts/Tip31Airdrop.sol, 0
+CALLREF {
+	CALL $getTokenRootAddrValue_2355822b_internal_macro$
+}
+OVER
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 3165822799
+	STUR 130
+	STU 256
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	DROP
+}
+IFELSE
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	getTokenRootAddrValue_2355822b_internal
+.type	getTokenRootAddrValue_2355822b_internal, @function
+CALL $getTokenRootAddrValue_2355822b_internal_macro$
+
+.macro getTokenRootAddrValue_2355822b_internal_macro
+.loc ../contracts/Tip31Airdrop.sol, 188
+PARSEMSGADDR
+INDEX 3
+PLDU 256
+.loc ../contracts/Tip31Airdrop.sol, 0
+
 .globl	setOwnership_a7016023_internal
 .type	setOwnership_a7016023_internal, @function
 CALL $setOwnership_a7016023_internal_macro$
@@ -1494,119 +1555,130 @@ THROW 0
 
 .macro public_function_selector
 DUP
-PUSHINT 652747146
+PUSHINT 1802537744
 LEQ
 IFJMPREF {
-	DUP
-	PUSHINT 211857115
-	EQUAL
-	IFJMPREF {
-		CALL $buildAirdropCode$
-	}
-	DUP
-	PUSHINT 235197086
-	EQUAL
-	IFJMPREF {
-		CALL $transferOwnership$
-	}
-	DUP
-	PUSHINT 516093073
-	EQUAL
-	IFJMPREF {
-		CALL $getDeposit$
-	}
 	DUP
 	PUSHINT 652747146
-	EQUAL
+	LEQ
 	IFJMPREF {
-		CALL $getDistributers$
-	}
-}
-DUP
-PUSHINT 995308319
-LEQ
-IFJMPREF {
-	DUP
-	PUSHINT 858983830
-	EQUAL
-	IFJMPREF {
-		CALL $getDistributorAddress$
-	}
-	DUP
-	PUSHINT 966922996
-	EQUAL
-	IFJMPREF {
-		CALL $refund$
-	}
-	DUP
-	PUSHINT 973620214
-	EQUAL
-	IFJMPREF {
-		CALL $distribute$
+		DUP
+		PUSHINT 211857115
+		EQUAL
+		IFJMPREF {
+			CALL $buildAirdropCode$
+		}
+		DUP
+		PUSHINT 235197086
+		EQUAL
+		IFJMPREF {
+			CALL $transferOwnership$
+		}
+		DUP
+		PUSHINT 516093073
+		EQUAL
+		IFJMPREF {
+			CALL $getDeposit$
+		}
+		DUP
+		PUSHINT 652747146
+		EQUAL
+		IFJMPREF {
+			CALL $getDistributers$
+		}
 	}
 	DUP
 	PUSHINT 995308319
-	EQUAL
+	LEQ
 	IFJMPREF {
-		CALL $_randomNonce$
-	}
-}
-DUP
-PUSHINT 1594609630
-LEQ
-IFJMPREF {
-	DUP
-	PUSHINT 1086507522
-	EQUAL
-	IFJMPREF {
-		CALL $constructor$
-	}
-	DUP
-	PUSHINT 1354746527
-	EQUAL
-	IFJMPREF {
-		CALL $receiveTokenWalletAddress$
+		DUP
+		PUSHINT 858983830
+		EQUAL
+		IFJMPREF {
+			CALL $getDistributorAddress$
+		}
+		DUP
+		PUSHINT 966922996
+		EQUAL
+		IFJMPREF {
+			CALL $refund$
+		}
+		DUP
+		PUSHINT 973620214
+		EQUAL
+		IFJMPREF {
+			CALL $distribute$
+		}
+		DUP
+		PUSHINT 995308319
+		EQUAL
+		IFJMPREF {
+			CALL $_randomNonce$
+		}
 	}
 	DUP
 	PUSHINT 1507181488
-	EQUAL
+	LEQ
 	IFJMPREF {
-		CALL $getDetails$
+		DUP
+		PUSHINT 1018339151
+		EQUAL
+		IFJMPREF {
+			CALL $getTokenRootAddrValue$
+		}
+		DUP
+		PUSHINT 1086507522
+		EQUAL
+		IFJMPREF {
+			CALL $constructor$
+		}
+		DUP
+		PUSHINT 1354746527
+		EQUAL
+		IFJMPREF {
+			CALL $receiveTokenWalletAddress$
+		}
+		DUP
+		PUSHINT 1507181488
+		EQUAL
+		IFJMPREF {
+			CALL $getDetails$
+		}
 	}
 	DUP
-	PUSHINT 1594609630
-	EQUAL
+	PUSHINT 1802537744
+	LEQ
 	IFJMPREF {
-		CALL $owner$
+		DUP
+		PUSHINT 1594609630
+		EQUAL
+		IFJMPREF {
+			CALL $owner$
+		}
+		DUP
+		PUSHINT 1665438847
+		EQUAL
+		IFJMPREF {
+			CALL $tip31distributerCode$
+		}
+		DUP
+		PUSHINT 1729444094
+		EQUAL
+		IFJMPREF {
+			CALL $renounceOwnership$
+		}
+		DUP
+		PUSHINT 1802537744
+		EQUAL
+		IFJMPREF {
+			CALL $getCodeHash$
+		}
 	}
 }
 DUP
 PUSHINT 1893244873
-LEQ
+EQUAL
 IFJMPREF {
-	DUP
-	PUSHINT 1665438847
-	EQUAL
-	IFJMPREF {
-		CALL $tip31distributerCode$
-	}
-	DUP
-	PUSHINT 1729444094
-	EQUAL
-	IFJMPREF {
-		CALL $renounceOwnership$
-	}
-	DUP
-	PUSHINT 1802537744
-	EQUAL
-	IFJMPREF {
-		CALL $getCodeHash$
-	}
-	DUP
-	PUSHINT 1893244873
-	EQUAL
-	IFJMPREF {
-		CALL $onAcceptTokensTransfer$
-	}
+	CALL $onAcceptTokensTransfer$
 }
 
