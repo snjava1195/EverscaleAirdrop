@@ -21,11 +21,19 @@ export const useWalletStore = defineStore({
     isLogged: (state) => !!state.profile.address,
     nextPage: (state) => {
       let temp = state.currentPage;
+      //state.currentPage = state.currentPage+1;
+    //  console.log('On next page: ',state.currentPage);
       return temp + 1;
+     //state.currentPage+=1;
+    // return state.currentPage;
     },
     prevPage: (state) => {
       if (state.currentPage > 1) {
+     //   state.currentPage-=1;
+     //return state.currentPage;
         let temp = state.currentPage;
+      //  state.currentPage = state.currentPage-1;
+        //console.log('On prev page: ',state.currentPage);
         return temp - 1;
       }
     },
@@ -78,10 +86,15 @@ export const useWalletStore = defineStore({
         page: page,
         continuation: continuation,
       });
+      console.log('This pagination: ', this.pagination[0]);
+     // this.currentPage=page;
     },
     async getPagination(page) {
+      console.log(this.pagination);
       const find = this.pagination.find((p) => p.page === page);
+      console.log('Page pagination from get pagination: ', find);
       this.continuation = find ? find.continuation : {};
+      console.log('Continuation pagination from get pagination: ',this.continuation);
     },
     resetPagination() {
       this.pagination = [];

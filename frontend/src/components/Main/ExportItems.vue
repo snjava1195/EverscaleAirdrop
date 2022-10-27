@@ -7,21 +7,37 @@
 <script setup>
 import exportFromJSON from 'export-from-json';
 import dayjs from 'dayjs';
-import { useWalletStore } from '@/stores/wallet';
+import { useAirdropStore } from '@/stores/airdrop';
 import { toNano } from '@/utils';
+import { computed } from 'vue';
 
-const walletStore = useWalletStore();
+let airdropStore = useAirdropStore();
+let transactions = computed(() => {
+  return airdropStore.airdropData;
+});
 function onExport() {
-  const transactions = walletStore.profile.transactions.transactions;
-
-  const data = transactions.map((transaction) => {
+  //const transactions = airdropStore.airdropData;
+  console.log('Transactions: ', transactions.value);
+  let data=[];
+  let arr = transactions.value;
+  for(let i=0;i<arr.length;i++)
+  {
+    data.push( {
+      Airdrop: arr[i].airdropName,
+      Amount: arr[i].amount + " " + arr[i].tokenLabel,
+      'Recipients number': arr[i].recipientsNumber,
+      Date: dayjs.unix(arr[i].dateCreated).format('DD MMM YYYY'),
+    });
+  }
+  console.log('Data: ', data);
+  /*const data = transactions.map((transaction) => {
     return {
-      Airdrop: 'Some unique name',
-      Amount: transaction.outMessages.length ? transaction.outMessages[0].value / toNano(1) : 0,
-      'Recipients number': 'Recipients number',
-      Date: dayjs.unix(transaction.createdAt).format('DD MMM YYYY'),
+      Airdrop: transaction.airdropName,
+      Amount: transaction.amount + " " + transaction.tokenLabel,
+      'Recipients number': transaction.recipientsNumber,
+      Date: dayjs.unix(transaction.dateCreated).format('DD MMM YYYY'),
     };
-  });
+  });*/
 
   const fileName = 'download';
   const exportType = exportFromJSON.types.csv;

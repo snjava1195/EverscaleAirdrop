@@ -178,55 +178,6 @@ export const useAirdropStore = defineStore({
         console.log('e: ', e);
       }
     },
-    async getGiverContract(recipientsListLength) {
-      const walletStore = useWalletStore();
-      const seconds = getSeconds(this.lockDuration);
-      console.log('seconds:', seconds);
-      try {
-        const giverContract = await new ever.Contract(giverAbi, this.address);
-
-        // const estimateFees = await giverContract.methods
-        //   .sendTransaction({
-        //     value: toNano(1, 9),
-        //     dest: this.address,
-        //     bounce: false,
-        //   })
-        //   .estimateFees({
-        //     from: walletStore.profile.address,
-        //     amount: toNano(1, 9),
-        //     bounce: false,
-        //   });
-
-        // console.log('estimateFees: ', parseInt(estimateFees) / Math.pow(10, 9));
-
-        this.loopCount = Math.floor(recipientsListLength / maxNumberOfAddresses);
-        if (recipientsListLength % maxNumberOfAddresses !== 0) {
-          this.loopCount++;
-        }
-      
-        const amount = (recipientsListLength * 0.8) + 1 + ((this.loopCount - 1) * 0.5);
-       // console.log('rec:', recipientsListLength, amount);
-        const sendTransaction = await giverContract.methods
-          .sendTransaction({
-            value: toNano(amount, 9),
-            dest: this.address,
-            bounce: false,
-          })
-          .send({
-            from: walletStore.profile.address,
-            amount: toNano(amount, 9),
-            bounce: false,
-          });
-          
-        console.log('giverContract: ', giverContract);
-        console.log('sendTransaction: ', sendTransaction);
-        walletStore.getBalance();
-        return Promise.resolve(sendTransaction);
-      } catch (e) {
-        console.log(e);
-        return Promise.reject(e);
-      }
-    },
 
     async calculateFees(method, contract, tokenLabel, arr)
     {
@@ -331,28 +282,7 @@ export const useAirdropStore = defineStore({
         {
           amountForSetting = 0.02+((recipientsListLength*0.006)*2);
         }
-        /*for(let i=0;i<this.loopCount;i++)
-        { console.log(recipientsListLength);
-          if(recipientsListLength==1)
-          {
-            amountForSetting += 0.02;
-           // console.log('Usao u jednog');
-          }
-          else if(recipientsListLength%maxNumberOfAddresses==0)
-          {
-            amountForSetting += 0.02+(maxNumberOfAddresses*0.006*2);
-           // console.log('Usao u 99');
-          }
-          else if(recipientsListLength<maxNumberOfAddresses)
-          {
-            console.log('Usao u manje od 99');
-            amountForSetting += 0.02+(recipientsListLength *0.006*2);
-          }
-          else if(recipientsListLength%99!=0)
-          {
-            amountForSetting += 0.02+((recipientsListLength-(i+1)*99)*0.006*2);
-          }
-        }*/
+       
         console.log('Amount for setting: ', amountForSetting);
         //if(th)
         if(tokenLabel=='EVER')
@@ -819,11 +749,15 @@ export const useAirdropStore = defineStore({
       let accounts;
       this.airdropsLoading = true;
       if (page > walletStore.currentPage) {
+        console.log(`${page} > ${walletStore.currentPage}`);
         if (existingPage !== undefined) {
+          console.log('Existing page: ', existingPage);
           walletStore.continuation = existingPage.continuation;
+          console.log(existingPage.continuation);
         }
       } else {
         await walletStore.getPagination(page);
+
       }
       this.currentPage = page;
       try {
@@ -833,10 +767,11 @@ export const useAirdropStore = defineStore({
         const hashEver = await ever.setCodeSalt({ code: codeEver.code, salt: { structure: [{ name: 'ownerAddress', type: 'address' }], data: { ownerAddress: walletStore.profile.address } } });
         const bocHashEver = await ever.getBocHash(hashEver.code);
         const paginationObject = { codeHash: bocHashEver, limit: limit }
-       // console.log('Page:', page);
+        console.log('Page:', page);
         if(page>1)
         {
           paginationObject.continuation = walletStore.continuation; 
+          console.log('Kontinuacija za airdropove: ', paginationObject.continuation);
         }
 
         accounts = await ever.getAccountsByCodeHash(paginationObject);
@@ -936,7 +871,7 @@ export const useAirdropStore = defineStore({
                                       airdropName:names.contract_notes, 
                                       status: finalStatus, 
                                       //status: "Deployed",
-                                      amount: fromNano(totalAmount.totalAmount,token.decimals),
+                                      amount: fromNano(totalAmount.totalAmount,9),
                                       recipientsNumber: recipientsNr.recipientNumber,
                                       dateCreated: date.creationDate,
                                       statusCreated: createdStatus,
@@ -956,7 +891,7 @@ export const useAirdropStore = defineStore({
         //limit: limit,
         // });
         const existingPage = walletStore.getExistingPage(walletStore.nextPage);
-        //console.log('Existing page: ', existingPage);
+        console.log('Existing page: ', existingPage);
         if (existingPage === undefined) {
           if(accounts.length<limit)
           {
@@ -972,6 +907,7 @@ export const useAirdropStore = defineStore({
 
             }
             const accByCodeHash = await ever.getAccountsByCodeHash(temp);
+            console.log('Acc by code hash:',accByCodeHash);
             if(accByCodeHash.length!=0)
             {
               await walletStore.updatePagination(walletStore.nextPage, this.airdrops.continuation);

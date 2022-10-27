@@ -124,5 +124,11 @@ export default [
     decimals: 9,
     address: '0:a50def2df0f7f531b82b7ffec7baf8e7ce4279605726b94927c9ee6ded09f5c2',
     icon: '',
+  },
+  {
+    label: 'AIRDROP_15',
+    decimals: 15,
+    address: '0:cc5cce51f1b5998b52c998d3492f770ef14b7edd60fa57b96d0ce3c9c0d46bdc',
+    icon: '',
   }
 ];

@@ -417,10 +417,23 @@ function CSVToJSON(data, delimiter = ',') {
       data.split(/\r\n|\n/).forEach((v) => {
         const values = v.split(delimiter);
         if (values[0]) {
+         /* let decimals;
+          if(token.value.label=='EVER')
+          {
+            console.log('Token: ', token.value);
+            decimals = 9;
+            console.log('Decimals: ', decimals);
+          }
+          else
+          {
+            console.log('Token: ', token.value);
+            decimals = token.value.decimals;
+            console.log('Decimals: ', decimals);
+          }*/
           items.value.push({
             address: values[0].replace(/^"(.*)"$/, '$1'),
             // address: addressFormat(values[0]),
-            amount: fromNano(values[1].replace(/^"(.*)"$/, '$1'),9),
+            amount: values[1].replace(/^"(.*)"$/, '$1'),
           });
         }
       })

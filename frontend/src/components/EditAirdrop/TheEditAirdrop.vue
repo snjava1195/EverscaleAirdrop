@@ -409,7 +409,7 @@ async function getAirdrop()
     amount: fromNano(amounts.allAmounts[i],9),
   });*/
     items.value[i].address = recipients.allRecipients[i]._address;
-    items.value[i].amount = fromNano(amounts.allAmounts[i],9);
+    items.value[i].amount = fromNano(amounts.allAmounts[i], airdropStore.token.decimals);
           }
           //console.log(zaAirdrop);
         }
@@ -424,11 +424,11 @@ async function getAirdrop()
     amount: fromNano(amounts.allAmounts[i],9),
   });*/
     items.value[i].address = recipients.allRecipients[i]._address;
-    items.value[i].amount = fromNano(amounts.allAmounts[i],9);
+    items.value[i].amount = fromNano(amounts.allAmounts[i], airdropStore.token.decimals);
           }
           for(let i=10;i<recipients.allRecipients.length;i++)
           {
-            items.value.push({address: recipients.allRecipients[i]._address, amount: fromNano(amounts.allAmounts[i],9)});
+            items.value.push({address: recipients.allRecipients[i]._address, amount: fromNano(amounts.allAmounts[i], airdropStore.token.decimals)});
           }
         }
       }

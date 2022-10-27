@@ -2,14 +2,11 @@ import { expect } from "chai";
 import { Contract, Signer } from "locklift";
 import { FactorySource } from "../build/factorySource";
 import { WalletCode } from "../build/Wallet.code";
-let sample: Contract<FactorySource["Sample"]>;
-let airdropCon: Contract<FactorySource["Tip31Airdrop"]>;
 let signer: Signer;
 let owner: Contract<FactorySource["Wallet"]>;
 let tokenRootContr: Contract<FactorySource["TokenRoot"]>;
 let walletCode: WalletCode;
 let root: Contract<FactorySource["TokenRoot"]>;
-let airdrop: Contract<FactorySource["Tip31Airdrop"]>;
 let user: Contract<FactorySource["Wallet"]>;
 const amount = locklift.utils.toNano(1000);
 
@@ -34,7 +31,7 @@ const main = async () => {
   console.log(`Owner: ${owner.address}`);
   console.log(`Owner's public key: ${owner.publicKey}`);
     
-
+await locklift.giver.sendTo(owner.address, locklift.utils.toNano(100));
  
    const sampleRootData = await locklift.factory.getContractArtifacts("TokenWallet");
   const { contract } = await locklift.factory.deployContract({
@@ -53,8 +50,8 @@ const main = async () => {
             randomNonce_: locklift.utils.getRandomNonce(),
             rootOwner_: owner.address,
             name_: 'Airdrop token',
-            symbol_: 'AIRDROP',
-            decimals_: 9,
+            symbol_: 'AIRDROP_15',
+            decimals_: 15,
             walletCode_: sampleRootData.code,
         },
         publicKey: owner.publicKey,
@@ -64,8 +61,8 @@ const main = async () => {
         root = contract;
 
 	console.log(`Token root: ${root.address}`);
-    
-	const distributerCode = await locklift.factory.getContractArtifacts("Tip31Distributer");	
+    await locklift.giver.sendTo(root.address, locklift.utils.toNano(100));
+	/*const distributerCode = await locklift.factory.getContractArtifacts("Tip31Distributer");	
     	const { contract: airdrop, tx } = await locklift.factory.deployContract({
         contract: "Tip31Airdrop",
         constructorParams: {
@@ -81,6 +78,23 @@ const main = async () => {
         value: locklift.utils.toNano(10),
     });
 	console.log(`Airdrop: ${airdrop.address}`);
+	}*/
+	
+	const accountTransaction = await owner.runTarget(
+    		{
+    		contract: root,
+    		value: locklift.utils.toNano(5),
+    		},
+    		root =>
+    			root.methods.mint({ 
+    				amount: 5000000000000000000, 
+    				recipient: "0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63", 
+    				deployWalletValue: locklift.utils.toNano(1), 
+    				remainingGasTo: owner.address, 
+    				notify: false, 
+    				payload: '', 
+    				}),
+    		);
 	}
 	
 main()
