@@ -157,7 +157,7 @@
                   ? 'text-[#4AB44A] font-medium'
                   : ''
               "
-              >Top-up {{ topUpRequiredAmount }} {{ token ? token.label : 'EVER' }}</a
+              >Top-up {{ totalTokens }} {{ token ? token.label : 'EVER' }}</a
             >
           </div>
 
@@ -322,7 +322,7 @@
         class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
         :class="{ 'is-loading': loading }"
       >
-        Top-up {{ topUpRequiredAmount }} {{ token ? token.label : 'EVER' }}
+        Top-up {{ totalTokens }} {{ token ? token.label : 'EVER' }}
       </button>
 
       <!-- Step 4 -->
@@ -540,7 +540,14 @@ async function onTopUpEver() {
 
 async function onDeployContract() {
  // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
-  if (!validateLockDuration(airdropStore.lockDuration)) return;
+  if (airdropStore.lockDuration==null) {
+    const date = new Date(Date.now()+(3*60*1000));
+    const lockDuration = date;//{ date: date, hours: new Date().getHours(), minutes: new Date().getMinutes() + 2 }
+    console.log('Date:', lockDuration);
+    airdropStore.lockDuration = date;//Math.floor(lockDuration.getTime()/1000);
+    console.log('Lock duration: ', airdropStore.lockDuration);
+  }
+  console.log('Lock duration: ', airdropStore.lockDuration)
   loading.value = true;
 
   try {
