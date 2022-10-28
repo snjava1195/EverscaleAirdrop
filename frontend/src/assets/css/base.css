@@ -13,7 +13,7 @@
 
 @layer components {
   .container {
-    @apply w-full xl:max-w-[1360px] h-full mx-auto flex flex-col bg-[#FFFFFF];
+    @apply w-full xl:max-w-[1360px] mx-auto flex flex-col bg-[#FFFFFF];
   }
   .header {
     @apply h-[64px] w-full flex justify-between items-center px-[20px] z-10;
@@ -64,7 +64,7 @@
     @apply w-[36px] h-[36px] flex items-center justify-center bg-[#ECF1FE];
   }
   .footer {
-    @apply h-[103px] md:h-[64px] w-full bg-[#F7F7F9] flex flex-col md:flex-row justify-center md:justify-between md:items-center px-[20px] clear-both relative mt-[103px] md:mt-[64px];
+    @apply h-[103px] md:h-[64px] w-full bg-[#F7F7F9] flex flex-col md:flex-row justify-center md:justify-between md:items-center px-[20px] clear-both relative mt-[103px] md:mt-[0px];
   }
   .footer-menu {
     @apply space-x-[16px] md:space-x-[40px] text-[14px] text-[#8B909A] font-pt_root;
@@ -75,7 +75,7 @@
 
   /* airdrop */
   .main {
-    @apply w-full lg:max-w-[540px] xl:max-w-[660px];
+    @apply w-full lg:max-w-[540px] xl:max-w-[730px];
   }
   .aside {
     @apply w-full lg:max-w-[360px] text-[14px] lg:px-[24px];
@@ -87,13 +87,13 @@
     @apply text-black font-medium font-pt_root;
   }
   .form-dropdown {
-    @apply border border-[#C6C9CF] h-[36px] text-[14px] flex items-center justify-between px-[12px];
+    @apply border border-[#C6C9CF] h-[36px] text-[14px] flex items-center justify-between px-[12px] font-pt_root leading-5;
   }
   .form-dropdown-message {
     @apply text-[12px] text-[#A6AAB2] font-medium font-pt_root;
   }
   .form-text-input {
-    @apply border border-[#C6C9CF] w-full min-h-[40px] text-[14px] px-[12px] placeholder:text-[#A6AAB2];
+    @apply border border-[#C6C9CF] w-full min-h-[40px] text-[14px] px-[12px] placeholder:text-[#A6AAB2] font-pt_root;
   }
   .recepian-list {
     @apply mt-[48px] relative before:absolute before:inset-0 before:recepianListGradient;
@@ -120,7 +120,7 @@
     @apply w-[20px] h-[20px] bg-[#E4E5EA] text-[#6C7078] rounded-full flex justify-center items-center mr-[12px];
   }
   .message {
-    @apply border-l-4 border-[#E6AC00] p-[12px] text-[12px] mt-[24px];
+    @apply border-l-4 border-[#E6AC00] text-[12px] mt-[24px];
   }
   .aside-btn {
     @apply w-full h-[46px] text-white text-base font-medium bg-[#DAE4FD] flex justify-center items-center mt-[24px] relative;
@@ -132,7 +132,7 @@
     @apply opacity-0 absolute w-full h-full cursor-pointer;
   }
   .recipients-list-subtitle {
-    @apply text-[24px] text-black font-medium;
+    @apply text-[24px] font-faktum text-black font-medium;
   }
   /*.dp-custom-input {*/
   /*  @apply h-[40px] rounded-none placeholder:text-[#A6AAB2] placeholder:text-base;*/
@@ -251,6 +251,8 @@
 .dp-custom-input {
   height: 40px;
   border-radius: 0;
+  font-size: 14px;
+  font-family: 'PT_Root';
 }
 .dp-custom-input::placeholder {
   color: #a6aab2;
@@ -262,4 +264,13 @@
 .main-title {
   font-feature-settings: 'ss10' on;
   font-style: normal;
+}
+.yourAirdrops td {
+  font-feature-settings: 'tnum' on, 'lnum' on;
+}
+input.multiselect__input {
+  font-size: 14px
+}
+.option__desc .option__title {
+  font-size: 14px;
 }

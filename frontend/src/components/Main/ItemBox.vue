@@ -2,7 +2,7 @@
   <div class="table w-full">
     <!--Mobile-->
     <div
-      class="mobTable lg:hidden w-full border border-[#E4E5EA] px-[12px] divide-y divide-[#E4E5EA] mt-[16px] mb-[310px] font-pt_root"
+      class="mobTable yourAirdrops lg:hidden w-full border border-[#E4E5EA] px-[12px] divide-y divide-[#E4E5EA] mt-[16px] mb-[310px] font-pt_root"
     >
       <div v-for="(item, i) in sortedAirdrops" :key="i" class="space-y-[8px] py-[16px] cursor-pointer">
         <router-link :to="'/edit-airdrop/' + item.address" custom v-slot="{ navigate }">
@@ -37,7 +37,7 @@
 
     <!--Desktop-->
     <table
-      class="desktopTable w-full mx-auto hidden lg:block border border-[#E4E5EA] text-[14px] mt-[17px] lg:mb-[100px] xl:mb-0 font-pt_root"
+      class="desktopTable yourAirdrops w-full mx-auto hidden lg:block border border-[#E4E5EA] text-[14px] mt-[17px] lg:mb-[100px] xl:mb-0 font-pt_root"
     >
       <thead>
         <ItemBoxHeading />
@@ -48,11 +48,11 @@
           <router-link :to="'/edit-airdrop/' + item.address" custom v-slot="{ navigate }">
 
           <td class="h-[58px] pl-[12px] border-[#E4E5EA] border-t" @click="navigate">
-            <p>{{ item.airdropName }}
-              
-            </p>
-            <div>
-              
+            <div class="flex items-center">
+              <p class="leading-5 tracking-[0.1px]">
+                {{ item.airdropName }}
+              </p>
+            
               <span
                 class="py-[4px] px-[8px] rounded-full text-[12px] font-medium ml-[6px]"
                 :class="{ 'bg-[#DAE4FD]': item.status=='Deployed', 'text-[#214BB7]': item.status == 'Deployed',
@@ -64,12 +64,13 @@
 
               }"
                 
-                >{{item.status}}</span
               >
+                {{item.status}}
+              </span>
             </div>
           </td>
         </router-link>
-          <td class="h-[58px] pl-[12px] border-[#E4E5EA] border-t flex items-center">
+          <td class="h-[58px] pl-[12px] border-[#E4E5EA] border-t flex items-center tracking-[0.1px]">
             <span class="mr-[6px]">
               <img :src="item.tokenIcon" width="20" height="20"/>
               <!--<EverIcon />-->
@@ -77,7 +78,7 @@
             {{ item.amount }} {{item.tokenLabel}}
           </td>
           
-          <td class="h-[58px] pl-[20px] border-[#E4E5EA] border-t text-right pr-[12px]" >
+          <td class="h-[58px] pl-[20px] border-[#E4E5EA] border-t text-right pr-[12px] tracking-[0.1px]" >
             
               
             {{ item.recipientsNumber }}

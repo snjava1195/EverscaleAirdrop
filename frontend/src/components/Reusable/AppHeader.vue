@@ -1,12 +1,12 @@
 <template>
-  <header class="header">
+  <header class="header xl:py-5">
     <div class="logo font-faktum">
       <router-link to="/">
         <h2>EVER Drop</h2>
       </router-link>
     </div>
 
-    <button v-if="!walletStore.isLogged" @click="onLogin()" class="header-btn">
+    <button v-if="!walletStore.isLogged" @click="onLogin()" class="header-btn hover:bg-blue-100">
       Connect wallet
     </button>
 
@@ -33,7 +33,7 @@
       </ul>
       <a
         @click="onLogout()"
-        class="py-[8px] px-[12px] bg-[#ECF1FE] ml-[16px]"
+        class="py-[8px] px-[12px] bg-[#ECF1FE] hover:bg-blue-100 ml-[16px]"
         href="javascript:void(0)"
       >
         <LogoutIcon />
