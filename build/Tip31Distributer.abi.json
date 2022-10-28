@@ -112,6 +112,7 @@
 		{"name":"_owner","type":"address"},
 		{"name":"_remainingGasTo","type":"address"},
 		{"name":"isCallback","type":"bool"},
+		{"name":"deposit","type":"uint128"},
 		{"name":"_empty","type":"cell"},
 		{"name":"pubKey","type":"uint256"}
 	]

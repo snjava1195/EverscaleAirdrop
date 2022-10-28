@@ -36,7 +36,7 @@
       <div class="flex justify-between items-center font-bold text-black">
         <span>Total tokens</span>
         <span
-          ><span class="text-[20px]">{{ totalTokens }}</span>{{ token ? token.label : 'EVER' }}</span
+          ><span class="text-[20px]">{{ totalTokens }}</span> {{ token ? token.label : 'EVER' }}</span
         >
       </div>
     </header>
@@ -454,7 +454,7 @@ const totalTokens = computed(() => {
   const totalRecipientsTokens = recipientsList.value.reduce((accumulator, object) => {
     return accumulator + Number(object.amount);
   }, 0);
-  console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
+//  console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
   return totalRecipientsTokens>0.01 ? Number(Math.round(totalRecipientsTokens+'e2')+'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
 });
 const topUpValue = computed(() => {
@@ -543,11 +543,11 @@ async function onDeployContract() {
   if (airdropStore.lockDuration==null) {
     const date = new Date(Date.now()+(3*60*1000));
     const lockDuration = date;//{ date: date, hours: new Date().getHours(), minutes: new Date().getMinutes() + 2 }
-    console.log('Date:', lockDuration);
+   // console.log('Date:', lockDuration);
     airdropStore.lockDuration = date;//Math.floor(lockDuration.getTime()/1000);
-    console.log('Lock duration: ', airdropStore.lockDuration);
+  //  console.log('Lock duration: ', airdropStore.lockDuration);
   }
-  console.log('Lock duration: ', airdropStore.lockDuration)
+  //console.log('Lock duration: ', airdropStore.lockDuration)
   loading.value = true;
 
   try {

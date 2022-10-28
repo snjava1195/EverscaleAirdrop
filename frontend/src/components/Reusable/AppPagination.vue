@@ -3,7 +3,7 @@
     <div class="flex items-center justify-end space-x-[20px]">
       <div class="hidden md:flex items-center space-x-[6px]">
         <form>
-          <select v-model="itemsPerPage" class="pagination-dropdown">
+          <select v-model="walletStore.itemsPerPage" class="pagination-dropdown">
             <option v-for="n in 50" :key="n" :value="n">{{ n }}</option>
           </select>
         </form>
@@ -46,7 +46,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useWalletStore } from '@/stores/wallet';
 import { useAirdropStore } from '@/stores/airdrop';
 const emit = defineEmits(['submit']);
@@ -55,17 +56,21 @@ import RightArrowIcon from '@/components/icons/IconRightArrow.vue';
 
 const walletStore = useWalletStore();
 const airdropStore = useAirdropStore();
-const itemsPerPage = ref(10);
+//const itemsPerPage = computed(() => {
+  //return walletStore.itemsPerPage;
+//}); //ref(10);
+const { itemsPerPage } = storeToRefs(walletStore);
 
-watch(itemsPerPage, () => {
+watch( itemsPerPage, () => {
   walletStore.resetPagination();
-  emit('submit', itemsPerPage.value, walletStore.currentPage);
+  //walletStore.itemsPerPage = itemsPerPage;
+  emit('submit', walletStore.itemsPerPage, walletStore.currentPage);
 });
 
 function onNextPage() {
-  emit('submit', itemsPerPage.value, walletStore.nextPage);
+  emit('submit', walletStore.itemsPerPage, walletStore.nextPage);
 }
 function onPrevPage() {
-  emit('submit', itemsPerPage.value, walletStore.prevPage);
+  emit('submit', walletStore.itemsPerPage, walletStore.prevPage);
 }
 </script>

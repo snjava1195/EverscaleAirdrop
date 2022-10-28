@@ -75,6 +75,14 @@
 			]
 		},
 		{
+			"name": "onBalance",
+			"inputs": [
+				{"name":"balance","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "buildAirdropCode",
 			"inputs": [
 				{"name":"ownerAddress","type":"address"}
@@ -294,6 +302,14 @@
 			"outputs": [
 				{"name":"messageValue","type":"uint256"}
 			]
+		},
+		{
+			"name": "balanceWallet",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"balanceWallet","type":"uint128"}
+			]
 		}
 	],
 	"data": [
@@ -344,6 +360,7 @@
 		{"name":"batches","type":"uint256"},
 		{"name":"allRecipients","type":"address[]"},
 		{"name":"allAmounts","type":"uint128[]"},
-		{"name":"messageValue","type":"uint256"}
+		{"name":"messageValue","type":"uint256"},
+		{"name":"balanceWallet","type":"uint128"}
 	]
 }

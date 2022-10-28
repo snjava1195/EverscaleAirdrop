@@ -16,6 +16,7 @@ export const useWalletStore = defineStore({
     pagination: [],
     currentPage: 1,
     continuation: {},
+    itemsPerPage: 10,
   }),
   getters: {
     isLogged: (state) => !!state.profile.address,
@@ -23,6 +24,7 @@ export const useWalletStore = defineStore({
       let temp = state.currentPage;
       //state.currentPage = state.currentPage+1;
     //  console.log('On next page: ',state.currentPage);
+    console.log('Next page state: ', state);
       return temp + 1;
      //state.currentPage+=1;
     // return state.currentPage;
@@ -34,10 +36,16 @@ export const useWalletStore = defineStore({
         let temp = state.currentPage;
       //  state.currentPage = state.currentPage-1;
         //console.log('On prev page: ',state.currentPage);
+        console.log('Prev page state: ', state);
         return temp - 1;
       }
     },
+    getItemsPerPage: (state) =>
+    {
+      return state.itemsPerPage;
+    },
     getExistingPage: (state) => {
+      console.log('Get page state: ', state);
       return (page) => state.pagination.find((p) => p.page === page);
     },
   },
@@ -86,8 +94,8 @@ export const useWalletStore = defineStore({
         page: page,
         continuation: continuation,
       });
-      console.log('This pagination: ', this.pagination[0]);
-     // this.currentPage=page;
+      console.log('This pagination: ', this.pagination.value);
+      //this.currentPage=page;
     },
     async getPagination(page) {
       console.log(this.pagination);
@@ -108,6 +116,7 @@ export const useWalletStore = defineStore({
         transactions: null,
         loading: false,
       };
+      this.itemsPerPage = 10;
       this.resetPagination();
       router.push('/');
     },

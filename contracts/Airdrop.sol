@@ -41,6 +41,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     address[] public allRecipients;
     uint128[] public allAmounts;
     uint public messageValue;
+    uint128 public balanceWallet;
     // Checks whether refund lock time has passed and distribution is over
     modifier refundLockPassed() {
         require(now > refund_lock_duration_end, 107);
@@ -147,7 +148,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 					});
        addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
        numberOfRecipients = uint128(_addresses.length);
-       uint128 initialBalance = numberOfRecipients*0.08 ever;
+       uint128 initialBalance = numberOfRecipients*0.23 ever;
        
        require(deposit>=_totalAmount, 1001);
         addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	
@@ -221,15 +222,22 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         else
         {
         	tvm.accept();
+            TokenWallet(deployedContracts[0]).balance{value: 0.1 ever, callback: onBalance, flag: 0}();
         	for(uint i=0;i<deployedContracts.length;i++)
         	{
         		Tip31Distributer(deployedContracts[i]).refund{value:0.1 ever, flag:0}();
         	}
+            
         	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 0}(senderAddress);
         	payable(senderAddress).transfer(0, false, 128);
         	status="Redeemed";
         
         }
+    }
+
+    function onBalance(uint128 balance) public 
+    {
+        balanceWallet = balance;
     }
     
     //Builds specific contract code based on the owner's address

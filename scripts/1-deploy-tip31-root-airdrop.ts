@@ -50,7 +50,7 @@ await locklift.giver.sendTo(owner.address, locklift.utils.toNano(100));
             randomNonce_: locklift.utils.getRandomNonce(),
             rootOwner_: owner.address,
             name_: 'Airdrop token',
-            symbol_: 'AIRDROP_15',
+            symbol_: 'AIRDROP_12',
             decimals_: 15,
             walletCode_: sampleRootData.code,
         },

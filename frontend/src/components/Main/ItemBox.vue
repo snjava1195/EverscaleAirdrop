@@ -4,7 +4,7 @@
     <div
       class="mobTable lg:hidden w-full border border-[#E4E5EA] px-[12px] divide-y divide-[#E4E5EA] mt-[16px] mb-[310px] font-pt_root"
     >
-      <div v-for="(item, i) in transactions" :key="i" class="space-y-[8px] py-[16px] cursor-pointer">
+      <div v-for="(item, i) in sortedAirdrops" :key="i" class="space-y-[8px] py-[16px] cursor-pointer">
         <router-link :to="'/edit-airdrop/' + item.address" custom v-slot="{ navigate }">
 
         <div class="flex items-center justify-between" @click="navigate">
@@ -44,7 +44,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="(item, i) in transactions" :key="i" class="cursor-pointer">
+        <tr v-for="(item, i) in sortedAirdrops" :key="i" class="cursor-pointer">
           <router-link :to="'/edit-airdrop/' + item.address" custom v-slot="{ navigate }">
 
           <td class="h-[58px] pl-[12px] border-[#E4E5EA] border-t" @click="navigate">
@@ -104,12 +104,16 @@ import { useAirdropStore } from '@/stores/airdrop';
 import { toNano } from '@/utils';
 import EverIcon from '@/components/icons/IconEver.vue';
 import ItemBoxHeading from '@/components/Main/ItemBoxHeading.vue';
+import _, { map } from 'underscore';
 
 const walletStore = useWalletStore();
 const airdropStore = useAirdropStore();
 const transactions = computed(() => {
   return airdropStore.airdropData;
 });
+let sortedAirdrops;
+
+sort();
 
 function everDivider(item) {
   return item.outMessages.length ? Number(item.outMessages[0].value) / toNano(1, 9) : 0;
@@ -126,5 +130,10 @@ function creationTime(date)
   return dayjs.unix(date).format('DD MMM YYYY');
 }
 
+function sort()
+{
+  sortedAirdrops = _.sortBy(transactions.value, 'dateCreated');
+  console.log('Sorted:', sortedAirdrops);
+}
 
 </script>

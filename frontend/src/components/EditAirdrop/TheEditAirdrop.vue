@@ -324,6 +324,7 @@ async function onChange(token) {
 async function getAirdrop()
 {
   const route = useRoute();
+  token.value = tokensList.find(token=>token.label=='EVER');
   const address = route.params.address;
   const contract = new ever.Contract(airdrop2Abi, address);
           airdropStore.address = address;
@@ -351,6 +352,10 @@ async function getAirdrop()
 
           console.log('Lock duration: ', airdropStore.lockDuration);
           const status = await contract.methods.status({}).call();
+          console.log(status);
+
+         // const balance = await contract.methods.balanceWallet({}).call();
+         // console.log(balance);
           if(status.status == "Deployed")
           {
             airdropStore.step = 3;
@@ -359,6 +364,14 @@ async function getAirdrop()
           if(status.status == "Executed")
           {
             airdropStore.step=5;
+          }
+          if(status.status == "Redeemed")
+          {
+            airdropStore.step = 6;
+          }
+          if(status.status.includes('Executing'))
+          {
+            airdropStore.step = 4;
           }
           for(let i=0;i<airdropStore.airdropData.length;i++)
           {
@@ -369,14 +382,14 @@ async function getAirdrop()
               {
                 airdropStore.step = 4;
               }
-              else if(airdropStore.airdropData[i].status == "Redeemed")
+              /*else if(airdropStore.airdropData[i].status == "Redeemed")
               {
                 airdropStore.step = 6;
               }
               else if(airdropStore.airdropData[i].status.includes('Executing'))
               {
                 airdropStore.step=4;
-              }
+              }*/
             }
             
           }
@@ -403,7 +416,7 @@ async function getAirdrop()
           for(let i=0;i<amounts.allAmounts.length;i++)
           {
             //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
-            zaAirdrop.push(recipients.allRecipients[i]._address);
+           // zaAirdrop.push(recipients.allRecipients[i]._address);
            /* items.value.push({
     address: recipients.allRecipients[i]._address,
     amount: fromNano(amounts.allAmounts[i],9),
