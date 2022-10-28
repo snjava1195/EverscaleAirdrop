@@ -287,7 +287,7 @@
         type="button"
         class="aside-btn"
         :class="[
-          !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1]',
+          !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1] hover:bg-blue-700',
           { 'is-loading': loading },
         ]"
         :disabled="!recipientsList.length"
@@ -304,7 +304,7 @@
         <button
           @click="onDeployContract"
           type="button"
-          class="aside-btn bg-[#2B63F1] text-white mt-[8px]"
+          class="aside-btn bg-[#2B63F1] text-white mt-[8px] hover:bg-blue-700"
           :class="{ 'is-loading': loading }"
         >
           Deploy contract
@@ -316,7 +316,7 @@
         v-if="step === 3"
         @click="onTopUpToken"
         type="button"
-        class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
+        class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700"
         :class="{ 'is-loading': loading }"
       >
         Top-up {{ topUpRequiredAmount }} {{ token.label }}
@@ -328,7 +328,7 @@
           v-if="!error"
           @click="onResumeAirdrop(false)"
           type="button"
-          class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
+          class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700"
           :class="{ 'is-loading': loading }"
         >
           Run airdrop
@@ -337,7 +337,7 @@
           v-else
           @click="onResumeAirdrop(true)"
           type="button"
-          class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
+          class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700"
           :class="{ 'is-loading': loading }"
         >
           Resume airdrop
@@ -350,7 +350,7 @@
         @click="onRedeemFunds"
         type="button"
         class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
-        :class="{ 'is-loading': loading, 'bg-[#DAE4FD]': !redeemExpired }"
+        :class="{ 'is-loading': loading, 'bg-[#DAE4FD] hover:bg-blue-700': !redeemExpired }"
         :disabled="!redeemExpired"
       >
         Redeem funds

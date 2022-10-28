@@ -1,5 +1,5 @@
 <template>
-  <main class="flex-1 px-[20px]">
+  <main class="px-[20px] relative z-10">
     <header class="flex flex-col items-center mt-[64px] md:mt-[96px]">
       <h1 class="main-title mb-[24px] md:mb-[36px] font-semibold">
         The simplest way<br class="lg:hidden" />
@@ -11,13 +11,13 @@
         and tokens airdrop
       </h2>
 
-      <button @click="onLogin()" class="bg-[#2B63F1] text-white w-[178px] h-[56px] font-pt_root">
+      <button @click="onLogin()" class="bg-[#2B63F1] hover:bg-blue-700 text-white w-[178px] h-[56px] font-pt_root ">
         Connect wallet
       </button>
     </header>
 
     <main
-      class="w-full xl:max-w-[1160px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] mt-[80px] mb-[100px] lg:mb-[336px]"
+      class="w-full xl:max-w-[1160px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] mt-[80px] mb-[100px] lg:mb-[128px]"
     >
       <WelcomeMainItem>
         <template #icon>

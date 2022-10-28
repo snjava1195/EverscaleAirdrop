@@ -1,15 +1,18 @@
 <template>
-  <div
-    class="container font-faktum"
-    :class="{ 'relative md:after:topGradient': $route.name === 'Main' }"
+  <div class="font-faktum h-full xl:h-screen flex flex-col"
+      :class="{ 'relative md:after:topGradient': $route.name === 'Main' }"  
   >
     <AppHeader />
 
-    <RouterView />
+    <div class="container xl:flex-1">
 
-    <notifications position="bottom right" />
+      <RouterView />
+
+      <notifications position="bottom right" />
+    </div>
+
+    <AppFooter />
   </div>
-  <AppFooter />
 </template>
 
 <script setup>

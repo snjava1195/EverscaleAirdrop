@@ -1,48 +1,50 @@
 <template>
-  <header class="flex flex-col items-center mt-[64px] md:mt-[96px]">
-    <h1 class="main-title">
-      The simplest way<br class="lg:hidden" />
-      to airdrop tokens
-    </h1>
-  </header>
+  <div class="px-[20px] md:px-[40px] lg:px-[10px]">
+    <header class="flex flex-col items-center mt-[64px] md:mt-[96px] relative z-10">
+      <h1 class="main-title">
+        The simplest way<br class="lg:hidden" />
+        to airdrop tokens
+      </h1>
+    </header>
 
-  <main class="w-full xl:max-w-[1160px] mx-auto">
-    <div
-      class="flex flex-col md:flex-row md:justify-between md:items-center space-y-[16px] md:space-y-0 mt-[64px]"
-    >
-      <h2 class="text-[24px] font-medium">Your airdrops</h2>
+    <main class="w-full xl:max-w-[1160px] mx-auto">
       <div
-        class="flex flex-col md:flex-row md:items-center md:space-x-[12px] space-y-[8px] md:space-y-0"
+        class="flex flex-col md:flex-row md:justify-between md:items-center space-y-[16px] md:space-y-0 mt-[64px]"
       >
-        <router-link to="/create-airdrop" custom v-slot="{ navigate }">
-          <button
-            @click="navigate"
-            @keypress.enter="navigate"
-            role="link"
-            class="create-airdrop-btn"
-          >
-            Create new airdrop
-          </button>
-        </router-link>
-        <button class="add-airdrop-btn">Add existing airdrop</button>
+        <h2 class="text-[24px] font-medium">Your airdrops</h2>
+        <div
+          class="flex flex-col md:flex-row md:items-center md:space-x-[12px] space-y-[8px] md:space-y-0"
+        >
+          <router-link to="/create-airdrop" custom v-slot="{ navigate }">
+            <button
+              @click="navigate"
+              @keypress.enter="navigate"
+              role="link"
+              class="create-airdrop-btn hover:bg-blue-700"
+            >
+              Create new airdrop
+            </button>
+          </router-link>
+          <button class="add-airdrop-btn hover:bg-blue-100">Add existing airdrop</button>
+        </div>
       </div>
-    </div>
 
-    <template
-      v-if="transactions && transactions.length && !airdropStore.airdropsLoading" 
-    >
-      <ItemBox />
+      <template
+        v-if="transactions && transactions.length && !airdropStore.airdropsLoading" 
+      >
+        <ItemBox />
 
-      <div class="hidden xl:flex items-center justify-between mt-[16px] mb-[100px]">
-        <ExportItems />
-        <AppPagination @submit="getTransactions" />
-      </div>
-    </template>
+        <div class="hidden xl:flex items-center justify-between mt-[16px] mb-[100px]">
+          <ExportItems />
+          <AppPagination @submit="getTransactions" />
+        </div>
+      </template>
 
-    <ItemLoading v-else-if="airdropStore.airdropsLoading" />
+      <ItemLoading v-else-if="airdropStore.airdropsLoading" />
 
-    <EmptyItemBox v-else />
-  </main>
+      <EmptyItemBox v-else />
+    </main>
+  </div>
 </template>
 <script setup>
 import { computed } from 'vue';
