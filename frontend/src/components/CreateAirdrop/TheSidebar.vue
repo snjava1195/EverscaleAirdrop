@@ -10,7 +10,7 @@
         </div>
 
         <div class="flex items-center space-x-[10px]">
-          <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/accounts/accountDetails?id=${airdropStore.address}`">{{ $filters.addressFormat(airdropStore.address) }}</a>
+          <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/accounts/${airdropStore.address}`">{{ $filters.addressFormat(airdropStore.address) }}</a>
 
           <span @click="copy(airdropStore.address)" class="cursor-pointer">
             <CopyIcon />
@@ -76,7 +76,7 @@
           </div>
 
           <div v-if="step > 1" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.giverContractId}`">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.giverContractId}`">{{
               $filters.addressFormat(transactionId.giverContractId)
             }}</a>
             <span @click="copy(transactionId.giverContractId)" class="cursor-pointer">
@@ -119,7 +119,7 @@
           </div>
 
           <div v-if="step > 2" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.deployContractId}`">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.deployContractId}`">{{
               $filters.addressFormat(transactionId.deployContractId)
             }}</a>
 
@@ -165,7 +165,7 @@
             <!-- <a class="text-[#2B63F1]" :href="`https://everscan.io/transactions/${transactionId.amountContractId}`">{{ -->
               <!-- $filters.addressFormat(transactionId.amountContractId) -->
             <!-- }}</a> -->
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.amountContractId}`">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.amountContractId}`">{{
                $filters.addressFormat(transactionId.amountContractId) 
              }}</a> 
             <span @click="copy(transactionId.amountContractId)" class="cursor-pointer">
@@ -211,7 +211,7 @@
           </div>
 
           <div v-if="step > 4" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.distributeContractId}`">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.distributeContractId}`">{{
               $filters.addressFormat(transactionId.distributeContractId)
             }}</a>
             <span @click="copy(transactionId.distributeContractId)" class="cursor-pointer">
@@ -259,7 +259,7 @@
           </div>
 
           <div v-if="step > 5" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://net.ever.live/transactions/transactionDetails?id=${transactionId.redeemContractId}`">{{
+            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.redeemContractId}`">{{
               $filters.addressFormat(transactionId.redeemContractId)
             }}</a>
             <span @click="copy(transactionId.redeemContractId)" class="cursor-pointer">
@@ -391,6 +391,7 @@ import CheckIcon from '@/components/icons/IconCheck.vue';
 import ShareAirdrop from '@/components/CreateAirdrop/ShareAirdrop.vue';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { getSeconds } from '@/utils';
+import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
 dayjs.extend(relativeTime);
 
 const props = defineProps({
@@ -418,8 +419,9 @@ onBeforeRouteLeave((to, from) => {
 });
 
 onUnmounted(() => clearInterval(redeemPolling.value));
-
+//calculateInitialFees();
 const airdropStore = useAirdropStore();
+
 const walletStore = useWalletStore();
 const { copy } = useClipboard();
 //const step = ref(1);
@@ -429,13 +431,13 @@ const errors = ref({
   error: false,
   message: null,
 });
-const transactionId = ref({
+/*const transactionId = ref({
   giverContractId: null,
   deployContractId: null,
   amountContractId: null,
   distributeContractId: null,
   redeemContractId: null,
-});
+});*/
 const redeemPolling = ref(null);
 const reedemText = ref('');
 const redeemRemainingSeconds = ref(null);
@@ -458,6 +460,7 @@ const totalTokens = computed(() => {
   return totalRecipientsTokens>0.01 ? Number(Math.round(totalRecipientsTokens+'e2')+'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
 });
 const topUpValue = computed(() => {
+  
   let loopCount = Math.floor(recipientsList.value.length / 99);
         if (recipientsList.value.length % 99 !== 0) {
           loopCount++;
@@ -478,7 +481,10 @@ const topUpValue = computed(() => {
         
         return recipientsList.value.length !=0 ? amountForSetting : 0;
 });
+
+const ever = new ProviderRpcClient();
 const topUpRequiredAmount = computed(() => {
+  calculateInitialFees();
   const tempTopUpRequiredAmount = recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
   console.log(airdropStore.topUpRequiredAmount);
   return airdropStore.topUpRequiredAmount === 0 ? tempTopUpRequiredAmount : airdropStore.topUpRequiredAmount;
@@ -500,6 +506,10 @@ const maxBatches = computed(() => {
   return airdropStore.maxBatches;
 });
 
+const transactionId = computed(() => {
+  return airdropStore.transactionId;
+})
+
 watch(props.items, (newX) => {
   if(airdropStore.step<=3)
   {
@@ -507,6 +517,8 @@ watch(props.items, (newX) => {
     console.log('Required amount: ', airdropStore.topUpRequiredAmount);
   }
 })
+
+
 
 function availableToRedeem() {
   redeemRemainingSeconds.value = getSeconds(airdropStore.lockDuration);
@@ -527,7 +539,9 @@ async function onTopUpEver() {
   try {
     errors.value.error = false;
     const data = await airdropStore.getGiverContract2(props.token.label, recipientsList.value.length);
-    transactionId.value.giverContractId = data.id.hash;
+    console.log('Data id: ', data.id.hash);
+    airdropStore.transactionId.giverContractId = data.id.hash;
+    
     airdropStore.step = 2;
   } catch (e) {
     console.log('e: ', e);
@@ -556,7 +570,10 @@ async function onDeployContract() {
    // console.log('airdropName:', airdropName.value);
     const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
    // const fees = await airdropStore.getEstimatedFee();
-    transactionId.value.deployContractId = data.transaction.id.hash;
+   airdropStore.transactionId.deployContractId = data.transaction.id.hash;
+    console.log('Tr id:', airdropStore.transactionId.deployContractId);
+    await airdropStore.setTransactionsHash(airdropStore.transactionId.giverContractId);
+    await airdropStore.setTransactionsHash(airdropStore.transactionId.deployContractId);
     await airdropStore.setRecipients(recipientsList.value);
     await airdropStore.setAmounts(recipientsList.value);
     await airdropStore.calculateFees("topup", "giver", '', []);
@@ -576,8 +593,10 @@ async function onTopUpToken() {
     //await airdropStore.calculateFees("distribute", "everAirdrop", '', recipientsList.value);
     errors.value.error = false;
     const data = await airdropStore.topUp();
-    transactionId.value.amountContractId = data.id.hash;
+    airdropStore.transactionId.amountContractId = data.id.hash;
+    await airdropStore.setTransactionsHash(airdropStore.transactionId.amountContractId);
     airdropStore.step = 4;
+    await airdropStore.calculateFees("distribute", "everAirdrop", props.token.label, recipientsList.value);
   } catch (e) {
     console.log('onTopUpToken e:', e);
     errors.value.error = true;
@@ -594,7 +613,8 @@ async function onResumeAirdrop(isResumed) {
     error.value = false;
     console.log('Recipients list:', recipientsList.value);
     const data = await airdropStore.distribute(recipientsList.value, isResumed);
-    transactionId.value.distributeContractId = data.id.hash;
+    airdropStore.transactionId.distributeContractId = data.id.hash;
+    await airdropStore.setTransactionsHash(airdropStore.transactionId.distributeContractId);
     availableToRedeem();
     redeemPolling.value = setInterval(() => {
       console.log('interval');
@@ -617,9 +637,17 @@ async function onRedeemFunds() {
 
   try {
     errors.value.error = false;
-    
+    const lastTx = await ever.getTransactions({address: walletStore.profile.address, continuation: undefined, limit: 1});
+    airdropStore.transactionId.redeemContractId =lastTx.transactions[0].id.hash;
+    console.log('Last tx: ', lastTx);
+    console.log('redeemed tx: ', airdropStore.transactionId.redeemContractId);
+    await airdropStore.setTransactionsHash(airdropStore.transactionId.redeemContractId);
     const data = await airdropStore.redeemFunds();
-    transactionId.value.redeemContractId = data.id.hash;
+    //transactionId.value.redeemContractId = data.id.hash;
+    
+    
+    
+  
     // error.value = true;
     airdropStore.step = 6;
   } catch (e) {

@@ -1,17 +1,10 @@
 <template>
   <div class="w-full font-pt_root text-[14px]">
     <div class="flex items-center justify-end space-x-[20px]">
-<<<<<<< HEAD
-      <div class="hidden md:flex items-center space-x-[6px]">
-        <form>
-          <select v-model="walletStore.itemsPerPage" class="pagination-dropdown">
-            <option v-for="n in 50" :key="n" :value="n">{{ n }}</option>
-=======
       <div class="hidden md:flex items-center space-x-[6px] ">
         <form class="inline-block relative space-x-3 w-[62px]">
-          <select v-model="itemsPerPage" class="pagination-dropdown block appearance-none">
+          <select v-model="walletStore.itemsPerPage" class="pagination-dropdown block appearance-none">
             <option v-for="n in 50" :key="n" :value="n">{{ n }}</option>   
->>>>>>> a0e61c756377729f9fd9caef3bbdd32a6879043b
           </select>
           <div class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2">
             <svg  width="10" height="5" viewBox="0 0 10 5" fill="none" xmlns="http://www.w3.org/2000/svg">

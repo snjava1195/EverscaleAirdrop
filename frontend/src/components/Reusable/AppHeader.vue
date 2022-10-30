@@ -50,6 +50,10 @@ const walletStore = useWalletStore();
 
 function onLogin() {
   walletStore.login();
+  console.log('Avatar:',walletStore.profile.address.substr(
+          walletStore.profile.address.length - 1,
+          1
+        ));
 }
 function onLogout() {
   walletStore.logout();

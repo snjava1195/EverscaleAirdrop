@@ -161,6 +161,14 @@
 			]
 		},
 		{
+			"name": "setTransaction",
+			"inputs": [
+				{"name":"transaction","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "transferOwnership",
 			"inputs": [
 				{"name":"newOwner","type":"address"}
@@ -310,6 +318,14 @@
 			"outputs": [
 				{"name":"balanceWallet","type":"uint128"}
 			]
+		},
+		{
+			"name": "transactionHashes",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"transactionHashes","type":"string[]"}
+			]
 		}
 	],
 	"data": [
@@ -361,6 +377,7 @@
 		{"name":"allRecipients","type":"address[]"},
 		{"name":"allAmounts","type":"uint128[]"},
 		{"name":"messageValue","type":"uint256"},
-		{"name":"balanceWallet","type":"uint128"}
+		{"name":"balanceWallet","type":"uint128"},
+		{"name":"transactionHashes","type":"string[]"}
 	]
 }

@@ -23,6 +23,9 @@ contract Sample {
         emit StateChange(_state);
     }
 
+	
+    
+
     function getDetails()
         external
         view

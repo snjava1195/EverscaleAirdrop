@@ -124,7 +124,6 @@
               </div>
 
               <input
-                :disabled="true"
                 ref="file"
                 @change="onFileChanged($event)"
                 type="file"
@@ -173,7 +172,6 @@
                     :class="{'border-b ': i + 1  === items.length}"
                 >
                   <input
-                  :disabled="true"
                     v-model="item.address"
                     class="h-full w-full px-[12px]"
                     type="text"
@@ -186,7 +184,6 @@
                      :class="{'border-b ': i + 1  === items.length}"
                 >
                   <input
-                    :disabled="true"
                     v-model="item.amount"
                     type="number"
                     name="amount"
@@ -246,6 +243,47 @@ import InfoIcon from '@/components/icons/IconInfo.vue';
 import Multiselect from 'vue-multiselect';
 import { useAirdropStore } from '@/stores/airdrop';
 import {fromNano} from '@/utils';
+import axios from 'axios';
+import { useWalletStore } from '@/stores/wallet';
+import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
+
+const rootAbi = {'ABI version': 2,
+  version: '2.2',
+  header: ['pubkey', 'time', 'expire'],
+  functions: [
+    {
+      name: 'walletOf',
+      inputs: [
+        { name: 'answerId', type: 'uint32' },
+        { name: 'walletOwner', type: 'address' }
+      ],
+      outputs: [
+        { name: 'value0', type: 'address' }
+      ]
+    },
+    {
+      name: 'symbol',
+      inputs: [
+        { name: 'answerId', type: 'uint32' }
+      ],
+      outputs: [
+        { name: 'value0', type: 'string' }
+      ]
+    },
+    {
+      name: 'decimals',
+      inputs: [
+        { name: 'answerId', type: 'uint32' }
+      ],
+      outputs: [
+        { name: 'value0', type: 'uint8' }
+      ]
+    }
+  ],
+  data: [],
+  events: []
+}
+
 
 const items = ref(recipientsList);
 const airdropName = ref(null);
@@ -259,10 +297,14 @@ const dropZoneRef = ref();
 const loading = ref(false);
 const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
+const walletStore = useWalletStore();
+let tokenAddr;
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
 reset();
+//addCustomTokens();
+getBalances();
 function addItem() {
   items.value.push({
     address: null,
@@ -344,6 +386,8 @@ function readFile(file) {
 }
 async function onChange(token) {
   await airdropStore.getExpectedAddress(token);
+ await airdropStore.calculateFees("deploy", "giver", "EVER", "");
+console.log('Fee: ', airdropStore.fees);
   //airdropStore.step =1;
 }
 
@@ -361,5 +405,95 @@ function reset()
   }
   //recipientsList=null;
   airdropStore.loopCount=0;
+
+  airdropStore.transactionId.giverContractId = "";
+  airdropStore.transactionId.deployContractId = "";
+  airdropStore.transactionId.amountContractId = "";
+  airdropStore.transactionId.distributeContractId = "";
+  airdropStore.transactionId.redeemContractId = "";
 }
+
+async function addCustomTokens()
+{
+  var data = JSON.stringify({
+  "ownerAddress": walletStore.profile.address,
+  "limit": 100,
+  "offset": 0,
+  "ordering": "amountdescending"
+});
+
+var config = {
+  method: 'post',
+  url: 'https://tokens.everscan.io/v1/balances',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  data : data
+};
+
+
+return axios(config)
+.then(function (response) {
+  //responseVar = response.data.balances;
+  console.log('Response: ', response.data);
+  console.log(JSON.stringify(response.data));
+  tokenAddr = response.data;
+  console.log(tokenAddr);
+  //for(let i=0;i<response.data.balances.length;i++)
+//{
+ // tokenAddr.push(response.data.balances[i].rootAddress);
+  //const rootAcc = new ever.Contract(rootAbi, response.data.balances[i].rootAddress);
+  //const decimal = rootAcc.methods.decimals({answerId: 1}).call();
+  //console.log("decimals: ", decimal);
+//}
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+
+
+
+
+//const rootAcc = new ever.Contract(rootAbi, this.token.address);
+
+}
+
+async function getBalances()
+{
+  const axiosRes = await addCustomTokens();
+  console.log(axiosRes);
+ // if(axiosRes.status == 200)
+  //{//.then(function (response) { tokenAddr = response.data});
+  //tokenAddr = axiosRes.data;
+  console.log('Token addr:', tokenAddr);
+  const ever = new ProviderRpcClient();
+  console.log(tokenAddr.balances.length);
+  for(let i=0;i<tokenAddr.balances.length;i++)
+  {
+   const rootAcc = new ever.Contract(rootAbi, tokenAddr.balances[i].rootAddress);
+   const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
+   console.log("decimals: ", decimal);
+   const token = tokensList.find(token=>token.address == tokenAddr.balances[i].rootAddress);
+          if(token==undefined)
+          {
+            console.log('Usao u undefined');
+            tokenList.value.push({label: tokenAddr.balances[i].token, decimals: decimal.value0, address:tokenAddr.balances[i].rootAddress, icon:''});
+          }
+  }
+  console.log(tokenList);
+  console.log('Avatar:',walletStore.profile.address.substr(
+          walletStore.profile.address.length - 1,
+          1
+        ));
+
+}/* const ever = new ProviderRpcClient();
+  console.log(tokenAddr.length);
+  for(let i=0;i<tokenAddr.length;i++)
+{
+   const rootAcc = new ever.Contract(rootAbi, tokenAddr[i]);
+  const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
+  console.log("decimals: ", decimal);
+}*/
+
 </script>

@@ -98,11 +98,11 @@
                 </div>
 
                 <div
-                  @click="downloadTemplate"
+                  @click="downloadTemplate" :disabled="true"
                   class="flex items-center space-x-[6px] cursor-pointer"
                 >
                   <span class="downloadSign">
-                    <DownloadIcon />
+                    <DownloadIcon :disabled="true"/>
                   </span>
                   <p class="text-[#8B909A]">Download template</p>
                 </div>
@@ -119,6 +119,7 @@
               </span>
 
               <input
+                :disabled="true"
                 ref="file"
                 @change="onFileChanged($event)"
                 type="file"
@@ -163,7 +164,7 @@
                   class="h-full w-full flex items-center justify-end px-[12px] space-x-[17px] md:order-4 md:bg-white"
                 >
                   <span v-if="hoverItem === i" @click="addItem" class="plusSign cursor-pointer">
-                    <PlusIcon />
+                    <PlusIcon :disabled="true" />
                   </span>
 
                   <span
@@ -171,12 +172,13 @@
                     @click="removeItem(i)"
                     class="deleteSign cursor-pointer"
                   >
-                    <TrashIcon />
+                    <TrashIcon :disabled="true"/>
                   </span>
                 </div>
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
                   <input
+                    :disabled="true"
                     v-model="item.address"
                     class="h-full w-full px-[12px]"
                     type="text"
@@ -187,6 +189,7 @@
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
                   <input
+                    :disabled="true"
                     v-model="item.amount"
                     type="number"
                     name="amount"
@@ -404,10 +407,40 @@ async function getAirdrop()
           const distributed = await contract.methods.getDistributedContracts({}).call();
           const deployed = await contract.methods.getDeployedContracts({}).call();
           const recipients = await contract.methods.allRecipients({}).call();
+          const transactionHashes = await contract.methods.transactionHashes({}).call();
           //console.log(recipients.allRecipients);
           const zaAirdrop=[];
          
           const amounts = await contract.methods.allAmounts({}).call();
+
+          for(let i=0;i<transactionHashes.transactionHashes.length;i++)
+          {
+            if(transactionHashes.transactionHashes.length<3)
+            {
+              airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
+              airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
+            }
+            else if(transactionHashes.transactionHashes.length<4)
+            {
+              airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
+              airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
+              airdropStore.transactionId.amountContractId = transactionHashes.transactionHashes[2];
+            }
+            else if(transactionHashes.transactionHashes.length<5)
+            {
+              airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
+              airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
+              airdropStore.transactionId.amountContractId = transactionHashes.transactionHashes[2];
+              airdropStore.transactionId.distributeContractId = transactionHashes.transactionHashes[3];
+            }
+            else {
+              airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
+              airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
+              airdropStore.transactionId.amountContractId = transactionHashes.transactionHashes[2];
+              airdropStore.transactionId.distributeContractId = transactionHashes.transactionHashes[3];
+              airdropStore.transactionId.redeemContractId = transactionHashes.transactionHashes[4];
+            }
+          }
           //console.log(amounts);
           if(items.value.length != amounts.allAmounts.length )
           {

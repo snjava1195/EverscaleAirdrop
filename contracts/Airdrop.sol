@@ -42,6 +42,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     uint128[] public allAmounts;
     uint public messageValue;
     uint128 public balanceWallet;
+    string[] public transactionHashes;
     // Checks whether refund lock time has passed and distribution is over
     modifier refundLockPassed() {
         require(now > refund_lock_duration_end, 107);
@@ -318,7 +319,11 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     	messageValue = messageValue+msg.value;
     }
     
-    
+    function setTransaction(string transaction) public
+    {
+        tvm.accept();
+        transactionHashes.push(transaction);
+    }
     
    
  }

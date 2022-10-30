@@ -8,6 +8,8 @@ import { toNano, fromNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
 import tokensList from '@/utils/tokens-list';
+
+//import {ResponseData}  from './ResponseData';
 const ever = new ProviderRpcClient();
 
 // const walletStore = useWalletStore();
@@ -114,6 +116,9 @@ const rootAbi = {
  //const maxNumberOfAddresses = 3;
 const maxNumberOfAddresses = 99;
 
+
+
+
 export const useAirdropStore = defineStore({
   id: 'airdrop',
   state: () => ({
@@ -134,8 +139,23 @@ export const useAirdropStore = defineStore({
     airdrops: null,
     airdropData: [],
     airdropsLoading: false,
+    responseData: [],/*{
+      ownerAddress: "",
+    amount: "",
+    rootAddress: "",
+    token: "",
+    blockTime: 0,
+    tokenStandard: "",
+    },*/
     step: 1,
     fees: 0,
+     transactionId: {
+      giverContractId: "",
+      deployContractId: "",
+      amountContractId: "",
+      distributeContractId: "",
+      redeemContractId: "",
+    }
   }),
   getters: {},
   actions: {
@@ -196,7 +216,7 @@ export const useAirdropStore = defineStore({
             sendTransaction = await giverContract.methods.sendTransaction({
               value: toNano(0.5, 9),
               dest: this.address,
-              bounce: bounce,
+              bounce: false,
             }).estimateFees({from: walletStore.profile.address, amount: toNano(0.5, 9)});
             this.fees = fromNano(sendTransaction, 9);
             console.log('Transaction fees: ', this.fees);
@@ -206,7 +226,7 @@ export const useAirdropStore = defineStore({
              sendTransaction = await giverContract.methods.sendTransaction({
               value: toNano(1.5, 9),
               dest: this.address,
-              bounce: bounce,
+              bounce: false,
             }).estimateFees({from: walletStore.profile.address, amount: toNano(1.5, 9)});
             this.fees = fromNano(sendTransaction, 9);
             console.log('Transaction fees: ', this.fees);
@@ -243,15 +263,41 @@ export const useAirdropStore = defineStore({
           (previousValue, currentValue) => previousValue + fromNano(currentValue, this.token.decimals),
           0
         );
+        if(tokenLabel=='EVER')
+        {
           sendTransaction = await everAirDropContract.methods.distribute({
             _addresses: chunkAddresses[i][1],
             _amounts: chunkAmounts[i][1],
             _wid: 0,
             _totalAmount: toNano(totalAmount, this.token.decimals)
-          }).estimateFees({from: walletStore.profile.address, amount: toNano(0.8, 9)});
+          }).estimateFees({from: walletStore.profile.address, amount: toNano(1, 9)});
           this.fees = fromNano(sendTransaction,9);
           console.log('Transaction fees: ', this.fees);
         }
+        else
+        {
+          let fee;
+          if(chunkAddresses[i][1].length ==1)
+          {
+            fee = 0.23;
+            console.log('Fee: ', fee);
+          }
+          else
+          {
+            fee = 0.5+(chunkAddresses[i][1].length*0.23);
+            console.log('Fee: ', fee);
+          }
+
+          sendTransaction = await everAirDropContract.methods.distribute({
+            _addresses: chunkAddresses[i][1],
+            _amounts: chunkAmounts[i][1],
+            _wid: 0,
+            _totalAmount: toNano(totalAmount, this.token.decimals)
+          }).estimateFees({from: walletStore.profile.address, amount: toNano(fee)});
+          this.fees = fromNano(sendTransaction,9);
+          console.log('Transaction fees: ', this.fees);
+        }
+      }
         }
         else if(method=="redeem")
         {
@@ -262,13 +308,31 @@ export const useAirdropStore = defineStore({
       }
     },
 
-    
+     /*async fetchAccountsList(data) {
+      //const responseData = new ResponseData();
+      axios.post(
+        'https://tokens.everscan.io/v1/balances',
+        data
+      ).then((response) => {const p = response.data
+        console.log('Response: ', p);
+      });*/
+      
+  
+      //return response.data
+   // },
       async getGiverContract2(tokenLabel, recipientsListLength)
     {
       try {
         const giverContract = new ever.Contract(giverAbi, this.address);
+        
         const walletStore = useWalletStore();
         let sendTransaction;
+        //const data = {ownerAddress: walletStore.profile.address, limit: 100, offset: 0, ordering: "amountdescending"};
+        //console.log('Data: ', data);
+        //const nizTokena = await this.fetchAccountsList(data);
+        //console.log(nizTokena);
+        //var axios = require('axios');
+
         this.loopCount = Math.floor(recipientsListLength / maxNumberOfAddresses);
         if (recipientsListLength % maxNumberOfAddresses !== 0) {
           this.loopCount++;
@@ -392,6 +456,29 @@ export const useAirdropStore = defineStore({
         console.log(e);
         return Promise.reject(e);
       }
+    },
+
+    async setTransactionsHash(hash)
+    {
+      const walletStore = useWalletStore();
+      try
+      {
+      const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
+      let sendTransaction;
+      const providerState = await ever.getProviderState();
+      const publicKey = providerState.permissions.accountInteraction.publicKey;
+      sendTransaction = await everAirDropContract.methods.setTransaction({transaction: hash}).sendExternal({publicKey: publicKey, withoutSignature: true});
+      const recipients = await everAirDropContract.methods.transactionHashes({}).call();
+      console.log('Recipients:', recipients);
+      console.log(sendTransaction);
+      return Promise.resolve(sendTransaction);
+      }
+      catch(e)
+      {
+        console.log(e);
+        return Promise.reject(e);
+      }
+
     },
 
     async setRecipients(arr)
@@ -712,6 +799,7 @@ export const useAirdropStore = defineStore({
       let sendTransaction;
       try {
         const everAirDropContract = await new ever.Contract(this.abi, new Address(this.address));
+        
         if (this.token.label === 'EVER')
           {
         sendTransaction = await everAirDropContract.methods.refund({}).send({

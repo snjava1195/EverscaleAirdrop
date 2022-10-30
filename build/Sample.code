@@ -87,7 +87,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Sample.sol, 26
+.loc ../contracts/Sample.sol, 29
 ENDS
 .loc ../contracts/Sample.sol, 0
 CALLREF {
@@ -121,7 +121,7 @@ IFREF {
 THROW 0
 
 .macro getDetails_fbbf93a0_internal_macro
-.loc ../contracts/Sample.sol, 32
+.loc ../contracts/Sample.sol, 35
 GETGLOB 11
 .loc ../contracts/Sample.sol, 0
 

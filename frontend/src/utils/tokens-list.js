@@ -2,7 +2,7 @@ export default [
   {
     label: 'EVER',
     decimals: 9,
-    address: '0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d',
+    address: '0:0000000000000000000000000000000000000000000000000000000000000000',
     icon: 'https://app.flatqube.io/assets/992f1244bd3cbc67afa8.svg',
   },
   {
@@ -118,7 +118,7 @@ export default [
     decimals: 9,
     address: '0:dbba0028173f5b8d09eb597e0cca88cb41a4875efdf8a1815bb31292f150f800',
     icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/PILE/logo.svg',
-  }/*,
+  },
   {
     label: 'AIRDROP',
     decimals: 9,
@@ -142,5 +142,11 @@ export default [
     decimals: 15,
     address: '0:5ac1c61cf696584c541204914d7b6bb666649e97ae64e344ac048509e5cda123',
     icon: '',
-  }*/
+  },
+  {
+    label: 'Airdrop_29',
+    decimals: 15,
+    address: '0:61795654126b32531dfd080dfc7081ffc3fabea6c6c68576c54bffe796e150f7',
+    icon: '',
+  }
 ];

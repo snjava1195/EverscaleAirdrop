@@ -59,6 +59,7 @@ await locklift.giver.sendTo(owner.address, locklift.utils.toNano(100));
         });
         
         root = contract;
+        //c//onst targetBalance = await root.methods._targetBalance({}).call();
 
 	console.log(`Token root: ${root.address}`);
     await locklift.giver.sendTo(root.address, locklift.utils.toNano(100));
