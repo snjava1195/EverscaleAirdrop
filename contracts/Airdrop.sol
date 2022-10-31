@@ -149,7 +149,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 					});
        addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
        numberOfRecipients = uint128(_addresses.length);
-       uint128 initialBalance = numberOfRecipients*0.23 ever;
+       uint128 initialBalance = numberOfRecipients*0.3 ever;
        
        require(deposit>=_totalAmount, 1001);
         addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	

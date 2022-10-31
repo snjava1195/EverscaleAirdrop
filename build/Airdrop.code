@@ -339,7 +339,7 @@ PUSHCONT {
 	PUSHINT 34
 	SETGLOBVAR
 	.loc ../contracts/Airdrop.sol, 152
-	PUSHINT 230000000
+	PUSHINT 300000000
 	MUL
 	UFITS 128
 	.loc ../contracts/Airdrop.sol, 154

@@ -287,13 +287,13 @@ export const useAirdropStore = defineStore({
             fee = 0.5+(chunkAddresses[i][1].length*0.23);
             console.log('Fee: ', fee);
           }
-
+         // const realFee = Number(Math.round(fee+'e2')+'e-2');
           sendTransaction = await everAirDropContract.methods.distribute({
             _addresses: chunkAddresses[i][1],
             _amounts: chunkAmounts[i][1],
             _wid: 0,
             _totalAmount: toNano(totalAmount, this.token.decimals)
-          }).estimateFees({from: walletStore.profile.address, amount: toNano(fee)});
+          }).estimateFees({from: walletStore.profile.address, amount: toNano(fee, 9)});
           this.fees = fromNano(sendTransaction,9);
           console.log('Transaction fees: ', this.fees);
         }
@@ -970,7 +970,7 @@ export const useAirdropStore = defineStore({
                                       tokenIcon: icon,
                                     });
         }
-        console.log(accounts);
+      //  console.log(accounts);
        
 
 
@@ -981,7 +981,7 @@ export const useAirdropStore = defineStore({
         //limit: limit,
         // });
         const existingPage = walletStore.getExistingPage(walletStore.nextPage);
-        console.log('Existing page: ', existingPage);
+       // console.log('Existing page: ', existingPage);
         if (existingPage === undefined) {
           if(accounts.length<limit)
           {
@@ -997,13 +997,13 @@ export const useAirdropStore = defineStore({
 
             }
             const accByCodeHash = await ever.getAccountsByCodeHash(temp);
-            console.log('Acc by code hash:',accByCodeHash);
+          //  console.log('Acc by code hash:',accByCodeHash);
             if(accByCodeHash.length!=0)
             {
               await walletStore.updatePagination(walletStore.nextPage, this.airdrops.continuation);
             }
             
-            console.log('existing page undefined');
+            //console.log('existing page undefined');
           }
       }
         

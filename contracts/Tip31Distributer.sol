@@ -53,7 +53,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 		    	uint128 amountPerTransfer = amountsToTransfer[i];
 		    		
 	       	//TIP31TokenWallet(walletAddress).transfer{value: 0.2 ever, flag: 0}(amountPerTransfer, recipient, 0.1 ever, remaining, false, empty);
-			TIP31TokenWallet(walletAddress).transfer{value: 0.15 ever, flag: 0}(amountPerTransfer, recipient, 0.07 ever, remaining, false, empty);
+			TIP31TokenWallet(walletAddress).transfer{value: 0.2 ever, flag: 0}(amountPerTransfer, recipient, 0.1 ever, remaining, false, empty);
 	       }
        }
        

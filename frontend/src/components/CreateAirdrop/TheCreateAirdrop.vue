@@ -466,26 +466,29 @@ async function getBalances()
  // if(axiosRes.status == 200)
   //{//.then(function (response) { tokenAddr = response.data});
   //tokenAddr = axiosRes.data;
-  console.log('Token addr:', tokenAddr);
+ // console.log('Token addr:', tokenAddr);
   const ever = new ProviderRpcClient();
-  console.log(tokenAddr.balances.length);
+ // console.log(tokenAddr.balances.length);
+  let counter=0;
   for(let i=0;i<tokenAddr.balances.length;i++)
   {
    const rootAcc = new ever.Contract(rootAbi, tokenAddr.balances[i].rootAddress);
    const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
-   console.log("decimals: ", decimal);
+ //  console.log("decimals: ", decimal);
    const token = tokensList.find(token=>token.address == tokenAddr.balances[i].rootAddress);
+   
           if(token==undefined)
           {
-            console.log('Usao u undefined');
-            tokenList.value.push({label: tokenAddr.balances[i].token, decimals: decimal.value0, address:tokenAddr.balances[i].rootAddress, icon:''});
+            counter++;
+            //console.log('Usao u undefined');
+            tokenList.value.push({label: tokenAddr.balances[i].token, decimals: decimal.value0*1, address:tokenAddr.balances[i].rootAddress, icon:`/avatar/${counter}.svg`});
           }
   }
-  console.log(tokenList);
-  console.log('Avatar:',walletStore.profile.address.substr(
-          walletStore.profile.address.length - 1,
-          1
-        ));
+  //console.log(tokenList);
+  //console.log('Avatar:',walletStore.profile.address.substr(
+        //  walletStore.profile.address.length - 1,
+        //  1
+        //));
 
 }/* const ever = new ProviderRpcClient();
   console.log(tokenAddr.length);
