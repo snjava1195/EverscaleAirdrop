@@ -8,7 +8,7 @@ import { toNano, fromNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
 import tokensList from '@/utils/tokens-list';
-
+import axios from 'axios';
 //import {ResponseData}  from './ResponseData';
 const ever = new ProviderRpcClient();
 
@@ -139,7 +139,21 @@ export const useAirdropStore = defineStore({
     airdrops: null,
     airdropData: [],
     airdropsLoading: false,
-    responseData: [],/*{
+    responseData: [],
+  tokenAddr:{
+    balances: [],
+    offset: 0,
+    limit: 0,
+    totalCount:0,
+  },/*[{
+    ownerAddress: "",
+     amount: 0,
+    rootAddress:"",
+    token: "",
+    blockTime: 0,
+    tokenStandard: ""
+
+  }],*//*{
       ownerAddress: "",
     amount: "",
     rootAddress: "",
@@ -159,6 +173,7 @@ export const useAirdropStore = defineStore({
   }),
   getters: {},
   actions: {
+    
     async getExpectedAddress(token) {
       console.log('token:', token);
        const walletStore = useWalletStore();
@@ -1022,5 +1037,99 @@ export const useAirdropStore = defineStore({
       const fees = await ever.estimateFees( walletStore.profile.address, this.address, 1000000000, {abi: airdrop2Abi, method: "constructor", params: ["0:a49cd4e158a9a15555e624759e2e4e766d22600b7800d891e46f9291f044a93d"]});
       console.log('Fees: ', fees);
     },
+
+async addCustomTokens()
+{
+  const walletStore = useWalletStore();
+  var data = JSON.stringify({
+  "ownerAddress": walletStore.profile.address,
+  "limit": 100,
+  "offset": 0,
+  "ordering": "amountdescending"
+});
+
+var config = {
+  method: 'post',
+  url: 'https://tokens.everscan.io/v1/balances',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  data : data
+};
+
+console.log('Token add:', this.tokenAddr);
+
+ return axios(config)
+.then(response => {
+  //responseVar = response.data.balances;
+  console.log('Response: ', response.data);
+  console.log(JSON.stringify(response.data));
+  this.tokenAddr = response.data;
+  console.log(this.tokenAddr);
+  //return Promise.resolve(this.tokenAddr);
+        
+          
+        
+  //for(let i=0;i<response.data.balances.length;i++)
+//{
+ // tokenAddr.push(response.data.balances[i].rootAddress);
+  //const rootAcc = new ever.Contract(rootAbi, response.data.balances[i].rootAddress);
+  //const decimal = rootAcc.methods.decimals({answerId: 1}).call();
+  //console.log("decimals: ", decimal);
+//}
+})
+.catch(error => {
+  console.log(error);
+  //return Promise.reject(error);
+});
+
+
+
+
+
+//const rootAcc = new ever.Contract(rootAbi, this.token.address);
+
+},
+
+async getBalances()
+{
+  const axiosRes = await this.addCustomTokens();
+  console.log(axiosRes);
+  console.log('Token addr getBalances', this.tokenAddr);
+ // if(axiosRes.status == 200)
+  //{//.then(function (response) { tokenAddr = response.data});
+  //tokenAddr = axiosRes.data;
+ // console.log('Token addr:', tokenAddr);
+  const ever = new ProviderRpcClient();
+ // console.log(tokenAddr.balances.length);
+  let counter=0;
+  for(let i=0;i<this.tokenAddr.balances.length;i++)
+  {
+   const rootAcc = new ever.Contract(rootAbi, this.tokenAddr.balances[i].rootAddress);
+   const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
+ //  console.log("decimals: ", decimal);
+   const token = tokensList.find(token=>token.address == this.tokenAddr.balances[i].rootAddress);
+   console.log('If token', token);
+          if(token==undefined)
+          {
+            counter++;
+            console.log('Usao u undefined');
+            tokensList.push({label: this.tokenAddr.balances[i].token, decimals: decimal.value0*1, address:this.tokenAddr.balances[i].rootAddress, icon:`/avatar/${counter}.svg`});
+          }
+  }
+  console.log(tokensList);
+  //console.log('Avatar:',walletStore.profile.address.substr(
+        //  walletStore.profile.address.length - 1,
+        //  1
+        //));
+
+}/* const ever = new ProviderRpcClient();
+  console.log(tokenAddr.length);
+  for(let i=0;i<tokenAddr.length;i++)
+{
+   const rootAcc = new ever.Contract(rootAbi, tokenAddr[i]);
+  const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
+  console.log("decimals: ", decimal);
+}*/
   },
 });

@@ -58,6 +58,7 @@ import { useAirdropStore } from '@/stores/airdrop';
 
 const walletStore = useWalletStore();
 const airdropStore = useAirdropStore();
+airdropStore.getBalances();
 getTransactions(10, 1);
 const transactions = computed(() => {
   return airdropStore.airdropData;

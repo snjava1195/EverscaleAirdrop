@@ -59,7 +59,7 @@
                           'bg-[#DEF1DE]': item.status=='Executed', 'text-[#398A39]': item.status == 'Executed',
                           'bg-[#FEF2CD]': item.status=='Executing', 'text-[#B28501]': item.status == 'Executing',
                           'bg-[#E4E5EA]': item.status=='Preparing', 'text-[#6C7078]': item.status == 'Preparing',
-                          'bg-[#DEF1DE]': item.status=='Redeemed', 'text-[#398A39]': item.status == 'Redeemed',
+                          'bg-[#AAF7A0]': item.status=='Redeemed', 'text-[#1E5517]': item.status == 'Redeemed',
 
 
               }"
