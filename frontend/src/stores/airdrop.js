@@ -898,7 +898,8 @@ export const useAirdropStore = defineStore({
           const batches = await contract.methods.batches({}).call();
           const distributed = await contract.methods.getDistributedContracts({}).call();
           const tokenAddress = await contract.methods.tokenRootAddress({}).call();
-          
+          const deposit = await contract.methods.balanceWallet({}).call();
+          console.log(deposit);
          // console.log('Token list:', tokensList);
          // console.log('Token root address: ', tokenAddress.tokenRootAddress);
           let tokensLabel = "";
@@ -919,7 +920,19 @@ export const useAirdropStore = defineStore({
               icon = token.icon;
             //  console.log('Usao u tip3', icon);
             }
-          
+        /*    const rootAcc = new ever.Contract(rootAbi, token.address);
+            const response = await rootAcc.methods
+              .walletOf({
+                answerId: 1,
+                walletOwner: this.airdrops.accounts[i]._address
+              })
+              .call();
+            console.log('rootAcc response:', response.value0._address);
+            const userTokenWalletAddress = response.value0._address;
+            const tokenWalletAddress = new Address(userTokenWalletAddress);
+            const walletContract = new ever.Contract(giverAbi, tokenWalletAddress);
+            const balance = await walletContract.methods.balance({answerId: }).call();
+            console.log(balance);*/
           let workDone = "";//status.status + " " + distributed.value0.length + "/" + batches.batches;
           if(batches.batches==1)
           {
@@ -935,12 +948,22 @@ export const useAirdropStore = defineStore({
           
           if(status.status == "Deployed")
           {
-            if(fromNano(balanceAfterDeploy, 9)>(fromNano(totalAmount.totalAmount,9)+0.4))
+            if(token.label == 'EVER')
             {
-              finalStatus = "Preparing";
+              if(fromNano(balanceAfterDeploy, 9)>(fromNano(totalAmount.totalAmount,9)+0.4))
+              {
+                finalStatus = "Preparing";
+              }
+              else
+                finalStatus = status.status;
             }
             else
-              finalStatus = status.status;
+            {
+              if(deposit.balanceWallet>0)
+                finalStatus = "Preparing";
+              else
+                finalStatus = status.status;
+            }
           }
           else if(status.status=="Executing")
           {

@@ -6,6 +6,7 @@
 
     <div class="flex flex-col lg:flex-row lg:justify-between">
       <main class="main">
+        <div class="max-w-[660px] w-full">
         <h3 class="text-[24px] text-black font-medium mb-[16px]">General information</h3>
 
         <form class="form">
@@ -74,17 +75,18 @@
           </div>
 
           <div class="w-full">
-            <div class="message text-[#4D4F55] bg-[#F0F1F5] border-[#C6C9CF] h-[40px]">
+            <div class="message text-[#4D4F55] bg-[#F0F1F5] border-[#C6C9CF] h-[40px] flex items-center pl-[12px]">
               <p>The tokens won’t be redeemed during this period.</p>
             </div>
           </div>
         </form>
+        </div>
 
         <template v-if="token">
-          <div class="mt-[48px]">
+          <div class="mt-[48px] max-w-[660px]">
             <header>
-              <h2 class="recipients-list-subtitle">Recipients list</h2>
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+              <h2 class="recipients-list-subtitle font-[500] leading-[28px]">Recipients list</h2>
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-[8px]">
                 <div
                   class="flex space-x-[8px] sm:space-x-0 sm:justify-between md:justify-start md:space-x-[8px]"
                 >
@@ -104,20 +106,21 @@
                   <span class="downloadSign">
                     <DownloadIcon :disabled="true"/>
                   </span>
-                  <p class="text-[#8B909A]">Download template</p>
+                  <p class="text-[#8B909A] text-sm font-pt_root font-medium">Download template</p>
                 </div>
               </div>
             </header>
 
-            <div ref="dropZoneRef" class="upload-file bg-[#ECF1FE] relative">
-              <span class="upload-sign">
+            <div ref="dropZoneRef" class="upload-file bg-[#ECF1FE] relative group mt-[20px]">
+              <div class="w-[96px] h-[96px] bg-transparent group-hover:bg-[#B1C5FA] rounded-full absolute -top-6">
+              <span class="upload-sign absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <UploadIcon v-if="!loading && !uploadSuccessful" />
 
                 <ProgressIcon v-else-if="loading" />
 
                 <SuccessIcon v-else />
               </span>
-
+              </div>
               <input
                 :disabled="true"
                 ref="file"
@@ -129,6 +132,7 @@
                 @click="$event.target.value = ''"
               />
 
+              <div class="relative text-center mt-5">
               <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
                 {{
                   !loading && !uploadSuccessful
@@ -145,40 +149,28 @@
               </h3>
             </div>
           </div>
-
+</div>
           <div class="table w-full">
             <div
-              class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] border-[#E4E5EA] font-pt_root"
+              class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] font-pt_root w-full"
             >
               <div
                 v-for="(item, i) in items"
                 :key="i"
                 @mouseover="hoverItem = i"
                 @mouseleave="hoverItem = null"
-                class="row grid grid-cols-2 md:grid-cols-[64px_1fr_1fr_68px] h-[90px] md:h-[44px] text-[14px] border border-b-[#E4E5EA]]"
+                class="row grid grid-cols-[40px_1fr_1fr] md:grid-cols-[64px_1fr_1fr_70px] h-[40px] md:h-[44px] text-[14px]"
                 :class="{ 'bg-[#F0F1F5]': hoverItem === i }"
               >
-                <div class="h-full w-full flex items-center px-[12px]">{{ i + 1 }}</div>
+              <div class="flex items-center px-[12px] border-t border-l border-[#E4E5EA]"
+                :class="{'border-b ': i + 1  === items.length}"
+                >{{ i + 1 }}</div>
 
-                <div
-                  class="h-full w-full flex items-center justify-end px-[12px] space-x-[17px] md:order-4 md:bg-white"
+              <div class="px-[12px] py-[4px] flex items-center justify-center border-t  border-[#E4E5EA]"
+                    :class="{'border-b ': i + 1  === items.length}"
                 >
-                  <span v-if="hoverItem === i" @click="addItem" class="plusSign cursor-pointer">
-                    <PlusIcon :disabled="true" />
-                  </span>
-
-                  <span
-                    v-if="hoverItem === i && items.length > 1"
-                    @click="removeItem(i)"
-                    class="deleteSign cursor-pointer"
-                  >
-                    <TrashIcon :disabled="true"/>
-                  </span>
-                </div>
-
-                <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
                   <input
-                    :disabled="true"
+                    :disabled="true" 
                     v-model="item.address"
                     class="h-full w-full px-[12px]"
                     type="text"
@@ -187,15 +179,36 @@
                   />
                 </div>
 
-                <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
+                <div class="px-[12px] py-[4px] flex items-center justify-center border-t border-r border-[#E4E5EA]"
+                     :class="{'border-b ': i + 1  === items.length}"
+                >
                   <input
-                    :disabled="true"
+                  :disabled="true" 
                     v-model="item.amount"
                     type="number"
                     name="amount"
                     class="h-full w-full px-[12px]"
-                    :placeholder="`Amount, ${token.label}`"
+                    :placeholder="`Amount`"
                   />
+                </div>
+                <div
+                  class="pl-2 bg-white absolute md:relative right-0 bottom-10 md:bottom-0 shadow-[0px_3px_6px_rgba(0,0,0,0.16)] md:shadow-none border-[0.5px] md:border-0 border-[#E4E5EA]"
+                >
+                  <div class="h-[40px] flex items-center justify-end px-[12px] space-x-[17px]">
+                    <span v-if="hoverItem === i" @click="addItem" :disabled="true" class="plusSign cursor-pointer relative left-1">
+                      <PlusIcon />
+                    </span>
+  
+                    <span
+                      v-if="hoverItem === i && items.length > 1"
+                      :disabled="true"
+                      @click="removeItem(i)"
+                      
+                      class="deleteSign cursor-pointer"
+                    >
+                      <TrashIcon :disabled="true"/>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

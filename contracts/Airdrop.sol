@@ -161,6 +161,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(_totalAmount, addr, 0.5 ever, address(this), true, _empty);
 		
 		deposit = deposit-_totalAmount;
+        balanceWallet = deposit;
 		status = "Executed";
         }
         
@@ -223,7 +224,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         else
         {
         	tvm.accept();
-            TokenWallet(deployedContracts[0]).balance{value: 0.1 ever, callback: onBalance, flag: 0}();
+            //TokenWallet(deployedContracts[0]).balance{value: 0.1 ever, callback: onBalance, flag: 0}();
         	for(uint i=0;i<deployedContracts.length;i++)
         	{
         		Tip31Distributer(deployedContracts[i]).refund{value:0.1 ever, flag:0}();
@@ -294,6 +295,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 	tvm.accept();
         walletAddress = msg.sender;
         deposit = deposit + amount;
+        balanceWallet = deposit;
     }
     
     function setRecipients(address[] recipients/*, uint128[] amounts*/) public /*returns (address[])*/

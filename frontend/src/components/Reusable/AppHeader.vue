@@ -31,6 +31,7 @@
           >
         </li>
       </ul>
+    
       <a
         @click="onLogout()"
         class="py-[8px] px-[12px] bg-[#ECF1FE] hover:bg-blue-100 ml-[16px]"
@@ -50,10 +51,7 @@ const walletStore = useWalletStore();
 
 function onLogin() {
   walletStore.login();
-  console.log('Avatar:',walletStore.profile.address.substr(
-          walletStore.profile.address.length - 1,
-          1
-        ));
+  
 }
 function onLogout() {
   walletStore.logout();
