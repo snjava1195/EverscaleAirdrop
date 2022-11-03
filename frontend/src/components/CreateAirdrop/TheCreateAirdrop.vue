@@ -208,7 +208,9 @@
                     </span>
   
                     <span
-                      v-if="hoverItem === i && items.length > 1"
+                      v-if="hoverItem === i && (items.length > 1) 
+                      || hoverItem === i && recipientStore.currentPage != 1"
+                      
                       @click="removeItem(i)"
                       class="deleteSign cursor-pointer"
                     >
