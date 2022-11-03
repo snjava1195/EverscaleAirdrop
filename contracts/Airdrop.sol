@@ -17,7 +17,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     uint256 refund_lock_duration_end;
     bool distributed = false;
     uint128 total_amount = 0;
-    uint128 required_fee = 0.5 ever; 
+    uint required_fee = 0.5 ever; 
     uint public static _randomNonce;
     TvmCell public static distributerCode;
     bool[] statusArray;
@@ -33,7 +33,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     address public tokenRootAddress;
     address walletAddress;
     uint flag;
-    uint128 deposit = 0;
+    uint deposit = 0;
     uint128 private transferGas = 0.8 ever;
     uint128 numberOfRecipients;
     string public status="Preparing";
@@ -43,6 +43,12 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     uint public messageValue;
     uint128 public balanceWallet;
     string[] public transactionHashes;
+    mapping(uint=>address[]) public batchAddresses;
+    mapping(uint=>uint256[]) public batchAmounts;
+    uint counter=0;
+    uint counterRec=0;
+    uint public usao=0;
+    uint public length = 0;
     // Checks whether refund lock time has passed and distribution is over
     modifier refundLockPassed() {
         require(now > refund_lock_duration_end, 107);
@@ -112,64 +118,201 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         require(msg.sender == tokenRootAddress, 30004);
         walletAddress = wallet;
     }
+
+
+    function callDistribute() internal returns(bool finished)
+    {
+        //tvm.rawReserve(reserve(), 0);
+        uint count=1;
+        bool distribute = false;
+        while(usao<batches)
+        {
+
+
+            //if(distribute==true)
+            
+//                distribute = distribute();
+  //          if(distribute==false)
+    //        {
+        if(flag==0)
+        {
+            for(uint j=0;j<batchAddresses[usao].length;j++)
+            {
+                payable(batchAddresses[usao][j]).transfer(uint128(batchAmounts[usao][j]), false, 1);
+            }
+        }
+        else
+        {
+            TvmCell empty;
+            for (uint j = 0; j < batchAddresses[usao].length; j++) {
+		    	address recipient = batchAddresses[usao][j];
+		    	uint128 amountPerTransfer = uint128(batchAmounts[usao][j]);
+		    		
+	       	//TIP31TokenWallet(walletAddress).transfer{value: 0.2 ever, flag: 0}(amountPerTransfer, recipient, 0.1 ever, remaining, false, empty);
+			TIP31TokenWallet(walletAddress).transfer{value: 0.09 ever, flag: 0+1}(amountPerTransfer, recipient, 0.02 ever, address(this), false, empty);
+	       }
+        }
+            usao++;
+            if(usao!=batches)
+            {
+                finished=false;
+                break;
+            }
+            else
+            {
+                finished = true;
+                status="Executed";
+                break;
+            }
+        }
+            return finished;    //this.callDistribute{value:0.1 ever, flag: 1}();
+      //      }
+            //Airdrop(address(this)).distribute{value: 0.5 ever, callback: Airdrop.onDistributeNew}();
+            /*if(distributedContracts.length<deployedContracts.length)
+            {
+                uint index = deployedContracts.length-1;
+			Distributer(deployedContracts[index]).distribute{value: 0.5 ever, callback: Airdrop.onDistribute}(batchAddresses[length], batchAmounts[length]);
+            
+            }*/
+            //uint128 total_Amount=0;
+          /*  if(batches==1)
+            {
+                for(uint j=0;j<allRecipients.length;j++)
+                {
+                    batchAddresses[i].push(allRecipients[j]); 
+                batchAmounts[i].push(allAmounts[j]);
+              //  total_Amount = total_Amount+allAmounts[j];
+                }
+            }
+            else
+            {
+            for(uint j=(count-1)*99;j<count*99;j++)
+            {
+                batchAddresses[i].push(allRecipients[j]); 
+                batchAmounts[i].push(allAmounts[j]);
+                //total_Amount = total_Amount+allAmounts[j];
+            }
+            count++;*/
+            //address[] tempAddresses = allAddresses[]
+          //  Airdrop(address(this)).distribute{value: 0.5 ever, callback: Airdrop.onDistributeNew}(batchAddresses[i], batchAmounts[i], 0, total_Amount);
+            //distribute(batchAddresses[i], batchAmounts[i], 0, total_Amount);
+            
+        }
+    
+    function distribute2() public
+    {
+        require(msg.sender==senderAddress || msg.sender==address(this), 1001);
+        tvm.accept();
+        bool result;
+        result = callDistribute();
+        if(result == false)
+        this.distribute2{value: 0.1 ever, flag:0+1}();
+    }
     
     /**
      * @dev Distributes contract balance to the receivers from the addresses if there is enough gas on the contract. Distributer contracts are deployed and their distribution method is triggered
     */
-    function distribute(address[] _addresses, uint128[] _amounts, int8 _wid,uint128 _totalAmount) public {
+  /*  function distribute() public {
     
-        require(_amounts.length == _addresses.length, 101);
-        require((_addresses.length > 0) && (_addresses.length < 100), 102);
-        tvm.accept();
-        if(flag==0)
+        
+        tvm.accept();*/
+        //distributeS = false;
+          //uint count=1;
+       // for(uint i=0;i<batches;i++)
+        //{
+            //length = 0;
+        //    usao++;
+            //uint total_Amount=0;
+            //deployedContracts.length;
+              //  for(uint j=0;j<batchAmounts[length].length;j++)
+               // {
+            //        batchAddresses[i].push(allRecipients[j]); 
+           //     batchAmounts[i].push(allAmounts[j]);
+               // total_Amount = total_Amount+batchAmounts[length][j];
+               // }
+            
+            //address[] tempAddresses = allAddresses[]
+          //  Airdrop(address(this)).distribute{value: 0.5 ever, callback: Airdrop.onDistributeNew}(batchAddresses[i], batchAmounts[i], 0, total_Amount);
+            //distribute(batchAddresses[i], batchAmounts[i], 0, total_Amount);
+       /*     if(flag==0)
         {
+          //  while(true)
+           // {
+                
         	//everything runs smoothly, continue with distribution
 		if(deployedContracts.length==distributedContracts.length)
 		{
+           // address[] addresses = batchAddresses[i];
+           // uint128[] amounts = batchAmounts[i];
+            //require(_amounts.length == _addresses.length, 101);
+       // require((_addresses.length > 0) && (_addresses.length < 100), 102);
+            //for(uint i=0;i<batchAddresses[length].length;i++)*/
+
+		/*{
+		 payable(batchAddresses[length][i]).transfer(batchAmounts[length][i], false, 1);
+		 }
+         length++;*/
 	    	//transfer amounts[i] evers to addresses[i] address from this contract
-		uint128 _initialBalance = _totalAmount + required_fee;
-		address distributer = deployWithMsgBody(_wid, _initialBalance, _totalAmount);
-		Distributer(distributer).distribute{value: 0.5 ever, callback: Airdrop.onDistribute}(_addresses, _amounts);
+	/*	uint _initialBalance = total_Amount + required_fee;
+       
+		address distributer = deployWithMsgBody(0, _initialBalance, uint128(total_Amount));
+		Distributer(distributer).distribute{value: 0.1 ever, callback: Airdrop.onDistribute}(batchAddresses[length], batchAmounts[length]);
+        //distributeS = true;
+         length = deployedContracts.length;
+        
 		}
 		
 		//if something went wrong and the distribution wasn't triggered but the distributer was deployed and has enough funds for distribution, trigger again
 		else
 		{
 			uint index = deployedContracts.length-1;
-			Distributer(deployedContracts[index]).distribute{value: 0.5 ever, callback: Airdrop.onDistribute}(_addresses, _amounts);
-		}
+			Distributer(deployedContracts[index]).distribute{value: 0.3 ever, callback: Airdrop.onDistribute}(batchAddresses[length], batchAmounts[length]);
+         //   distributeS = true;
+        }
         }
         else
         {
-        	TvmCell payload = tvm.encodeBody(Tip31Distributer, tokenRootAddress, _addresses, _amounts, address(this), senderAddress);
+            //length = 0;
+        	TvmCell payload = tvm.encodeBody(Tip31Distributer, tokenRootAddress, batchAddresses[length], batchAmounts[length], address(this), senderAddress);
 	stateInit = tvm.buildStateInit({code: distributerCode,
 					 contr: Tip31Distributer,
 					 varInit: {_randomNonce: nonce, _owner: address(this)},
 					 pubkey: tvm.pubkey()
 					});
-       addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
-       numberOfRecipients = uint128(_addresses.length);
+       addr = address.makeAddrStd(0, tvm.hash(stateInit));
+       numberOfRecipients = uint128(batchAddresses[length].length);
        uint128 initialBalance = numberOfRecipients*0.3 ever;
-       
-       require(deposit>=_totalAmount, 1001);
+       total_Amount = 0;
+       for(uint i=0;i<batchAmounts[length].length;i++)
+       {
+        total_Amount = total_Amount+batchAmounts[length][i];
+       }
+       //require(deposit>=total_Amount, 1001);
         addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	
     	TvmCell _empty;
 		
         	deployedContracts.push(addr);
 		nonce++;
 		
-		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(_totalAmount, addr, 0.5 ever, address(this), true, _empty);
+		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(uint128(total_Amount), addr, 0.5 ever, address(this), true, _empty);
 		
-		deposit = deposit-_totalAmount;
-        balanceWallet = deposit;
+		deposit = deposit-total_Amount;
+        length=deployedContracts.length;
+        //balanceWallet = deposit;
 		status = "Executed";
+        //distributeS = true;
         }
         
-        messageValue = msg.value;
-     }
+            
+          *///  messageValue = msg.value;
+       // return distributeS;
+       // }
+        
+    
+     
 
     //Deploys Distributor contract using address.transfer
-    function deployWithMsgBody(int8 _wid,uint128 _initialBalance, uint128 _totalAmount) public returns(address){
+    /*function deployWithMsgBody(int8 _wid,uint _initialBalance, uint128 _totalAmount) internal returns(address){
 		
 	TvmCell payload = tvm.encodeBody(Distributer);
 	stateInit = tvm.buildStateInit({code: distributerCode,
@@ -178,11 +321,16 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 					 pubkey: 0
 					});
         addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
-        addr.transfer({stateInit:stateInit,body: payload, value: _initialBalance, bounce: false});	 
+        addr.transfer({stateInit:stateInit,body: payload, value: uint128(_initialBalance), bounce: true});	 
         	
         deployedContracts.push(addr);
   	nonce = deployedContracts.length+1;
 	return addr;
+    }
+
+    function onDistributeNew(bool distributedS) public view
+    {
+
     }
 	
 
@@ -192,10 +340,10 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     }
 
     //Callback for Distributor's distribute method
-    function onDistribute(bool _distributed, uint128 amount, uint256 recipientNr) public  
+    function onDistribute(bool _distributed, uint256 amount, uint256 recipientNr) public  
     {
-    	address distributer = getDistributorAddress(nonce-1);
-        require(msg.sender == distributer, 101);
+    	//address distributer = getDistributorAddress(nonce-1);
+        //require(msg.sender == distributer, 101);
     	 distributedContracts.push(_distributed);
     	 if(distributedContracts.length==batches)
     	 {
@@ -207,7 +355,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     	 }
     	 //totalAmount+=amount;
     	// recipientNumber+=recipientNr;
-    }
+    }*/
     
     
      /**
@@ -225,23 +373,23 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         {
         	tvm.accept();
             //TokenWallet(deployedContracts[0]).balance{value: 0.1 ever, callback: onBalance, flag: 0}();
-        	for(uint i=0;i<deployedContracts.length;i++)
+        	/*for(uint i=0;i<deployedContracts.length;i++)
         	{
         		Tip31Distributer(deployedContracts[i]).refund{value:0.1 ever, flag:0}();
-        	}
+        	}*/
             
-        	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 0}(senderAddress);
+        	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 1}(senderAddress);
         	payable(senderAddress).transfer(0, false, 128);
         	status="Redeemed";
         
         }
     }
 
-    function onBalance(uint128 balance) public 
+   /* function onBalance(uint128 balance) public 
     {
         balanceWallet = balance;
     }
-    
+    */
     //Builds specific contract code based on the owner's address
     function buildAirdropCode(address ownerAddress) public pure returns(TvmCell)
     {
@@ -295,31 +443,40 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 	tvm.accept();
         walletAddress = msg.sender;
         deposit = deposit + amount;
-        balanceWallet = deposit;
+        status="Preparing";
+       // balanceWallet = deposit;
     }
     
-    function setRecipients(address[] recipients/*, uint128[] amounts*/) public /*returns (address[])*/
+    function setRecipients(address[] recipients/*, uint128[] amounts*/) public 
     {
         tvm.accept();
     	for(uint i=0;i<recipients.length;i++)
     	{
-    	allRecipients.push(recipients[i]);
+    	batchAddresses[counterRec].push(recipients[i]);
     	//allAmounts.push(amounts[i]);
     	}
-    	messageValue = messageValue + msg.value;
+        
+       counterRec++;
+   // 	messageValue = messageValue + msg.value;
     	//return allRecipients;
     }
     
-    function setAmounts(uint128[] amounts) public
+    function setAmounts(uint256[] amounts) public
     {
+        
         tvm.accept();
+        uint256 total_Amount=0;
     	for(uint i=0;i<amounts.length;i++)
     	{
-    		allAmounts.push(amounts[i]);
+    		batchAmounts[counter].push(amounts[i]);
+            total_Amount+=total_Amount+amounts[i];
     	}
-    	
-    	messageValue = messageValue+msg.value;
+        counter++;
+//        uint128 initialValue = 0.1 ever;
+  //       deployWithMsgBody(0, initialValue, total_Amount);
+    	//messageValue = messageValue+msg.value;
     }
+
     
     function setTransaction(string transaction) public
     {

@@ -8,7 +8,7 @@
 			"inputs": [
 				{"name":"tokenRootAddr","type":"address"},
 				{"name":"recipients","type":"address[]"},
-				{"name":"amounts","type":"uint128[]"},
+				{"name":"amounts","type":"uint256[]"},
 				{"name":"remainingGasTo","type":"address"},
 				{"name":"senderAddr","type":"address"}
 			],
@@ -108,7 +108,7 @@
 		{"name":"walletAddress","type":"address"},
 		{"name":"_senderAddress","type":"address"},
 		{"name":"addresses","type":"address[]"},
-		{"name":"amountsToTransfer","type":"uint128[]"},
+		{"name":"amountsToTransfer","type":"uint256[]"},
 		{"name":"_owner","type":"address"},
 		{"name":"_remainingGasTo","type":"address"},
 		{"name":"isCallback","type":"bool"},

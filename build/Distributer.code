@@ -46,7 +46,7 @@ SWAP
 ENDS
 .loc ../contracts/Distributer.sol, 0
 CALLREF {
-	CALL $distribute_5c3b864b_internal_macro$
+	CALL $distribute_2929abe6_internal_macro$
 }
 PUSH S3
 PUSHCONT {
@@ -63,9 +63,9 @@ PUSHCONT {
 	STUR 98
 	REVERSE 4, 0
 	NEWC
-	STSLICECONST x99b46e8e
+	STSLICECONST x8d4b4528
 	STI 1
-	STU 128
+	STU 256
 	STU 256
 	STBREFR
 	ENDC
@@ -96,7 +96,7 @@ PUSHCONT {
 	INDEX 5
 	STUR 32
 	STI 1
-	STU 128
+	STU 256
 	STU 256
 	STBREFR
 	ENDC
@@ -110,11 +110,11 @@ CALLREF {
 }
 THROW 0
 
-.globl	distribute_5c3b864b_internal
-.type	distribute_5c3b864b_internal, @function
-CALL $distribute_5c3b864b_internal_macro$
+.globl	distribute_2929abe6_internal
+.type	distribute_2929abe6_internal, @function
+CALL $distribute_2929abe6_internal_macro$
 
-.macro distribute_5c3b864b_internal_macro
+.macro distribute_2929abe6_internal_macro
 .loc ../contracts/Distributer.sol, 18
 ACCEPT
 .loc ../contracts/Distributer.sol, 20
@@ -131,7 +131,8 @@ PUSHCONT {
 	PUSHINT 32
 	DICTUGET
 	THROWIFNOT 50
-	PLDU 128
+	PLDU 256
+	UFITS 128
 	PUSH2 S1, S3
 	SECOND
 	PUSHINT 32
@@ -434,16 +435,16 @@ PUSHINT 1756716863
 LEQ
 IFJMPREF {
 	DUP
+	PUSHINT 223036712
+	EQUAL
+	IFJMPREF {
+		CALL $distribute$
+	}
+	DUP
 	PUSHINT 265838764
 	EQUAL
 	IFJMPREF {
 		CALL $_owner$
-	}
-	DUP
-	PUSHINT 431255182
-	EQUAL
-	IFJMPREF {
-		CALL $distribute$
 	}
 	DUP
 	PUSHINT 995308319

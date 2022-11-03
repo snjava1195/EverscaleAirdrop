@@ -13,7 +13,7 @@ let user: Contract<FactorySource["Wallet"]>;
 
 
 async function main() {
- 	const response = await prompts([
+ 	/*const response = await prompts([
         			{
             				type: 'text',
             				name: 'data',
@@ -92,6 +92,14 @@ const chunkAddresses = chunk(addresses, 99);
     					});
     	const airdrop = contract;
     	console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
+
+		for(let i=0;i<chunkAddresses.length;i++)
+		{
+		const setAmounts = await airdrop.methods.setAmounts({amounts: chunkAmounts[i]}).sendExternal(pubKey: owner.publicKey, withoutSignature: true);
+			
+
+		}*/
+		await locklift.giver.sendTo("0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63", locklift.utils.toNano(50));
     	/*const batch = await airdrop.methods.batches({}).call();
     	console.log(batch);
     	let totalFileAmount=0;

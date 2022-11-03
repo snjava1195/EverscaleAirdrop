@@ -18,7 +18,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 	address walletAddress;
 	address _senderAddress;
 	address[] addresses;
-	uint128[] amountsToTransfer;
+	uint[] amountsToTransfer;
 	address public static _owner;
 	address _remainingGasTo;
 	bool public isCallback=false;
@@ -26,7 +26,7 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 	TvmCell _empty;
 	uint pubKey;
 	
-	constructor(address tokenRootAddr, address[] recipients, uint128[] amounts, address remainingGasTo, address senderAddr) public
+	constructor(address tokenRootAddr, address[] recipients, uint[] amounts, address remainingGasTo, address senderAddr) public
 	{
 		require(msg.sender==_owner, 1001);
 		require(recipients.length > 0 && recipients.length <= 100, 1002, "The number of 			recipients error!");
@@ -48,9 +48,9 @@ contract Tip31Distributer is InternalOwner, RandomNonce, CheckPubKey, IAcceptTok
 	    	walletAddress = msg.sender;
 	    	isCallback=true;
 			deposit = deposit+amount;
-	    	for (uint128 i = 0; i < addresses.length; i++) {
+	    	for (uint i = 0; i < addresses.length; i++) {
 		    	address recipient = addresses[i];
-		    	uint128 amountPerTransfer = amountsToTransfer[i];
+		    	uint128 amountPerTransfer = uint128(amountsToTransfer[i]);
 		    		
 	       	//TIP31TokenWallet(walletAddress).transfer{value: 0.2 ever, flag: 0}(amountPerTransfer, recipient, 0.1 ever, remaining, false, empty);
 			TIP31TokenWallet(walletAddress).transfer{value: 0.2 ever, flag: 0}(amountPerTransfer, recipient, 0.1 ever, remaining, false, empty);

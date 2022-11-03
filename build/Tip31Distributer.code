@@ -173,7 +173,8 @@ PUSHCONT {
 	PUSHINT 32
 	DICTUGET
 	THROWIFNOT 50
-	PLDU 128
+	PLDU 256
+	UFITS 128
 	.loc ../contracts/Tip31Distributer.sol, 56
 	PUSH S4
 	FALSE
@@ -204,7 +205,6 @@ PUSHCONT {
 	SENDRAWMSG
 	.loc ../contracts/Tip31Distributer.sol, 51
 	INC
-	UFITS 128
 	.loc ../contracts/Tip31Distributer.sol, 0
 }
 WHILE
@@ -792,9 +792,15 @@ IFJMPREF {
 	}
 }
 DUP
-PUSHINT 1893244873
+PUSHINT 1729444094
 LEQ
 IFJMPREF {
+	DUP
+	PUSHINT 1136059906
+	EQUAL
+	IFJMPREF {
+		CALL $constructor$
+	}
 	DUP
 	PUSHINT 1281476537
 	EQUAL
@@ -813,17 +819,11 @@ IFJMPREF {
 	IFJMPREF {
 		CALL $renounceOwnership$
 	}
-	DUP
-	PUSHINT 1893244873
-	EQUAL
-	IFJMPREF {
-		CALL $onAcceptTokensTransfer$
-	}
 }
 DUP
-PUSHINT 2009146575
+PUSHINT 1893244873
 EQUAL
 IFJMPREF {
-	CALL $constructor$
+	CALL $onAcceptTokensTransfer$
 }
 

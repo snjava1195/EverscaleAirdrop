@@ -27,42 +27,8 @@
 			]
 		},
 		{
-			"name": "distribute",
+			"name": "distribute2",
 			"inputs": [
-				{"name":"_addresses","type":"address[]"},
-				{"name":"_amounts","type":"uint128[]"},
-				{"name":"_wid","type":"int8"},
-				{"name":"_totalAmount","type":"uint128"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "deployWithMsgBody",
-			"inputs": [
-				{"name":"_wid","type":"int8"},
-				{"name":"_initialBalance","type":"uint128"},
-				{"name":"_totalAmount","type":"uint128"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "getDistributorAddress",
-			"inputs": [
-				{"name":"_nonce","type":"uint256"}
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "onDistribute",
-			"inputs": [
-				{"name":"_distributed","type":"bool"},
-				{"name":"amount","type":"uint128"},
-				{"name":"recipientNr","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -70,14 +36,6 @@
 		{
 			"name": "refund",
 			"inputs": [
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "onBalance",
-			"inputs": [
-				{"name":"balance","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -155,7 +113,7 @@
 		{
 			"name": "setAmounts",
 			"inputs": [
-				{"name":"amounts","type":"uint128[]"}
+				{"name":"amounts","type":"uint256[]"}
 			],
 			"outputs": [
 			]
@@ -326,6 +284,38 @@
 			"outputs": [
 				{"name":"transactionHashes","type":"string[]"}
 			]
+		},
+		{
+			"name": "batchAddresses",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"batchAddresses","type":"map(uint256,address[])"}
+			]
+		},
+		{
+			"name": "batchAmounts",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"batchAmounts","type":"map(uint256,uint256[])"}
+			]
+		},
+		{
+			"name": "usao",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"usao","type":"uint256"}
+			]
+		},
+		{
+			"name": "length",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"length","type":"uint256"}
+			]
 		}
 	],
 	"data": [
@@ -353,7 +343,7 @@
 		{"name":"refund_lock_duration_end","type":"uint256"},
 		{"name":"distributed","type":"bool"},
 		{"name":"total_amount","type":"uint128"},
-		{"name":"required_fee","type":"uint128"},
+		{"name":"required_fee","type":"uint256"},
 		{"name":"_randomNonce","type":"uint256"},
 		{"name":"distributerCode","type":"cell"},
 		{"name":"statusArray","type":"bool[]"},
@@ -369,7 +359,7 @@
 		{"name":"tokenRootAddress","type":"address"},
 		{"name":"walletAddress","type":"address"},
 		{"name":"flag","type":"uint256"},
-		{"name":"deposit","type":"uint128"},
+		{"name":"deposit","type":"uint256"},
 		{"name":"transferGas","type":"uint128"},
 		{"name":"numberOfRecipients","type":"uint128"},
 		{"name":"status","type":"string"},
@@ -378,6 +368,12 @@
 		{"name":"allAmounts","type":"uint128[]"},
 		{"name":"messageValue","type":"uint256"},
 		{"name":"balanceWallet","type":"uint128"},
-		{"name":"transactionHashes","type":"string[]"}
+		{"name":"transactionHashes","type":"string[]"},
+		{"name":"batchAddresses","type":"map(uint256,address[])"},
+		{"name":"batchAmounts","type":"map(uint256,uint256[])"},
+		{"name":"counter","type":"uint256"},
+		{"name":"counterRec","type":"uint256"},
+		{"name":"usao","type":"uint256"},
+		{"name":"length","type":"uint256"}
 	]
 }

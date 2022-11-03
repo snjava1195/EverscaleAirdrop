@@ -118,8 +118,8 @@ export default [
     decimals: 9,
     address: '0:dbba0028173f5b8d09eb597e0cca88cb41a4875efdf8a1815bb31292f150f800',
     icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/PILE/logo.svg',
-  }
-  /*{
+  },
+  {
     label: 'AIRDROP',
     decimals: 9,
     address: '0:a50def2df0f7f531b82b7ffec7baf8e7ce4279605726b94927c9ee6ded09f5c2',
@@ -148,5 +148,17 @@ export default [
     decimals: 15,
     address: '0:61795654126b32531dfd080dfc7081ffc3fabea6c6c68576c54bffe796e150f7',
     icon: '',
-  }*/
+  },
+  {
+    label: 'Airdrop_03_Nov',
+    decimals: 15,
+    address: '0:5b4453dcd7f7ef94acc26e72f9d36f8dbfaed6b652ecf9688bc22428bfe1724f',
+    icon: '',
+  },
+  {
+    label: 'Airdrop2_3_Nov',
+    decimals: 15,
+    address: '0:e8dabff06fb0f7d87bbde8cb3c2212783a96a532171be3c4e003a46d5a1315f9',
+    icon: '',
+  }
 ];

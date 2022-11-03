@@ -336,9 +336,12 @@ function readFile(file) {
 async function onChange(token) {
   await airdropStore.getExpectedAddress(token);
 }
-
+let addresses;
+let amountss;
 async function getAirdrop()
 {
+  //addresses = [];
+  //amountss = [];
   const route = useRoute();
   token.value = tokensList.find(token=>token.label=='EVER');
   const address = route.params.address;
@@ -419,12 +422,12 @@ async function getAirdrop()
           const batches = await contract.methods.batches({}).call();
           const distributed = await contract.methods.getDistributedContracts({}).call();
           const deployed = await contract.methods.getDeployedContracts({}).call();
-          const recipients = await contract.methods.allRecipients({}).call();
+          const recipients = await contract.methods.batchAddresses({}).call();
           const transactionHashes = await contract.methods.transactionHashes({}).call();
           //console.log(recipients.allRecipients);
           const zaAirdrop=[];
          
-          const amounts = await contract.methods.allAmounts({}).call();
+          const amounts = await contract.methods.batchAmounts({}).call();
 
           for(let i=0;i<transactionHashes.transactionHashes.length;i++)
           {
@@ -454,12 +457,47 @@ async function getAirdrop()
               airdropStore.transactionId.redeemContractId = transactionHashes.transactionHashes[4];
             }
           }
-          //console.log(amounts);
-          if(items.value.length != amounts.allAmounts.length )
-          {
-            if(amounts.allAmounts.length<=10)
+          
+          console.log(recipients.batchAddresses);
+            for(let i=0;i<recipients.batchAddresses.length;i++)
             {
-          for(let i=0;i<amounts.allAmounts.length;i++)
+              if(i==0)
+              {
+                addresses = recipients.batchAddresses[0][1];
+                console.log('Adrese:',addresses);
+              }
+              else
+              {
+              for(let j=0;j<recipients.batchAddresses[i][1].length;j++)
+              {
+                addresses.push(recipients.batchAddresses[i][1][j]);
+              }
+            }
+            }
+          
+        console.log(amounts.batchAmounts.length);
+          for(let i=0;i<amounts.batchAmounts.length;i++)
+          {
+            if(i==0)
+            {
+              amountss = amounts.batchAmounts[0][1];
+              console.log('Amounts:', amountss);
+            }
+            else
+            {
+            for(let j=0;j<amounts.batchAmounts[i][1].length;j++)
+              {
+                console.log(amounts.batchAmounts[i][1]);
+                amountss.push(amounts.batchAmounts[i][1][j]);
+              }
+            }
+          }
+          //console.log(amounts);
+          if(items.value.length != amountss.length )
+          {
+            if(amountss.length<=10)
+            {
+          for(let i=0;i<amountss.length;i++)
           {
             //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
            // zaAirdrop.push(recipients.allRecipients[i]._address);
@@ -467,8 +505,10 @@ async function getAirdrop()
     address: recipients.allRecipients[i]._address,
     amount: fromNano(amounts.allAmounts[i],9),
   });*/
-    items.value[i].address = recipients.allRecipients[i]._address;
-    items.value[i].amount = fromNano(amounts.allAmounts[i], airdropStore.token.decimals);
+    items.value[i].address = addresses[i]._address;
+    console.log(items.value[i].address);
+    items.value[i].amount = fromNano(amountss[i], airdropStore.token.decimals);
+    console.log(items.value[i].amount);
           }
           //console.log(zaAirdrop);
         }
@@ -477,17 +517,17 @@ async function getAirdrop()
             for(let i=0;i<10;i++)
           {
             //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
-            zaAirdrop.push(recipients.allRecipients[i]._address);
+            zaAirdrop.push(addresses[i]._address);
            /* items.value.push({
     address: recipients.allRecipients[i]._address,
     amount: fromNano(amounts.allAmounts[i],9),
   });*/
-    items.value[i].address = recipients.allRecipients[i]._address;
-    items.value[i].amount = fromNano(amounts.allAmounts[i], airdropStore.token.decimals);
+    items.value[i].address = addresses[i]._address;
+    items.value[i].amount = fromNano(amountss[i], airdropStore.token.decimals);
           }
-          for(let i=10;i<recipients.allRecipients.length;i++)
+          for(let i=10;i<addresses.length;i++)
           {
-            items.value.push({address: recipients.allRecipients[i]._address, amount: fromNano(amounts.allAmounts[i], airdropStore.token.decimals)});
+            items.value.push({address: addresses[i]._address, amount: fromNano(amountss[i], airdropStore.token.decimals)});
           }
         }
       }
