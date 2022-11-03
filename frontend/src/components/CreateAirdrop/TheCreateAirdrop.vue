@@ -210,7 +210,7 @@
                     <span
                       v-if="hoverItem === i && (items.length > 1) 
                       || hoverItem === i && recipientStore.currentPage != 1"
-                      
+
                       @click="removeItem(i)"
                       class="deleteSign cursor-pointer"
                     >
@@ -424,7 +424,7 @@ function CSVToJSON(data, delimiter = ',') {
       recipientStore.resetPagination();
       fullRecList.value = items.value.slice();
       // Get recipients per page, initial page "0" and 10 per page
-      getRecipients(numberPerPage, 1);
+      getRecipients(recipientStore.itemsPerPage, 1);
 
     reject('CSVToJSON(Something went wrong)');
   });
