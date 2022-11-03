@@ -133,8 +133,8 @@
                 @click="$event.target.value = ''"
               />
 
-              <div class="relative text-center mt-5">
-                <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
+              <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
+                <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }" >
                   {{
                     !loading && !uploadSuccessful
                       ? 'Click to upload or drag and drop'
@@ -145,7 +145,7 @@
                       : ''
                   }}
                 </h2>
-                <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle">
+                <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle" >
                   Only CSV format is supported.
                 </h3>
               </div>
@@ -164,11 +164,15 @@
                 class="row grid grid-cols-[40px_1fr_1fr] md:grid-cols-[64px_1fr_1fr_70px] h-[40px] md:h-[44px] text-[14px]"
                 :class="{ 'bg-[#F0F1F5] relative': hoverItem === i }"
               >
-                <div class="flex items-center px-[12px] border-t border-l border-[#E4E5EA]"
+                <div class="flex items-center px-[12px] border-t 
+                border-l border-[#E4E5EA]"
                 :class="{'border-b ': i + 1  === items.length}"
-                >{{ i + 1 }}</div>
+                >{{
+                i + (recipientStore.itemsPerPage * (recipientStore.currentPage - 1)) + 1
+                }}</div>
 
-                <div class="px-[12px] py-[4px] flex items-center justify-center border-t  border-[#E4E5EA]"
+                <div class="px-[12px] py-[4px] flex items-center 
+                justify-center border-t  border-[#E4E5EA]"
                     :class="{'border-b ': i + 1  === items.length}"
                 >
                   <input
@@ -180,7 +184,8 @@
                   />
                 </div>
 
-                <div class="px-[12px] py-[4px] flex items-center justify-center border-t border-r border-[#E4E5EA]"
+                <div class="px-[12px] py-[4px] flex items-center 
+                justify-center border-t border-r border-[#E4E5EA]"
                      :class="{'border-b ': i + 1  === items.length}"
                 >
                   <input
@@ -193,15 +198,21 @@
                 </div>
 
                 <div
-                  class="pl-2 bg-white absolute md:relative right-0 bottom-10 md:bottom-0 shadow-[0px_3px_6px_rgba(0,0,0,0.16)] md:shadow-none border-[0.5px] md:border-0 border-[#E4E5EA]"
+                  class="pl-2 bg-white absolute md:relative right-0 
+                  bottom-10 md:bottom-0 shadow-[0px_3px_6px_rgba(0,0,0,0.16)] 
+                  md:shadow-none border-[0.5px] md:border-0 border-[#E4E5EA]"
                 >
-                  <div class="h-[40px] flex items-center justify-end px-[12px] space-x-[17px]">
-                    <span v-if="hoverItem === i" @click="addItem" class="plusSign cursor-pointer relative left-1">
+                  <div class="h-[40px] flex items-center justify-end px-[12px] 
+                  space-x-[17px]">
+                    <span v-if="hoverItem === i" @click="addItem(i)" class="plusSign 
+                    cursor-pointer relative left-1">
                       <PlusIcon />
                     </span>
   
                     <span
-                      v-if="hoverItem === i && items.length > 1"
+                      v-if="hoverItem === i && (items.length > 1) 
+                      || hoverItem === i && recipientStore.currentPage != 1"
+
                       @click="removeItem(i)"
                       class="deleteSign cursor-pointer"
                     >
@@ -211,6 +222,15 @@
                 </div>
               </div>
             </div>
+
+            <!--PAGINATION component-->
+            <div class="paginationToEdit justify-start lg:mt-[-80px] 
+            lg:mb-[20px] mb-[40px]">
+              <div>
+                <AppPagination @submit="getRecipients" />
+              </div>
+            </div>
+
           </div>
         </template>
       </main>
@@ -227,6 +247,10 @@
 </template>
 
 <script setup>
+// PAGINATION Import //
+import AppPagination from '@/components/Reusable/AppRecipientListPagination.vue';
+import { useRecipientStore } from '@/stores/recipientStore';
+
 import { ref } from 'vue';
 import { useDropZone } from '@vueuse/core';
 // import { getCurrentInstance } from 'vue';
@@ -246,6 +270,9 @@ import {fromNano} from '@/utils';
 import axios from 'axios';
 import { useWalletStore } from '@/stores/wallet';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
+
+// PAGINATION entities //
+const recipientStore = useRecipientStore();
 
 const rootAbi = {'ABI version': 2,
   version: '2.2',
@@ -286,6 +313,8 @@ const rootAbi = {'ABI version': 2,
 
 
 const items = ref(recipientsList);
+let fullRecList = ref(items.value.slice());
+let numberPerPage = recipientStore.itemsPerPage;
 const airdropName = ref(null);
 const token = ref(null);
 const tokenList = ref(tokensList);
@@ -299,20 +328,30 @@ const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
 let tokenAddr;
+let blankItem = {
+  address: null,
+  amount: null,
+};
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
 reset();
 //addCustomTokens();
 getBalances();
-function addItem() {
-  items.value.push({
-    address: null,
-    amount: null,
-  });
+function addItem(index) {
+  let ipp = recipientStore.itemsPerPage;
+  let pge = recipientStore.currentPage;
+  fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
+  getRecipients(ipp, pge);
 }
 function removeItem(index) {
-  items.value.splice(index, 1);
+  let ipp = recipientStore.itemsPerPage;
+  let pge = recipientStore.currentPage;
+  fullRecList.value.splice(ipp * (pge - 1) + index, 1);
+  getRecipients(ipp, pge);
+
+  // items.value.splice(index, 1);
+  // fullRecList.value.splice(index, 1);
 }
 function onFileChanged($event) {
   const target = $event.target;
@@ -373,6 +412,22 @@ function CSVToJSON(data, delimiter = ',') {
         }
       })
     );
+
+      // Show or hide pagination
+      const paginationEdit = document.querySelectorAll('.paginationToEdit');
+      if (items.value.length != 0) {
+        console.log('Display pagination: yes');
+        paginationEdit[0].style.display = "flex";
+      } else {
+        console.log('Display pagination: no');
+        paginationEdit[0].style.display = "none";
+      }
+      // Reset pagination for new file
+      recipientStore.resetPagination();
+      fullRecList.value = items.value.slice();
+      // Get recipients per page, initial page "0" and 10 per page
+      getRecipients(recipientStore.itemsPerPage, 1);
+
     reject('CSVToJSON(Something went wrong)');
   });
 }
@@ -498,5 +553,37 @@ async function getBalances()
   const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
   console.log("decimals: ", decimal);
 }*/
+
+
+// /////////////////////////////////////
+// PAGINATION Functions 
+// /////////////////////////////////////////////////////
+let pages = [];
+function getRecipients(num, page) {
+  // Save the number of items to be shown per page
+  recipientStore.setNumItemsPerPage(num);
+  items.value = fullRecList.value.slice();
+
+  // Create pages with the "num" number of items
+  pages = [];
+  let a = items.value;
+  for (var i = 0; i < a.length; i++) {
+    if (i % num == 0) pages.push([]);
+    pages[Math.floor(i / num)].push(a[i]);
+    // console.log(pages);
+  }
+  // console.log(`Number of items per page: ${num}`);
+  // console.log(`Page num: ${page}`);
+
+  let arr = fullRecList.value.slice();
+  let begin = num * (page - 1);
+  let end = page * num;
+  arr = arr.slice(begin, end);
+
+  // Change the list that is being shown
+  items.value = arr;
+
+  recipientStore.getRecipients(pages.length, page);
+}
 
 </script>
