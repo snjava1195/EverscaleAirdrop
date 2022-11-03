@@ -133,8 +133,8 @@
                 @click="$event.target.value = ''"
               />
 
-              <div class="relative text-center mt-5">
-                <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
+              <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
+                <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }" >
                   {{
                     !loading && !uploadSuccessful
                       ? 'Click to upload or drag and drop'
@@ -145,7 +145,7 @@
                       : ''
                   }}
                 </h2>
-                <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle">
+                <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle" >
                   Only CSV format is supported.
                 </h3>
               </div>
