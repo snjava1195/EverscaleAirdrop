@@ -274,3 +274,7 @@ input.multiselect__input {
 .option__desc .option__title {
   font-size: 14px;
 }
+
+.paginationToEdit {
+  display: none;
+}

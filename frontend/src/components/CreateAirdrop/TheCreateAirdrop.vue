@@ -211,6 +211,14 @@
                 </div>
               </div>
             </div>
+
+            <!--PAGINATION component-->
+            <div class="paginationToEdit justify-start lg:mt-[-80px] lg:mb-[20px] mb-[40px]">
+              <div>
+                <AppPagination @submit="getRecipients" />
+              </div>
+            </div>
+
           </div>
         </template>
       </main>
@@ -227,6 +235,10 @@
 </template>
 
 <script setup>
+// PAGINATION Import //
+import AppPagination from '@/components/Reusable/AppRecipientListPagination.vue';
+import { useRecipientStore } from '@/stores/recipientStore';
+
 import { ref } from 'vue';
 import { useDropZone } from '@vueuse/core';
 // import { getCurrentInstance } from 'vue';
@@ -246,6 +258,9 @@ import {fromNano} from '@/utils';
 import axios from 'axios';
 import { useWalletStore } from '@/stores/wallet';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
+
+// PAGINATION entities //
+const recStore = useRecipientStore();
 
 const rootAbi = {'ABI version': 2,
   version: '2.2',
@@ -286,6 +301,8 @@ const rootAbi = {'ABI version': 2,
 
 
 const items = ref(recipientsList);
+let fullRecList = ref(items.value.slice());
+let numberPerPage = 10;
 const airdropName = ref(null);
 const token = ref(null);
 const tokenList = ref(tokensList);
@@ -310,9 +327,14 @@ function addItem() {
     address: null,
     amount: null,
   });
+  fullRecList.value.push({
+    address: null,
+    amount: null,
+  });
 }
 function removeItem(index) {
   items.value.splice(index, 1);
+  fullRecList.value.splice(index, 1);
 }
 function onFileChanged($event) {
   const target = $event.target;
@@ -373,6 +395,22 @@ function CSVToJSON(data, delimiter = ',') {
         }
       })
     );
+
+      // Show or hide pagination
+      const paginationEdit = document.querySelectorAll('.paginationToEdit');
+      if (items.value.length != 0) {
+        console.log('Displa pagination: yes');
+        paginationEdit[0].style.display = "flex";
+      } else {
+        console.log('Displa pagination: no');
+        paginationEdit[0].style.display = "none";
+      }
+      // Reset pagination for new file
+      recStore.resetPagination();
+      fullRecList.value = items.value.slice();
+      // Get recipients per page, initial page "0" and 10 per page
+      getRecipients(numberPerPage, 1);
+
     reject('CSVToJSON(Something went wrong)');
   });
 }
@@ -498,5 +536,38 @@ async function getBalances()
   const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
   console.log("decimals: ", decimal);
 }*/
+
+
+// /////////////////////////////////////
+// PAGINATION Functions 
+// /////////////////////////////////////////////////////
+let pages = [];
+let reRenderKey = 0;
+function getRecipients(num, page) {
+  // Save the number of items to be shown per page
+  numberPerPage = num;
+  items.value = fullRecList.value.slice();
+
+  // Create pages with the "num" number of items
+  pages = [];
+  let a = items.value;
+  for (var i = 0; i < a.length; i++) {
+    if (i % num == 0) pages.push([]);
+    pages[Math.floor(i / num)].push(a[i]);
+    // console.log(pages);
+  }
+  // console.log(`Number of items per page: ${num}`);
+  // console.log(`Page num: ${page}`);
+
+  let arr = fullRecList.value.slice();
+  let begin = num * (page - 1);
+  let end = page * num;
+  arr = arr.slice(begin, end);
+
+  // Change the list that is being shown
+  items.value = arr;
+
+  recStore.getRecipients(pages.length, page);
+}
 
 </script>
