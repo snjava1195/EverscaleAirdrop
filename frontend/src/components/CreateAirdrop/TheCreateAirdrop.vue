@@ -167,7 +167,9 @@
                 <div class="flex items-center px-[12px] border-t 
                 border-l border-[#E4E5EA]"
                 :class="{'border-b ': i + 1  === items.length}"
-                >{{ i + 1 }}</div>
+                >{{
+                i + (recipientStore.itemsPerPage * (recipientStore.currentPage - 1)) + 1
+                }}</div>
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t  border-[#E4E5EA]"
