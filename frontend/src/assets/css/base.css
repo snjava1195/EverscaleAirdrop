@@ -276,5 +276,5 @@ input.multiselect__input {
 }
 
 .paginationToEdit {
-  display: none;
+  display: flex;
 }
