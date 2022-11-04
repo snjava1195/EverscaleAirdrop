@@ -1,7 +1,6 @@
 <template>
   <div
-    class="w-full xl:max-w-[1160px] mx-auto mt-[64px] px-[20px] md:px-[40px] lg:px-[10px] xl:px-0 mb-[109px] md:mb-[100px] lg:mb-0"
-  >
+    class="w-full xl:max-w-[1160px] mx-auto mt-[64px] px-[20px] md:px-[40px] lg:px-[10px] xl:px-0 mb-[109px] md:mb-[100px] lg:mb-0">
     <h2 class="font-semibold text-[28px] text-left mb-[48px]">Create new airdrop</h2>
 
     <div class="flex flex-col lg:flex-row lg:justify-between">
@@ -13,32 +12,15 @@
             <div class="w-full">
               <label class="form-label">Distribution token</label>
               <div class="relative">
-                <multiselect
-                  v-model="token"
-                  placeholder="Select a token"
-                  label="label"
-                  track-by="label"
-                  :options="tokenList"
-                  :option-height="104"
-                  :show-labels="false"
-                  @update:modelValue="onChange(token)"
-                >
-                  <template v-slot:singleLabel="props"
-                    ><img
-                      class="option__image pr-1 w-5 h-5"
-                      :src="props.option.icon"
-                      :alt="props.option.label"
-                    />
+                <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
+                  :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)">
+                  <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
+                      :alt="props.option.label" />
                     <span class="option__desc">
                       <span class="option__title">{{ props.option.label }}</span>
-                    </span></template
-                  >
-                  <template v-slot:option="props"
-                    ><img
-                      class="option__image pr-1 w-5 h-5"
-                      :src="props.option.icon"
-                      :alt="props.option.label"
-                    />
+                    </span></template>
+                  <template v-slot:option="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
+                      :alt="props.option.label" />
                     <div class="option__desc">
                       <span class="option__title">{{ props.option.label }}</span>
                     </div>
@@ -50,28 +32,17 @@
 
             <div class="w-full">
               <label for="airdropName" class="form-label">Airdrop name (optional)</label>
-              <input
-                v-model="airdropName"
-                id="airdropName"
-                class="form-text-input"
-                :class="{ 'min-h-[43px]': !token }"
-                type="text"
-                name="airdropName"
-                placeholder="Enter a name"
-              />
+              <input v-model="airdropName" id="airdropName" class="form-text-input" :class="{ 'min-h-[43px]': !token }"
+                type="text" name="airdropName" placeholder="Enter a name" />
             </div>
           </form>
 
           <form class="form">
             <div class="w-full">
               <label for="airdropName" class="form-label">Lock duration</label>
-              <Datepicker
-                v-model="airdropStore.lockDuration"
-                inputClassName="dp-custom-input"
-                placeholder="Date and time of unlock"
-                :minDate="new Date()"
-                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"
-              ></Datepicker>
+              <Datepicker v-model="airdropStore.lockDuration" inputClassName="dp-custom-input"
+                placeholder="Date and time of unlock" :minDate="new Date()"
+                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"></Datepicker>
             </div>
 
             <div class="w-full">
@@ -87,9 +58,7 @@
             <header>
               <h2 class="recipients-list-subtitle font-[500] leading-[28px]">Recipients list</h2>
               <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-[8px]">
-                <div
-                  class="flex space-x-[8px] sm:space-x-0 sm:justify-between md:justify-start md:space-x-[8px]"
-                >
+                <div class="flex space-x-[8px] sm:space-x-0 sm:justify-between md:justify-start md:space-x-[8px]">
                   <h3 class="text-[14px] font-pt_root">
                     Fill out the form manually or upload the CSV file.
                   </h3>
@@ -99,11 +68,7 @@
                   </span>
                 </div>
 
-                <div
-                  @click="downloadTemplate"
-                  class="flex items-center space-x-[6px] cursor-pointer"
-                  
-                >
+                <div @click="downloadTemplate" class="flex items-center space-x-[6px] cursor-pointer">
                   <span class="downloadSign">
                     <DownloadIcon />
                   </span>
@@ -116,36 +81,30 @@
               <div class="w-[96px] h-[96px] bg-transparent group-hover:bg-[#B1C5FA] rounded-full absolute -top-6">
                 <span class="upload-sign absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                   <UploadIcon v-if="!loading && !uploadSuccessful" />
-  
+
                   <ProgressIcon v-else-if="loading" />
-  
+
                   <SuccessIcon v-else />
                 </span>
               </div>
 
-              <input
-                ref="file"
-                @change="onFileChanged($event)"
-                type="file"
-                name="file"
-                class="upload-csv"
+              <input ref="file" @change="onFileChanged($event)" type="file" name="file" class="upload-csv"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                @click="$event.target.value = ''"
-              />
+                @click="$event.target.value = ''" />
 
               <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
-                <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }" >
+                <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
                   {{
-                    !loading && !uploadSuccessful
-                      ? 'Click to upload or drag and drop'
-                      : loading
-                      ? `Checking the file ${fileName}...`
-                      : uploadSuccessful
-                      ? 'List has been successfully imported'
-                      : ''
+                      !loading && !uploadSuccessful
+                        ? 'Click to upload or drag and drop'
+                        : loading
+                          ? `Checking the file ${fileName}...`
+                          : uploadSuccessful
+                            ? 'List has been successfully imported'
+                            : ''
                   }}
                 </h2>
-                <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle" >
+                <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle">
                   Only CSV format is supported.
                 </h3>
               </div>
@@ -153,69 +112,40 @@
           </div>
 
           <div class="table w-full">
-            <div
-              class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] font-pt_root w-full"
-            >
-              <div
-                v-for="(item, i) in items"
-                :key="i"
-                @mouseover="hoverItem = i"
-                @mouseleave="hoverItem = null"
+            <div class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] font-pt_root w-full">
+              <div v-for="(item, i) in items" :key="i" @mouseover="hoverItem = i" @mouseleave="hoverItem = null"
                 class="row grid grid-cols-[40px_1fr_1fr] md:grid-cols-[64px_1fr_1fr_70px] h-[40px] md:h-[44px] text-[14px]"
-                :class="{ 'bg-[#F0F1F5] relative': hoverItem === i }"
-              >
+                :class="{ 'bg-[#F0F1F5] relative': hoverItem === i }">
                 <div class="flex items-center px-[12px] border-t 
-                border-l border-[#E4E5EA]"
-                :class="{'border-b ': i + 1  === items.length}"
-                >{{
-                i + (recipientStore.itemsPerPage * (recipientStore.currentPage - 1)) + 1
+                border-l border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">{{
+                    i + (recipientStore.itemsPerPage * (recipientStore.currentPage - 1)) + 1
                 }}</div>
 
                 <div class="px-[12px] py-[4px] flex items-center 
-                justify-center border-t  border-[#E4E5EA]"
-                    :class="{'border-b ': i + 1  === items.length}"
-                >
-                  <input
-                    v-model="item.address"
-                    class="h-full w-full px-[12px]"
-                    type="text"
-                    name="address"
-                    placeholder="Recipient address"
-                  />
+                justify-center border-t  border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
+                  <input v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
+                    placeholder="Recipient address" />
                 </div>
 
                 <div class="px-[12px] py-[4px] flex items-center 
-                justify-center border-t border-r border-[#E4E5EA]"
-                     :class="{'border-b ': i + 1  === items.length}"
-                >
-                  <input
-                    v-model="item.amount"
-                    type="number"
-                    name="amount"
-                    class="h-full w-full px-[12px]"
-                    :placeholder="`Amount`"
-                  />
+                justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
+                  <input v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
+                    :placeholder="`Amount`" />
                 </div>
 
-                <div
-                  class="pl-2 bg-white absolute md:relative right-0 
+                <div class="pl-2 bg-white absolute md:relative right-0 
                   bottom-10 md:bottom-0 shadow-[0px_3px_6px_rgba(0,0,0,0.16)] 
-                  md:shadow-none border-[0.5px] md:border-0 border-[#E4E5EA]"
-                >
+                  md:shadow-none border-[0.5px] md:border-0 border-[#E4E5EA]">
                   <div class="h-[40px] flex items-center justify-end px-[12px] 
                   space-x-[17px]">
                     <span v-if="hoverItem === i" @click="addItem(i)" class="plusSign 
                     cursor-pointer relative left-1">
                       <PlusIcon />
                     </span>
-  
-                    <span
-                      v-if="hoverItem === i && (items.length > 1) 
-                      || hoverItem === i && recipientStore.currentPage != 1"
 
-                      @click="removeItem(i)"
-                      class="deleteSign cursor-pointer"
-                    >
+                    <span v-if="hoverItem === i && (items.length > 1)
+                    || hoverItem === i && recipientStore.currentPage != 1" @click="removeItem(i)"
+                      class="deleteSign cursor-pointer">
                       <TrashIcon />
                     </span>
                   </div>
@@ -235,13 +165,9 @@
         </template>
       </main>
 
-      <TheSidebar
-        :items="items"
-        :token="token"
-        :shareNetwork="{
-          airdropName: airdropName,
-        }"
-      />
+      <TheSidebar :items="fullRecList" :token="token" :shareNetwork="{
+        airdropName: airdropName,
+      }" />
     </div>
   </div>
 </template>
@@ -266,7 +192,7 @@ import SuccessIcon from '@/components/icons/Upload/IconSuccess.vue';
 import InfoIcon from '@/components/icons/IconInfo.vue';
 import Multiselect from 'vue-multiselect';
 import { useAirdropStore } from '@/stores/airdrop';
-import {fromNano} from '@/utils';
+import { fromNano } from '@/utils';
 import axios from 'axios';
 import { useWalletStore } from '@/stores/wallet';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
@@ -274,7 +200,8 @@ import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
 // PAGINATION entities //
 const recipientStore = useRecipientStore();
 
-const rootAbi = {'ABI version': 2,
+const rootAbi = {
+  'ABI version': 2,
   version: '2.2',
   header: ['pubkey', 'time', 'expire'],
   functions: [
@@ -391,19 +318,19 @@ function CSVToJSON(data, delimiter = ',') {
       data.split(/\r\n|\n/).forEach((v) => {
         const values = v.split(delimiter);
         if (values[0]) {
-         /* let decimals;
-          if(token.value.label=='EVER')
-          {
-            console.log('Token: ', token.value);
-            decimals = 9;
-            console.log('Decimals: ', decimals);
-          }
-          else
-          {
-            console.log('Token: ', token.value);
-            decimals = token.value.decimals;
-            console.log('Decimals: ', decimals);
-          }*/
+          /* let decimals;
+           if(token.value.label=='EVER')
+           {
+             console.log('Token: ', token.value);
+             decimals = 9;
+             console.log('Decimals: ', decimals);
+           }
+           else
+           {
+             console.log('Token: ', token.value);
+             decimals = token.value.decimals;
+             console.log('Decimals: ', decimals);
+           }*/
           items.value.push({
             address: values[0].replace(/^"(.*)"$/, '$1'),
             // address: addressFormat(values[0]),
@@ -413,20 +340,20 @@ function CSVToJSON(data, delimiter = ',') {
       })
     );
 
-      // Show or hide pagination
-      const paginationEdit = document.querySelectorAll('.paginationToEdit');
-      if (items.value.length != 0) {
-        console.log('Display pagination: yes');
-        paginationEdit[0].style.display = "flex";
-      } else {
-        console.log('Display pagination: no');
-        paginationEdit[0].style.display = "none";
-      }
-      // Reset pagination for new file
-      recipientStore.resetPagination();
-      fullRecList.value = items.value.slice();
-      // Get recipients per page, initial page "0" and 10 per page
-      getRecipients(recipientStore.itemsPerPage, 1);
+    // Show or hide pagination
+    const paginationEdit = document.querySelectorAll('.paginationToEdit');
+    if (items.value.length != 0) {
+      console.log('Display pagination: yes');
+      paginationEdit[0].style.display = "flex";
+    } else {
+      console.log('Display pagination: no');
+      paginationEdit[0].style.display = "none";
+    }
+    // Reset pagination for new file
+    recipientStore.resetPagination();
+    fullRecList.value = items.value.slice();
+    // Get recipients per page, initial page "0" and 10 per page
+    getRecipients(recipientStore.itemsPerPage, 1);
 
     reject('CSVToJSON(Something went wrong)');
   });
@@ -441,109 +368,108 @@ function readFile(file) {
 }
 async function onChange(token) {
   await airdropStore.getExpectedAddress(token);
- await airdropStore.calculateFees("deploy", "giver", "EVER", "");
-console.log('Fee: ', airdropStore.fees);
+  await airdropStore.calculateFees("deploy", "giver", "EVER", "");
+  console.log('Fee: ', airdropStore.fees);
   //airdropStore.step =1;
 }
 
-function reset()
-{
+function reset() {
   airdropStore.address = '';
-  airdropStore.step=1;
-  airdropStore.topUpRequiredAmount=0;
+  airdropStore.step = 1;
+  airdropStore.topUpRequiredAmount = 0;
   items.value.length = 10;
-  airdropStore.currentBatch=0;
-  for(let i=0;i<items.value.length;i++)
-  {
+  airdropStore.currentBatch = 0;
+  for (let i = 0; i < items.value.length; i++) {
     items.value[i].address = "";
     items.value[i].amount = "";
   }
+  for (let i = 0; i < fullRecList.value.length; i++) {
+    fullRecList.value[i].address = "";
+    fullRecList.value[i].amount = "";
+  }
   //recipientsList=null;
-  airdropStore.loopCount=0;
+  airdropStore.loopCount = 0;
 
   airdropStore.transactionId.giverContractId = "";
   airdropStore.transactionId.deployContractId = "";
   airdropStore.transactionId.amountContractId = "";
   airdropStore.transactionId.distributeContractId = "";
   airdropStore.transactionId.redeemContractId = "";
+  airdropStore.fees = 0;
 }
 
-async function addCustomTokens()
-{
+async function addCustomTokens() {
   var data = JSON.stringify({
-  "ownerAddress": walletStore.profile.address,
-  "limit": 100,
-  "offset": 0,
-  "ordering": "amountdescending"
-});
+    "ownerAddress": walletStore.profile.address,
+    "limit": 100,
+    "offset": 0,
+    "ordering": "amountdescending"
+  });
 
-var config = {
-  method: 'post',
-  url: 'https://tokens.everscan.io/v1/balances',
-  headers: { 
-    'Content-Type': 'application/json'
-  },
-  data : data
-};
-
-
-return axios(config)
-.then(function (response) {
-  //responseVar = response.data.balances;
-  console.log('Response: ', response.data);
-  console.log(JSON.stringify(response.data));
-  tokenAddr = response.data;
-  console.log(tokenAddr);
-  //for(let i=0;i<response.data.balances.length;i++)
-//{
- // tokenAddr.push(response.data.balances[i].rootAddress);
-  //const rootAcc = new ever.Contract(rootAbi, response.data.balances[i].rootAddress);
-  //const decimal = rootAcc.methods.decimals({answerId: 1}).call();
-  //console.log("decimals: ", decimal);
-//}
-})
-.catch(function (error) {
-  console.log(error);
-});
+  var config = {
+    method: 'post',
+    url: 'https://tokens.everscan.io/v1/balances',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: data
+  };
 
 
+  return axios(config)
+    .then(function (response) {
+      //responseVar = response.data.balances;
+      console.log('Response: ', response.data);
+      console.log(JSON.stringify(response.data));
+      tokenAddr = response.data;
+      console.log(tokenAddr);
+      //for(let i=0;i<response.data.balances.length;i++)
+      //{
+      // tokenAddr.push(response.data.balances[i].rootAddress);
+      //const rootAcc = new ever.Contract(rootAbi, response.data.balances[i].rootAddress);
+      //const decimal = rootAcc.methods.decimals({answerId: 1}).call();
+      //console.log("decimals: ", decimal);
+      //}
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
 
 
-//const rootAcc = new ever.Contract(rootAbi, this.token.address);
+
+
+  //const rootAcc = new ever.Contract(rootAbi, this.token.address);
 
 }
 
-async function getBalances()
-{
+async function getBalances() {
   const axiosRes = await addCustomTokens();
   console.log(axiosRes);
- // if(axiosRes.status == 200)
+  // if(axiosRes.status == 200)
   //{//.then(function (response) { tokenAddr = response.data});
   //tokenAddr = axiosRes.data;
- // console.log('Token addr:', tokenAddr);
+  // console.log('Token addr:', tokenAddr);
   const ever = new ProviderRpcClient();
- // console.log(tokenAddr.balances.length);
-  let counter=0;
-  for(let i=0;i<tokenAddr.balances.length;i++)
-  {
-   const rootAcc = new ever.Contract(rootAbi, tokenAddr.balances[i].rootAddress);
-   const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
- //  console.log("decimals: ", decimal);
-   const token = tokensList.find(token=>token.address == tokenAddr.balances[i].rootAddress);
-   
-          if(token==undefined)
-          {
-            counter++;
-            //console.log('Usao u undefined');
-            tokenList.value.push({label: tokenAddr.balances[i].token, decimals: decimal.value0*1, address:tokenAddr.balances[i].rootAddress, icon:`/avatar/${counter}.svg`});
-          }
+  // console.log(tokenAddr.balances.length);
+  let counter = 0;
+  for (let i = 0; i < tokenAddr.balances.length; i++) {
+    const rootAcc = new ever.Contract(rootAbi, tokenAddr.balances[i].rootAddress);
+    const decimal = await rootAcc.methods.decimals({ answerId: 1 }).call();
+    //  console.log("decimals: ", decimal);
+    const token = tokensList.find(token => token.address == tokenAddr.balances[i].rootAddress);
+
+    if (token == undefined) {
+      counter++;
+      //console.log('Usao u undefined');
+      tokenList.value.push({ label: tokenAddr.balances[i].token, decimals: decimal.value0 * 1, address: tokenAddr.balances[i].rootAddress, icon: `/avatar/${counter}.svg` });
+    }
   }
   //console.log(tokenList);
   //console.log('Avatar:',walletStore.profile.address.substr(
-        //  walletStore.profile.address.length - 1,
-        //  1
-        //));
+  //  walletStore.profile.address.length - 1,
+  //  1
+  //));
 
 }/* const ever = new ProviderRpcClient();
   console.log(tokenAddr.length);
