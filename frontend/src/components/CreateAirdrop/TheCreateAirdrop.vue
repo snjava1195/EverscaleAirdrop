@@ -165,9 +165,13 @@
         </template>
       </main>
 
-      <TheSidebar :items="fullRecList" :token="token" :shareNetwork="{
-        airdropName: airdropName,
-      }" />
+      <TheSidebar
+        :items="fullRecList"
+        :token="token"
+        :shareNetwork="{
+          airdropName: airdropName,
+        }"
+      />
     </div>
   </div>
 </template>
@@ -382,7 +386,8 @@ function reset() {
     items.value[i].address = "";
     items.value[i].amount = "";
   }
-  for (let i = 0; i < fullRecList.value.length; i++) {
+  for(let i=0;i<fullRecList.value.length;i++)
+  {
     fullRecList.value[i].address = "";
     fullRecList.value[i].amount = "";
   }

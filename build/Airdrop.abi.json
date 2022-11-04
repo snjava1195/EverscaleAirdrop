@@ -324,6 +324,14 @@
 	],
 	"events": [
 		{
+			"name": "BatchDone",
+			"inputs": [
+				{"name":"batchProcesses","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "OwnershipTransferred",
 			"inputs": [
 				{"name":"previousOwner","type":"address"},

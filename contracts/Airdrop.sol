@@ -49,6 +49,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     uint counterRec=0;
     uint public usao=0;
     uint public length = 0;
+    event BatchDone(uint batchProcesses);
     // Checks whether refund lock time has passed and distribution is over
     modifier refundLockPassed() {
         require(now > refund_lock_duration_end, 107);
@@ -140,6 +141,8 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             {
                 payable(batchAddresses[usao][j]).transfer(uint128(batchAmounts[usao][j]), false, 1);
             }
+         //   address addr = address.makeAddrExtern(address(this));
+         
         }
         else
         {
@@ -205,6 +208,8 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         tvm.accept();
         bool result;
         result = callDistribute();
+        emit BatchDone(usao);
+        
         if(result == false)
         this.distribute2{value: 0.1 ever, flag:0+1}();
     }
@@ -403,6 +408,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     
     function getDeployedContracts() public view returns (address[])
     {
+        emit BatchDone(usao);
     	return deployedContracts;
     } 
     

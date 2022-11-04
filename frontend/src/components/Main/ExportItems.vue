@@ -40,7 +40,7 @@ function onExport() {
   });*/
 
   const fileName = 'download';
-  const exportType = exportFromJSON.types.csv;
+  const exportType = exportFromJSON.types.xls;
   exportFromJSON({ data, fileName, exportType });
 }
 </script>

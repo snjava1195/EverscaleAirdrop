@@ -377,7 +377,7 @@ export const useAirdropStore = defineStore({
             amount: toNano((0.5+amountForSetting), 9),
             bounce: false,
           });
-
+          console.log(sendTransaction);
          
         }
         else
@@ -773,6 +773,16 @@ export const useAirdropStore = defineStore({
             amount: toNano(this.loopCount*0.3, 9),
             bounce: true,
           });
+         // let eventsData=1;
+        // while(this.currentBatch!=this.loopCount)
+          //{
+            this.getEvents();
+          //eventsData=event.data.batchProcesses*1;
+          //}
+        
+         
+           
+          
        // }
        // else
        // {
@@ -891,9 +901,22 @@ export const useAirdropStore = defineStore({
         return Promise.reject(e);
       }
     },
-    getAirdrops() {
+    async getEvents() {
+      const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
+      try{
+     const event = await everAirDropContract.waitForEvent();
+          console.log('Event: ', event);
+          this.currentBatch = event.data.batchProcesses*1;
+          console.log('Current batch: ', this.currentBatch);
+          return Promise.resolve(event);
+      }catch(e)
+      {
+        console.log(e);
+        return Promise.reject(e);
+      }
       // Treba da se zove neka funkcija koja daje sve airdropove (kontrakte) sa walleta logovanog usera
     },
+
 
     async getAirdropTransactions(limit, page) {
      // const transactions = await ever.getTransactions({address:"0:b7fc4427d121e5449518b863dbc0633ad591aa5f98dd03e6fa40c2294ce70233", limit: 10});
