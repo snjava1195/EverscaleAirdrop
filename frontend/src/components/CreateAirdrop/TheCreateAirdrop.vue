@@ -254,10 +254,6 @@ const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
 let tokenAddr;
-let blankItem = {
-  address: null,
-  amount: null,
-};
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
@@ -265,6 +261,10 @@ reset();
 //addCustomTokens();
 getBalances();
 function addItem(index) {
+  let blankItem = {
+    address: null,
+    amount: null,
+  };
   let ipp = recipientStore.itemsPerPage;
   let pge = recipientStore.currentPage;
   fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
