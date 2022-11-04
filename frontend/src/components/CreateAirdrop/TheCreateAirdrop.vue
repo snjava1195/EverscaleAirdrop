@@ -238,7 +238,6 @@ const rootAbi = {
   events: []
 }
 
-
 const items = ref(recipientsList);
 let fullRecList = ref(items.value.slice());
 let numberPerPage = recipientStore.itemsPerPage;
