@@ -352,13 +352,31 @@ async function getAirdrop() {
   const batches = await contract.methods.batches({}).call();
   const distributed = await contract.methods.getDistributedContracts({}).call();
   const deployed = await contract.methods.getDeployedContracts({}).call();
-  const recipients = await contract.methods.allRecipients({}).call();
+  const recipients = await contract.methods.batchAddresses({}).call();
   const transactionHashes = await contract.methods.transactionHashes({}).call();
   //console.log(recipients.allRecipients);
   const zaAirdrop = [];
 
-  const amounts = await contract.methods.allAmounts({}).call();
+  const amounts = await contract.methods.batchAmounts({}).call();
+  let addresses=[];
+  for(let i=0;i<recipients.batchAddresses.length;i++)
+  {
+    for(let j=0;j<recipients.batchAddresses[i][1].length;j++)
+    addresses.push(recipients.batchAddresses[i][1][j]._address);
+  }
 
+
+  console.log(addresses);
+
+
+  let amountss = [];
+  
+  for(let i=0;i<amounts.batchAmounts.length;i++)
+  {
+    for(let j=0;j<amounts.batchAmounts[i][1].length;j++)
+    amountss.push(amounts.batchAmounts[i][1][j]);
+  }
+  console.log(amountss);
   for (let i = 0; i < transactionHashes.transactionHashes.length; i++) {
     if (transactionHashes.transactionHashes.length < 3) {
       airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
@@ -384,17 +402,17 @@ async function getAirdrop() {
     }
   }
   //console.log(amounts);
-  if (items.value.length != amounts.allAmounts.length) {
-    if (amounts.allAmounts.length <= 10) {
-      for (let i = 0; i < amounts.allAmounts.length; i++) {
+  if (items.value.length != amountss.length) {
+    if (amountss.length <= 10) {
+      for (let i = 0; i < amountss.length; i++) {
         //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
         // zaAirdrop.push(recipients.allRecipients[i]._address);
         /* items.value.push({
  address: recipients.allRecipients[i]._address,
  amount: fromNano(amounts.allAmounts[i],9),
 });*/
-        items.value[i].address = recipients.allRecipients[i]._address;
-        items.value[i].amount = fromNano(amounts.allAmounts[i], airdropStore.token.decimals);
+        items.value[i].address = addresses[i];
+        items.value[i].amount = fromNano(amountss[i], airdropStore.token.decimals);
       }
       //console.log(zaAirdrop);
     }
@@ -402,17 +420,19 @@ async function getAirdrop() {
     else {
       for (let i = 0; i < 10; i++) {
         //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
-        zaAirdrop.push(recipients.allRecipients[i]._address);
+        zaAirdrop.push(addresses[i]);
         /* items.value.push({
  address: recipients.allRecipients[i]._address,
  amount: fromNano(amounts.allAmounts[i],9),
 });*/
-        items.value[i].address = recipients.allRecipients[i]._address;
-        items.value[i].amount = fromNano(amounts.allAmounts[i], airdropStore.token.decimals);
+        items.value[i].address = addresses[i];
+        items.value[i].amount = fromNano(amountss[i], airdropStore.token.decimals);
       }
-      for (let i = 10; i < recipients.allRecipients.length; i++) {
-        items.value.push({ address: recipients.allRecipients[i]._address, amount: fromNano(amounts.allAmounts[i], airdropStore.token.decimals) });
+      for (let i = 10; i < addresses.length; i++) {
+        items.value.push({ address: addresses[i], amount: fromNano(amountss[i], airdropStore.token.decimals) });
       }
+
+      //console.log('items.value: ', items.value);
     }
   }
 
