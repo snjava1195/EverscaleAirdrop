@@ -35,9 +35,7 @@
 
       <div class="flex justify-between items-center font-bold text-black">
         <span>Total tokens</span>
-        <span
-          ><span class="text-[20px]">{{ totalTokens }}</span> {{ token ? token.label : 'EVER' }}</span
-        >
+        <span><span class="text-[20px]">{{ totalTokens }}</span> {{ token ? token.label : 'EVER' }}</span>
       </div>
     </header>
 
