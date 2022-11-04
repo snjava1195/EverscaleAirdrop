@@ -278,3 +278,9 @@ input.multiselect__input {
 .paginationToEdit {
   display: flex;
 }
+
+.remove-clickability {
+  user-select: none; 
+  pointer-events: none;
+  /* background-color: #a6aab2; */
+}
