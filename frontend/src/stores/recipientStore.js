@@ -68,6 +68,7 @@ export const useRecipientStore = defineStore({
           this.currentPage = 1;
           this.numberOfPages = 1;
           this.continuation = {};
+          this.itemsPerPage=10;
         },
         resetState() {
           console.log(`Reset State`);

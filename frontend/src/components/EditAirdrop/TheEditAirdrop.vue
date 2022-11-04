@@ -184,10 +184,11 @@ import dayjs from 'dayjs';
 const recipientStore = useRecipientStore();
 
 const ever = new ProviderRpcClient();
-const items = ref(recipientsList);
+let items = ref(recipientsList);
 
+recipientStore.resetState();
 /// FULL LIST
-let fullRecList = ref(items.value.slice());
+let fullRecList = ref(recipientsList);
 let numberPerPage = recipientStore.itemsPerPage;
 
 const airdropName = ref(null);
@@ -204,7 +205,7 @@ const airdropStore = useAirdropStore();
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
-
+reset();
 getAirdrop();
 function onFileChanged($event) {
   const target = $event.target;
@@ -283,6 +284,8 @@ async function onChange(token) {
   await airdropStore.getExpectedAddress(token);
 }
 
+let addresses=[];
+let amountss = [];
 async function getAirdrop() {
   const route = useRoute();
   token.value = tokensList.find(token => token.label == 'EVER');
@@ -358,7 +361,7 @@ async function getAirdrop() {
   const zaAirdrop = [];
 
   const amounts = await contract.methods.batchAmounts({}).call();
-  let addresses=[];
+  
   for(let i=0;i<recipients.batchAddresses.length;i++)
   {
     for(let j=0;j<recipients.batchAddresses[i][1].length;j++)
@@ -369,7 +372,7 @@ async function getAirdrop() {
   console.log(addresses);
 
 
-  let amountss = [];
+  
   
   for(let i=0;i<amounts.batchAmounts.length;i++)
   {
@@ -435,10 +438,11 @@ async function getAirdrop() {
       //console.log('items.value: ', items.value);
     }
   }
-
+  console.log('Items.value: ', items.value);
   // Reset pagination for new file
   recipientStore.resetPagination();
   fullRecList.value = items.value.slice();
+  console.log('Fullreclist: ', fullRecList.value);
   // Get recipients per page, initial page "0" and 10 per page
   getRecipients(recipientStore.itemsPerPage, 1);
   //console.log('Items: ', items.value);
@@ -475,6 +479,28 @@ function getRecipients(num, page) {
   items.value = arr;
 
   recipientStore.getRecipients(pages.length, page);
+}
+
+function reset()
+{
+  items.value.length=10;
+  fullRecList.value.length=10;
+
+ 
+  for (let i = 0; i < items.value.length; i++) {
+    items.value[i].address = "";
+    items.value[i].amount = "";
+  }
+  console.log('Reset items value: ', items.value);
+  for(let i=0;i<fullRecList.value.length;i++)
+  {
+    fullRecList.value[i].address = "";
+    fullRecList.value[i].amount = "";
+  }
+ // fullRecList.value= recipientsList;
+  console.log('Reset recipients list value: ', fullRecList.value);
+  recipientStore.resetPagination();
+
 }
 
 </script>
