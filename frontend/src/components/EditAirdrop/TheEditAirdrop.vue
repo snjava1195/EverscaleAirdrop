@@ -487,7 +487,7 @@ function reset()
   fullRecList.value.length=10;
 
  
- /* for (let i = 0; i < items.value.length; i++) {
+  for (let i = 0; i < items.value.length; i++) {
     items.value[i].address = "";
     items.value[i].amount = "";
   }
@@ -498,7 +498,7 @@ function reset()
     fullRecList.value[i].amount = "";
   }
  // fullRecList.value= recipientsList;
-  console.log('Reset recipients list value: ', fullRecList.value);*/
+  console.log('Reset recipients list value: ', fullRecList.value);
   recipientStore.resetPagination();
 
 }
