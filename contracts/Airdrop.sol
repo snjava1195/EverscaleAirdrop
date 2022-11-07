@@ -152,7 +152,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 		    	uint128 amountPerTransfer = uint128(batchAmounts[usao][j]);
 		    		
 	       	//TIP31TokenWallet(walletAddress).transfer{value: 0.2 ever, flag: 0}(amountPerTransfer, recipient, 0.1 ever, remaining, false, empty);
-			TIP31TokenWallet(walletAddress).transfer{value: 0.09 ever, flag: 0+1}(amountPerTransfer, recipient, 0.02 ever, address(this), false, empty);
+			TIP31TokenWallet(walletAddress).transfer{value: 0.15 ever, flag: 0}(amountPerTransfer, recipient, 0.05 ever, msg.sender, true, empty);
 	       }
         }
             usao++;
@@ -207,11 +207,15 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         require(msg.sender==senderAddress || msg.sender==address(this), 1001);
         tvm.accept();
         bool result;
+        uint128 fee=0;
         result = callDistribute();
         emit BatchDone(usao);
         
         if(result == false)
-        this.distribute2{value: 0.1 ever, flag:0+1}();
+        {
+           fee=fee+(uint128(batchAddresses[usao].length)*0.12 ever); 
+        this.distribute2{value: fee, flag:0+1}();
+        }
     }
     
     /**

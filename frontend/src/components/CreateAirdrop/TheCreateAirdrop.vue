@@ -13,7 +13,7 @@
               <label class="form-label">Distribution token</label>
               <div class="relative">
                 <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
-                  :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)">
+                  :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)" :taggable="true" @tag="addTag" :multiple="false">
                   <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
                       :alt="props.option.label" />
                     <span class="option__desc">
@@ -514,6 +514,31 @@ function getRecipients(num, page) {
   items.value = arr;
 
   recipientStore.getRecipients(pages.length, page);
+}
+
+async function addTag(newTag)
+{
+  const ever = new ProviderRpcClient();
+  //const token =  await airdropStore.getToken(newTag);
+  const root = new ever.Contract(rootAbi, newTag);
+  
+    const decimal = await root.methods.decimals({answerId: 1}).call();
+    console.log(decimal);
+    const label = await root.methods.symbol({answerId: 1}).call();
+    console.log(label);
+    tokenList.value.push({label: label.value0, decimals: decimal.value0*1, address: tokenAddr, icon:`/avatar/5.svg`});
+    console.log('Props value:', tokenList.value);
+   // airdropStore.tokensList.push({label: label.value0, decimals: decimal.value0*1, address: tokenAddr, icon:`/avatar/5.svg`});
+    //console.log('Tokens list: ', tokensList);
+  //console.log('Token: ', token);
+  /*const tag = {
+    label:'New token',
+    decimals:9,
+    address: newTag,
+    icon: ''
+
+  }
+  tokenList.value.push(tag);*/
 }
 
 </script>
