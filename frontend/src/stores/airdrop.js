@@ -296,7 +296,7 @@ export const useAirdropStore = defineStore({
           }
           else
           {
-            fee = 0.5+addresses.length*0.15;
+            fee = 0.5+addresses.length*0.12;
             console.log('Fee: ', fee);
           }
          // const realFee = Number(Math.round(fee+'e2')+'e-2');
@@ -813,7 +813,7 @@ export const useAirdropStore = defineStore({
            // console.log('Addresses length: ', addresses[i][1].length);
            // for(let j=0;j<addresses[i][1].length;j++)
             //{
-              fee = 0.5+(addresses.length*0.15);
+              fee = 0.5+(addresses.length*0.12)+this.loopCount*0.12;
             //}
             
             console.log('Fee: ', fee);
@@ -1213,6 +1213,10 @@ async getBalances()
             counter++;
             console.log('Usao u undefined');
             tokensList.push({label: this.tokenAddr.balances[i].token, decimals: decimal.value0*1, address:this.tokenAddr.balances[i].rootAddress, icon:`/avatar/${counter}.svg`});
+          }
+          if(counter==10)
+          {
+            counter = 0;
           }
   }
   console.log(tokensList);
