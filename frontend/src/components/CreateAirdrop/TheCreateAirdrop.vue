@@ -519,6 +519,7 @@ function reset() {
   airdropStore.transactionId.distributeContractId = "";
   airdropStore.transactionId.redeemContractId = "";
   airdropStore.fees = 0;
+  airdropStore.airdropName="";
 }
 
 async function addCustomTokens() {

@@ -439,8 +439,10 @@ const errors = ref({
 const redeemPolling = ref(null);
 const reedemText = ref('');
 const redeemRemainingSeconds = ref(null);
-const airdropName = ref(null);
-
+//const airdropName = ref(null);
+const airdropName = computed(() => {
+  return airdropStore.airdropName;
+});
 const step = computed(() => {
   return airdropStore.step;
 });
@@ -564,7 +566,8 @@ async function onDeployContract() {
 
   try {
     errors.value.error = false;
-    airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
+    //airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
+    airdropStore.airdropName = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
    // console.log('airdropName:', airdropName.value);
     const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
    // const fees = await airdropStore.getEstimatedFee();

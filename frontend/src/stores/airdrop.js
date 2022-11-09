@@ -170,7 +170,8 @@ export const useAirdropStore = defineStore({
       amountContractId: "",
       distributeContractId: "",
       redeemContractId: "",
-    }
+    },
+    airdropName: "",
   }),
   getters: {},
   actions: {
@@ -1062,7 +1063,7 @@ export const useAirdropStore = defineStore({
           //console.log(date);
          // console.log(this.airdrops.accounts[0]._address);
           let createdStatus = "";
-          if(status.status!="Executed")
+          if(status.status!="Executed" && status.status!="Redeemed")
           {
             createdStatus = "Created";
           }

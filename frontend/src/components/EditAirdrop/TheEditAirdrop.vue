@@ -236,8 +236,20 @@ function onDrop(files) {
   }
 }
 function downloadTemplate() {
-  window.open('example.csv');
+  //console.log(items.value[0]);
+  let array="";
+  for(let i=0;i<fullRecList.value.length;i++)
+  {
+    array+=fullRecList.value[i].address + "," + fullRecList.value[i].amount +"\n";
+  }
+  //console.log(array);
+  let csvContent = "data:text/csv;charset=utf-8," 
+    + array;
+  //console.log(csvContent)
+  var encodedUri = encodeURI(csvContent);
+window.open(encodedUri);
 }
+
 function CSVToJSON(data, delimiter = ',') {
   items.value = [];
   return new Promise((resolve, reject) => {
@@ -308,7 +320,8 @@ async function getAirdrop() {
   const name = await contract.methods.contract_notes({}).call();
   //console.log('Name: ', name);
   airdropName.value = name.contract_notes;
-  //console.log('Name: ', airdropName.value);
+  airdropStore.airdropName = airdropName.value;
+  console.log('Name: ', airdropName.value);
 
   const refundDuration = await contract.methods.getRefundLockDuration({}).call();
   airdropStore.lockDuration = dayjs.unix(refundDuration.value0).format('ddd MMM DD YYYY HH:mm:ss');
@@ -499,6 +512,7 @@ function reset()
   }
  // fullRecList.value= recipientsList;
   console.log('Reset recipients list value: ', fullRecList.value);
+  airdropStore.airdropName="";
   recipientStore.resetPagination();
 
 }
