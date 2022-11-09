@@ -14,13 +14,13 @@
               <div class="relative">
                 <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
                   :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)" :taggable="true" @tag="addTag" :multiple="false">
-                  <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
-                      :alt="props.option.label" />
+                  <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"/>
+                     <!-- :alt="props.option.label" />-->
                     <span class="option__desc">
                       <span class="option__title">{{ props.option.label }}</span>
                     </span></template>
-                  <template v-slot:option="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
-                      :alt="props.option.label" />
+                  <template v-slot:option="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"/>
+                   <!--  :alt="props.option.label" />--> 
                     <div class="option__desc">
                       <span class="option__title">{{ props.option.label }}</span>
                     </div>
@@ -372,6 +372,7 @@ const loading = ref(false);
 const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
+let counter=0;
 /*const step = computed(() => {
   return airdropStore.step;
 });*/
@@ -646,8 +647,18 @@ async function addTag(newTag)
     console.log(decimal);
     const label = await root.methods.symbol({answerId: 1}).call();
     console.log(label);
-    tokenList.value.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});
-    console.log('Props value:', tokenList.value);
+    const token = tokensList.find(token=>token.address == newTag);
+   console.log('If token', token);
+          if(token==undefined)
+          {
+            tokenList.value.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/${counter++}.svg`});
+            console.log('Usao');
+          }
+    
+    }
+    //tokensList.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});
+  //  console.log('Tokens list: ', tokensList);
+  //  console.log('Props value:', tokenList.value);
    // airdropStore.tokensList.push({label: label.value0, decimals: decimal.value0*1, address: tokenAddr, icon:`/avatar/5.svg`});
     //console.log('Tokens list: ', tokensList);
   //console.log('Token: ', token);
@@ -659,6 +670,6 @@ async function addTag(newTag)
 
   }
   tokenList.value.push(tag);*/
-}
+
 
 </script>
