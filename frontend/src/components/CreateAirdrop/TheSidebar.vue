@@ -569,22 +569,40 @@ async function onDeployContract() {
     //airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     airdropStore.airdropName = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
    // console.log('airdropName:', airdropName.value);
-    const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
+   if(airdropStore.deployStatus!="Deploying")
+    {
+   const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
    // const fees = await airdropStore.getEstimatedFee();
    airdropStore.transactionId.deployContractId = data.transaction.id.hash;
     console.log('Tr id:', airdropStore.transactionId.deployContractId);
+    }
+    if(airdropStore.deployStatus=="Deploying")
+    {
+      if(airdropStore.transactionId.giverContractId=="")
+      {
     await airdropStore.setTransactionsHash(airdropStore.transactionId.giverContractId);
+      }
+      if(airdropStore.transactionId.deployContractId=="")
+      {
     await airdropStore.setTransactionsHash(airdropStore.transactionId.deployContractId);
+      }
     await airdropStore.setRecipients(recipientsList.value);
     await airdropStore.setAmounts(recipientsList.value);
+    }
     await airdropStore.calculateFees("topup", "giver", '', []);
     console.log('Fees calculated: ', airdropStore.fees);
+    if(airdropStore.deployStatus=="Deployed")
+    {
     airdropStore.step = 3;
+    }
   } catch (e) {
     errors.value.error = true;
     errors.value.message = e.message;
   } finally {
+    if(airdropStore.deployStatus=="Deployed")
+    {
     loading.value = false;
+    }
   }
 }
 async function onTopUpToken() {

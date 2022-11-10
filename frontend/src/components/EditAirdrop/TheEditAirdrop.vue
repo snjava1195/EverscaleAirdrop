@@ -332,8 +332,14 @@ async function getAirdrop() {
 
   // const balance = await contract.methods.balanceWallet({}).call();
   // console.log(balance);
+  if(status.status=="Deploying")
+  {
+    airdropStore.step = 2;
+    airdropStore.deployStatus="Deploying";
+  }
   if (status.status == "Deployed") {
     airdropStore.step = 3;
+    airdropStore.deployStatus="Deployed";
   }
   if (status.status == "Executed") {
     airdropStore.step = 5;

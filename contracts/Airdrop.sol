@@ -97,7 +97,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         }
 	//buildAirdropCode(msg.sender);
 	tvm.setcode(_newCode);
-	status="Deployed";
+	status="Deploying";
     }
     
     function setUpTokenWallet() internal view 
@@ -482,6 +482,10 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             total_Amount+=total_Amount+amounts[i];
     	}
         counter++;
+        if(counter==batches)
+        {
+            status="Deployed";
+        }
 //        uint128 initialValue = 0.1 ever;
   //       deployWithMsgBody(0, initialValue, total_Amount);
     	//messageValue = messageValue+msg.value;

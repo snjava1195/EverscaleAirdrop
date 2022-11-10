@@ -129,7 +129,7 @@ DROP
 SETCODE
 .loc ../contracts/Airdrop.sol, 100
 PUSHREF {
-	.blob x4465706c6f796564
+	.blob x4465706c6f79696e67
 }
 PUSHINT 35
 SETGLOBVAR
@@ -1330,8 +1330,23 @@ BLKDROP 3
 PUSHINT 44
 GETGLOBVAR
 INC
+DUP
 PUSHINT 44
 SETGLOBVAR
+.loc ../contracts/Airdrop.sol, 485
+PUSHINT 36
+GETGLOBVAR
+EQUAL
+PUSHCONT {
+	.loc ../contracts/Airdrop.sol, 487
+	PUSHREF {
+		.blob x4465706c6f796564
+	}
+	PUSHINT 35
+	SETGLOBVAR
+	.loc ../contracts/Airdrop.sol, 0
+}
+IF
 .loc ../contracts/Airdrop.sol, 0
 
 .macro setTransaction
@@ -1343,7 +1358,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/Airdrop.sol, 491
+.loc ../contracts/Airdrop.sol, 495
 LDREF
 ENDS
 .loc ../contracts/Airdrop.sol, 0
@@ -1360,9 +1375,9 @@ THROW 0
 CALL $setTransaction_7a64f113_internal_macro$
 
 .macro setTransaction_7a64f113_internal_macro
-.loc ../contracts/Airdrop.sol, 493
+.loc ../contracts/Airdrop.sol, 497
 ACCEPT
-.loc ../contracts/Airdrop.sol, 494
+.loc ../contracts/Airdrop.sol, 498
 PUSHINT 41
 GETGLOBVAR
 UNPAIR
