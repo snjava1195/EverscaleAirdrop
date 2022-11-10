@@ -13,14 +13,14 @@
               <label class="form-label">Distribution token</label>
               <div class="relative">
                 <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
-                  :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)">
-                  <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
-                      :alt="props.option.label" />
+                  :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)" :taggable="true" @tag="addTag" :multiple="false">
+                  <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"/>
+                     <!-- :alt="props.option.label" />-->
                     <span class="option__desc">
                       <span class="option__title">{{ props.option.label }}</span>
                     </span></template>
-                  <template v-slot:option="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
-                      :alt="props.option.label" />
+                  <template v-slot:option="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"/>
+                   <!--  :alt="props.option.label" />--> 
                     <div class="option__desc">
                       <span class="option__title">{{ props.option.label }}</span>
                     </div>
@@ -53,7 +53,7 @@
           </form>
         </div>
 
-        <template v-if="token">
+        <template v-if="token && airdropStore.step<2">
           <div class="mt-[48px] max-w-[660px]">
             <header>
               <h2 class="recipients-list-subtitle font-[500] leading-[28px]">Recipients list</h2>
@@ -153,6 +153,121 @@
               </div>
             </div>
 
+            
+
+            <!--PAGINATION component-->
+            <div class="paginationToEdit justify-start lg:mt-[-80px] 
+            lg:mb-[20px] mb-[40px]">
+              <div>
+                <AppPagination @submit="getRecipients" />
+              </div>
+            </div>
+
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="mt-[48px] max-w-[660px]">
+            <header>
+              <h2 class="recipients-list-subtitle font-[500] leading-[28px]">Recipients list</h2>
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-[8px]">
+                <div class="flex space-x-[8px] sm:space-x-0 sm:justify-between md:justify-start md:space-x-[8px]">
+                  <h3 class="text-[14px] font-pt_root">
+                    Fill out the form manually or upload the CSV file.
+                  </h3>
+
+                  <span>
+                    <InfoIcon title="Lorem  Ipsum, Lorem Ipsum" />
+                  </span>
+                </div>
+
+                <div @click="downloadTemplate" class="flex items-center space-x-[6px] cursor-pointer">
+                  <span class="downloadSign">
+                    <DownloadIcon />
+                  </span>
+                  <p class="text-[#8B909A] text-sm font-pt_root font-medium">Download template</p>
+                </div>
+              </div>
+            </header>
+
+            <div ref="dropZoneRef" class="upload-file bg-[#ECF1FE] relative group mt-[20px]">
+              <div class="w-[96px] h-[96px] bg-transparent group-hover:bg-[#B1C5FA] rounded-full absolute -top-6">
+                <span class="upload-sign absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <UploadIcon v-if="!loading && !uploadSuccessful" />
+
+                  <ProgressIcon v-else-if="loading" />
+
+                  <SuccessIcon v-else />
+                </span>
+              </div>
+
+              <input :disabled="true" ref="file" @change="onFileChanged($event)" type="file" name="file" class="upload-csv"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                @click="$event.target.value = ''" />
+
+              <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
+                <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
+                  {{
+                      !loading && !uploadSuccessful
+                        ? 'Click to upload or drag and drop'
+                        : loading
+                          ? `Checking the file ${fileName}...`
+                          : uploadSuccessful
+                            ? 'List has been successfully imported'
+                            : ''
+                  }}
+                </h2>
+                <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle">
+                  Only CSV format is supported.
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="table w-full">
+            <div class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] font-pt_root w-full">
+              <div v-for="(item, i) in items" :key="i" @mouseover="hoverItem = i" @mouseleave="hoverItem = null"
+                class="row grid grid-cols-[40px_1fr_1fr] md:grid-cols-[64px_1fr_1fr_70px] h-[40px] md:h-[44px] text-[14px]"
+                :class="{ 'bg-[#F0F1F5] relative': hoverItem === i }">
+                <div class="flex items-center px-[12px] border-t 
+                border-l border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">{{
+                    i + (recipientStore.itemsPerPage * (recipientStore.currentPage - 1)) + 1
+                }}</div>
+
+                <div class="px-[12px] py-[4px] flex items-center 
+                justify-center border-t  border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
+                  <input :disabled="true" v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
+                    placeholder="Recipient address" />
+                </div>
+
+                <div class="px-[12px] py-[4px] flex items-center 
+                justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
+                  <input :disabled="true" v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
+                    :placeholder="`Amount`" />
+                </div>
+
+                <div class="pl-2 bg-white absolute md:relative right-0 
+                  bottom-10 md:bottom-0 shadow-[0px_3px_6px_rgba(0,0,0,0.16)] 
+                  md:shadow-none border-[0.5px] md:border-0 border-[#E4E5EA]">
+                  <div class="h-[40px] flex items-center justify-end px-[12px] 
+                  space-x-[17px]">
+                    <span v-if="hoverItem === i" @click="addItem(i)" class="plusSign 
+                    cursor-pointer relative left-1">
+                   <!--  <PlusIcon />--> 
+                    </span>
+
+                    <span v-if="hoverItem === i && (items.length > 1)
+                    || hoverItem === i && recipientStore.currentPage != 1" @click="removeItem(i)"
+                      class="deleteSign cursor-pointer">
+                     <!-- <TrashIcon /> -->
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+
             <!--PAGINATION component-->
             <div class="paginationToEdit justify-start lg:mt-[-80px] 
             lg:mb-[20px] mb-[40px]">
@@ -181,7 +296,7 @@
 import AppPagination from '@/components/Reusable/AppRecipientListPagination.vue';
 import { useRecipientStore } from '@/stores/recipientStore';
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useDropZone } from '@vueuse/core';
 // import { getCurrentInstance } from 'vue';
 import recipientsList from '@/utils/recipients-list';
@@ -257,6 +372,10 @@ const loading = ref(false);
 const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
+let counter=0;
+/*const step = computed(() => {
+  return airdropStore.step;
+});*/
 let tokenAddr;
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
@@ -339,6 +458,7 @@ function CSVToJSON(data, delimiter = ',') {
             // address: addressFormat(values[0]),
             amount: values[1].replace(/^"(.*)"$/, '$1'),
           });
+          console.log(values[0]);
         }
       })
     );
@@ -400,6 +520,7 @@ function reset() {
   airdropStore.transactionId.distributeContractId = "";
   airdropStore.transactionId.redeemContractId = "";
   airdropStore.fees = 0;
+  airdropStore.airdropName="";
 }
 
 async function addCustomTokens() {
@@ -515,5 +636,40 @@ function getRecipients(num, page) {
 
   recipientStore.getRecipients(pages.length, page);
 }
+
+async function addTag(newTag)
+{
+  const ever = new ProviderRpcClient();
+  //const token =  await airdropStore.getToken(newTag);
+  const root = new ever.Contract(rootAbi, newTag);
+  
+    const decimal = await root.methods.decimals({answerId: 1}).call();
+    console.log(decimal);
+    const label = await root.methods.symbol({answerId: 1}).call();
+    console.log(label);
+    const token = tokensList.find(token=>token.address == newTag);
+   console.log('If token', token);
+          if(token==undefined)
+          {
+            tokenList.value.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/${counter++}.svg`});
+            console.log('Usao');
+          }
+    
+    }
+    //tokensList.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});
+  //  console.log('Tokens list: ', tokensList);
+  //  console.log('Props value:', tokenList.value);
+   // airdropStore.tokensList.push({label: label.value0, decimals: decimal.value0*1, address: tokenAddr, icon:`/avatar/5.svg`});
+    //console.log('Tokens list: ', tokensList);
+  //console.log('Token: ', token);
+  /*const tag = {
+    label:'New token',
+    decimals:9,
+    address: newTag,
+    icon: ''
+
+  }
+  tokenList.value.push(tag);*/
+
 
 </script>

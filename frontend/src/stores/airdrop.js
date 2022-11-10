@@ -3,6 +3,7 @@ import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
 import distributerTvc from '../../../build/Distributer.base64?raw';
 import tip3DistributerTvc from '../../../build/Tip31Distributer.base64?raw';
 import airdrop2Abi from '../../../build/Airdrop.abi.json';
+//import tokenRootAbi from '../../../build/TokenRoot.abi.json';
 import airdrop2Tvc from '../../../build/Airdrop.base64?raw';
 import { toNano, fromNano, getRandomNonce } from '@/utils';
 import { useWalletStore } from '@/stores/wallet';
@@ -169,7 +170,8 @@ export const useAirdropStore = defineStore({
       amountContractId: "",
       distributeContractId: "",
       redeemContractId: "",
-    }
+    },
+    airdropName: "",
   }),
   getters: {},
   actions: {
@@ -295,7 +297,7 @@ export const useAirdropStore = defineStore({
           }
           else
           {
-            fee = 0.5+addresses.length*0.09;
+            fee = 0.5+addresses.length*0.12;
             console.log('Fee: ', fee);
           }
          // const realFee = Number(Math.round(fee+'e2')+'e-2');
@@ -812,7 +814,7 @@ export const useAirdropStore = defineStore({
            // console.log('Addresses length: ', addresses[i][1].length);
            // for(let j=0;j<addresses[i][1].length;j++)
             //{
-              fee = 0.5+(addresses.length*0.09);
+              fee = 0.5+(addresses.length*0.12)+this.loopCount*0.12;
             //}
             
             console.log('Fee: ', fee);
@@ -1061,7 +1063,7 @@ export const useAirdropStore = defineStore({
           //console.log(date);
          // console.log(this.airdrops.accounts[0]._address);
           let createdStatus = "";
-          if(status.status!="Executed")
+          if(status.status!="Executed" && status.status!="Redeemed")
           {
             createdStatus = "Created";
           }
@@ -1213,6 +1215,10 @@ async getBalances()
             console.log('Usao u undefined');
             tokensList.push({label: this.tokenAddr.balances[i].token, decimals: decimal.value0*1, address:this.tokenAddr.balances[i].rootAddress, icon:`/avatar/${counter}.svg`});
           }
+          if(counter==10)
+          {
+            counter = 0;
+          }
   }
   console.log(tokensList);
   //console.log('Avatar:',walletStore.profile.address.substr(
@@ -1220,7 +1226,7 @@ async getBalances()
         //  1
         //));
 
-}/* const ever = new ProviderRpcClient();
+},/* const ever = new ProviderRpcClient();
   console.log(tokenAddr.length);
   for(let i=0;i<tokenAddr.length;i++)
 {
@@ -1228,5 +1234,26 @@ async getBalances()
   const decimal = await rootAcc.methods.decimals({answerId: 1}).call();
   console.log("decimals: ", decimal);
 }*/
+
+async getToken(tokenAddr)
+  {
+    const root = new ever.Contract(rootAbi, tokenAddr);
+    try{
+    const decimal = await root.methods.decimals({answerId: 1}).call();
+    console.log(decimal);
+    const label = await root.methods.symbol({answerId: 1}).call();
+    console.log(label);
+    tokensList.push({label: label.value0, decimals: decimal.value0*1, address: tokenAddr, icon:`/avatar/5.svg`});
+    return Promise.resolve(label);
+    }
+    catch(e)
+    {
+      console.log(e);
+      return Promise.reject(e);
+    }
+  }
   },
+
+  
+
 });

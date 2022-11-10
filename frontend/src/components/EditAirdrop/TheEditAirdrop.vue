@@ -12,7 +12,7 @@
             <label class="form-label">Distribution token</label>
             <div class="relative">
               <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
-                :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)">
+                :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)" :disabled="true">
                 <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
                     :alt="props.option.label" />
                   <span class="option__desc">
@@ -32,7 +32,7 @@
           <div class="w-full">
             <label for="airdropName" class="form-label">Airdrop name (optional)</label>
             <input v-model="airdropName" id="airdropName" class="form-text-input" :class="{ 'min-h-[43px]': !token }"
-              type="text" name="airdropName" placeholder="Enter a name" />
+              type="text" name="airdropName" placeholder="Enter a name" :disabled="true"/>
           </div>
         </form>
 
@@ -41,7 +41,7 @@
             <label for="airdropName" class="form-label">Lock duration</label>
             <Datepicker v-model="airdropStore.lockDuration" inputClassName="dp-custom-input"
               placeholder="Date and time of unlock" :minDate="new Date()"
-              :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"></Datepicker>
+              :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }" :disabled="true"></Datepicker>
           </div>
 
           <div class="w-full">
@@ -236,8 +236,20 @@ function onDrop(files) {
   }
 }
 function downloadTemplate() {
-  window.open('example.csv');
+  //console.log(items.value[0]);
+  let array="";
+  for(let i=0;i<fullRecList.value.length;i++)
+  {
+    array+=fullRecList.value[i].address + "," + fullRecList.value[i].amount +"\n";
+  }
+  //console.log(array);
+  let csvContent = "data:text/csv;charset=utf-8," 
+    + array;
+  //console.log(csvContent)
+  var encodedUri = encodeURI(csvContent);
+window.open(encodedUri);
 }
+
 function CSVToJSON(data, delimiter = ',') {
   items.value = [];
   return new Promise((resolve, reject) => {
@@ -308,7 +320,8 @@ async function getAirdrop() {
   const name = await contract.methods.contract_notes({}).call();
   //console.log('Name: ', name);
   airdropName.value = name.contract_notes;
-  //console.log('Name: ', airdropName.value);
+  airdropStore.airdropName = airdropName.value;
+  console.log('Name: ', airdropName.value);
 
   const refundDuration = await contract.methods.getRefundLockDuration({}).call();
   airdropStore.lockDuration = dayjs.unix(refundDuration.value0).format('ddd MMM DD YYYY HH:mm:ss');
@@ -499,6 +512,7 @@ function reset()
   }
  // fullRecList.value= recipientsList;
   console.log('Reset recipients list value: ', fullRecList.value);
+  airdropStore.airdropName="";
   recipientStore.resetPagination();
 
 }

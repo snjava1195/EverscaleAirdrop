@@ -95,4 +95,6 @@ const props = defineProps({
     required: true,
   },
 });
+
+console.log('Props: ', props.shareNetwork);
 </script>
