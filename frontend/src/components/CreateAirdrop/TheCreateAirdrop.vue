@@ -372,7 +372,9 @@ const loading = ref(false);
 const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
+const deployStatus = "";
 let counter=0;
+let address="";
 /*const step = computed(() => {
   return airdropStore.step;
 });*/
@@ -521,6 +523,12 @@ function reset() {
   airdropStore.transactionId.redeemContractId = "";
   airdropStore.fees = 0;
   airdropStore.airdropName="";
+
+}
+
+async function checkForContractStatus()
+{
+
 }
 
 async function addCustomTokens() {

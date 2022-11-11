@@ -172,6 +172,7 @@ export const useAirdropStore = defineStore({
       redeemContractId: "",
     },
     airdropName: "",
+    deployStatus: "",
   }),
   getters: {},
   actions: {
@@ -457,7 +458,9 @@ export const useAirdropStore = defineStore({
           console.log(sendTransaction.transaction.createdAt);*/
 
         this.getRequiredAmount(totalTokens, totalRecipients);
-
+        const status = await everAirDropContract.methods.status({}).call();
+        this.deployStatus = status.status;
+        console.log('Dep status: ', this.deployStatus);
         console.log('sendTransaction: ', sendTransaction);
         walletStore.getBalance();
         return Promise.resolve(sendTransaction);
@@ -505,7 +508,8 @@ export const useAirdropStore = defineStore({
 
         const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
         //console.log('Address: ', this.address);
-        let loopStart = 0;
+        const batchesDone = await everAirDropContract.methods.batchAddresses({}).call()
+        let loopStart = batchesDone.batchAddresses.length;
         //console.log('loopStart:', loopStart);
         
         let sendTransaction;
@@ -579,7 +583,10 @@ export const useAirdropStore = defineStore({
 
         const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
        // console.log('Address: ', this.address);
-        let loopStart = 0;
+       const batchesDone = await everAirDropContract.methods.batchAmounts({}).call()
+        let loopStart = batchesDone.batchAmounts.length;
+        //let loopStart = 0;
+        console.log('Loop start: ', loopStart);
      //   console.log('loopStart:', loopStart);
         
         let sendTransaction;
@@ -619,7 +626,9 @@ export const useAirdropStore = defineStore({
           // const futureEvent = await everAirDropContract.waitForEvent({ filter: event => event.event === "StateChanged" });
           // console.log(futureEvent);
         }
-
+        const status = await everAirDropContract.methods.status({}).call();
+        this.deployStatus = status.status;
+        console.log('Deploy status: ', this.deployStatus);
         // const sendTransaction = await everAirDropContract.methods.distribute({}).send({
         //   from: walletStore.profile.address,
         //   amount: toNano(0.5),
@@ -814,6 +823,116 @@ export const useAirdropStore = defineStore({
            // console.log('Addresses length: ', addresses[i][1].length);
            // for(let j=0;j<addresses[i][1].length;j++)
             //{
+              fee = 0.5+(addresses.length*0.12)+this.loopCount*0.13;
+            //}
+            
+            console.log('Fee: ', fee);
+          }
+          //}
+          /*sendTransaction = await everAirDropContract.methods.distribute({
+            _addresses: chunkAddresses[i][1],
+            _amounts: chunkAmounts[i][1],
+            _wid: 0,
+            _totalAmount: toNano(totalAmount, this.token.decimals)
+          }).send({
+            from: walletStore.profile.address,
+            amount: toNano(fee, 9),
+            bounce: true,
+          });
+          firstResumed = false;*/
+          //if(i==0)
+          //{
+          sendTransaction = await everAirDropContract.methods.distribute2({
+            //_addresses: chunkAddresses[i][1],
+            //_amounts: chunkAmounts[i][1],
+            //_wid: 0,
+            //_totalAmount: toNano(totalAmount, this.token.decimals)
+          }).send({
+            from: walletStore.profile.address,
+            amount: toNano(fee, 9),
+            bounce: true,
+          });
+        //}
+       // else
+        //{
+          //sendTransaction = await everAirDropContract.methods.distribute({}).sendExternal({publicKey: publicKey, withoutSignature: true});
+          //console.log('Poslao drugu');
+        //}
+          firstResumed = false;
+        //}
+          // const futureEvent = await everAirDropContract.waitForEvent({ filter: event => event.event === "StateChanged" });
+          // console.log(futureEvent);
+        }
+      }
+      else
+      {
+        const loopNr=everAirDropContract.methods.usao({}).call();
+        this.currentBatch=loopNr.usao;
+        console.log('Current batch: ', loopNr);
+        if (this.token.label === 'EVER')
+          {
+          /*sendTransaction = await everAirDropContract.methods.distribute({
+            _addresses: chunkAddresses[i][1],
+            _amounts: chunkAmounts[i][1],
+            _wid: 0,
+            _totalAmount: toNano(totalAmount, this.token.decimals)
+          }).send({
+            from: walletStore.profile.address,
+            amount: toNano(1, 9),
+            bounce: true,
+          });*/
+          console.log(this.loopCount);
+          //if(i==0)
+          //{
+          sendTransaction = await everAirDropContract.methods.distribute2({
+            //_addresses: chunkAddresses[i][1],
+            //_amounts: chunkAmounts[i][1],
+            //_wid: 0,
+            //_totalAmount: toNano(totalAmount, this.token.decimals)
+          }).send({
+            from: walletStore.profile.address,
+            amount: toNano(this.loopCount*0.3, 9),
+            bounce: true,
+          });
+         // let eventsData=1;
+        // while(this.currentBatch!=this.loopCount)
+          //{
+            this.getEvents();
+          //eventsData=event.data.batchProcesses*1;
+          //}
+        
+         
+           
+          
+       // }
+       // else
+       // {
+         // sendTransaction = await everAirDropContract.methods.distribute({}).sendExternal({publicKey: publicKey, withoutSignature: true});
+       // }
+        firstResumed = false;
+        }
+          
+          //const rec = await everAirDropContract.methods.batchAddresses({}).call();
+          //console.log(rec.batchAddresses[0][1]);
+          //const amounts = await everAirDropContract.methods.batchAmounts({}).call();
+          //console.log(amounts.batchAmounts[0][1]);
+        
+        else
+        {
+          let fee=0;
+          //for(let i=0;i<addresses.length;i++)
+         // {
+          if(addresses.length ==1)
+          {
+            //console.log('Addresses length: ', addresses[i][1].length);
+            fee = 0.5;
+            console.log('Fee: ', fee);
+          }
+          else
+          {
+           // console.log('Addresses length: ', addresses[i][1].length);
+           // for(let j=0;j<addresses[i][1].length;j++)
+            //{
               fee = 0.5+(addresses.length*0.12)+this.loopCount*0.12;
             //}
             
@@ -854,6 +973,7 @@ export const useAirdropStore = defineStore({
           // const futureEvent = await everAirDropContract.waitForEvent({ filter: event => event.event === "StateChanged" });
           // console.log(futureEvent);
         }
+
       }
     
       
