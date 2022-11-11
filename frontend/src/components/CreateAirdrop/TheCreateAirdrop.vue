@@ -419,8 +419,16 @@ async function saveFile(value) {
       await CSVToJSON(data);
       loading.value = false;
       uploadSuccessful.value = true;
+      let changeBG = document.querySelectorAll('.upload-file');
+      let changeBGx = document.querySelectorAll('.upload-sign');
+      if (uploadSuccessful) {
+        changeBG[0].style.backgroundColor = '#EFF9EF';
+        changeBGx[0].style.backgroundColor = '#EFF9EF';
+      }
       setTimeout(() => {
         uploadSuccessful.value = false;
+        changeBG[0].style.backgroundColor = '#ECF1FE';
+        changeBGx[0].style.backgroundColor = '#DAE4FD';
       }, 3000);
     } catch (error) {
       console.error(error);
