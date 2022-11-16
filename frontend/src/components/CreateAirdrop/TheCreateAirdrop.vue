@@ -659,36 +659,29 @@ function getRecipients(num, page) {
   // Save the number of items to be shown per page
   recipientStore.setNumItemsPerPage(num);
   items.value = fullRecList.value.slice();
-
   // Create pages with the "num" number of items
   pages = [];
   let a = items.value;
   for (var i = 0; i < a.length; i++) {
     if (i % num == 0) pages.push([]);
     pages[Math.floor(i / num)].push(a[i]);
-    // console.log(pages);
   }
-  // console.log(`Number of items per page: ${num}`);
-  // console.log(`Page num: ${page}`);
-
   let arr = fullRecList.value.slice();
   let begin = num * (page - 1);
   let end = page * num;
   arr = arr.slice(begin, end);
-
   // Change the list that is being shown
   items.value = arr;
 
   recipientStore.getRecipients(pages.length, page);
 }
-
-// TODO:
+// /////////////////////////////////////
+// DROPDOWN Functions
+// /////////////////////////////////////////////////////
 async function onChangeInput(address) {
   let found = false;
   let error = false;
   for (let i = 0; i < tokenList.value.length; i++) {
-    // console.log(tokenList.value[i].label);
-    // console.log(tokenList.value[i].address == address);
     if (tokenList.value[i].address == address) {
       console.log('1111111 Existing token');
       found = true;
@@ -730,24 +723,13 @@ async function onChange(value) {
   //airdropStore.step =1;
 }
 function onEnter() {
-  // console.log('customToken: ', customToken.value);
   onChangeInput(customToken.value);
-  // tokenList.value.push({
-  //   label: '',
-  //   decimals: '',
-  //   address: customToken.value,
-  //   icon: '',
-  // });
 }
 
 async function addTag(newTag) {
-
-console.log(newTag, 'TAGTAGTAGTAGTAG');
-
   const ever = new ProviderRpcClient();
   //const token =  await airdropStore.getToken(newTag);
   const root = new ever.Contract(rootAbi, newTag);
-
   const decimal = await root.methods.decimals({ answerId: 1 }).call();
   console.log(decimal);
   const label = await root.methods.symbol({ answerId: 1 }).call();
