@@ -42,33 +42,6 @@
                     </div>
                   </section>
                 </template>
-                
-                <!-- <template ref="target" style="display: block">
-                  <section class="dropdown-wrap">
-
-                    <div class="dropdown-select" @click="recipientStore.updateDropdownVisibility()">
-                      <div v-if="token">
-                        <img :src="token.icon" alt="" height="1.25rem" width="1.25rem">
-                        <span>{{token.label}}</span>
-                      </div>
-                      <div v-else>
-                        <p>Select Token</p>
-                      </div>
-                    </div>
-
-                    <div v-if="recipientStore.isVisible" class="dropdown-popover">
-
-                      <input type="text" placeholder="Add a token" v-model="token" @update:modelValue="onChange(token)">
-
-                      <div class="dropdown-options">
-                        <div v-for="(token, i) in tokenList" :key="i" @click="onChange(token)">
-                            <img :src="token.icon" alt="">
-                            <p>{{token.label}}</p> 
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-                </template> -->
 
                   <!-- <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
                   :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)"
@@ -87,7 +60,6 @@
                         <span class="option__title">{{ props.option.label }}</span>
                       </div>
                     </template>
-          
                   </multiselect> -->
 
                 <p class="form-dropdown-message">The token you are going to airdrop</p>
@@ -712,11 +684,9 @@ function getRecipients(num, page) {
 
 // TODO:
 async function onChangeInput(address) {
-
-  var found = false;
-  var error = false;
-
-  for (var i = 0; i < tokenList.value.length; i++) {
+  let found = false;
+  let error = false;
+  for (let i = 0; i < tokenList.value.length; i++) {
     // console.log(tokenList.value[i].label);
     // console.log(tokenList.value[i].address == address);
     if (tokenList.value[i].address == address) {
@@ -732,18 +702,24 @@ async function onChangeInput(address) {
         address: '',
         decimals: '',
       };
+    } else if (!address.includes(":")) {
+      console.log('3333333 ERROR IN ADDRESS');
+      error = true;
+      token.value = {
+        label: 'Error: Address missing colon',
+        icon: '',
+        address: '',
+        decimals: '',
+      };
     }
   }
 
-  console.log('After 4loop ' + `found: ${found} + error: ${error}`);
   if (found == false && error == false) {
     console.log('New address spotted!');
-    // var token = {
-    //   label: 'EVER',
-    //   decimals: 9,
-    //   address: address,
-    //   icon: 'https://app.flatqube.io/assets/992f1244bd3cbc67afa8.svg',
-    // };
+    await addTag(address);
+    var my_array = tokenList.value;
+    var last_element = my_array[my_array.length - 1];
+    onChange(last_element);
   }
 }
 async function onChange(value) {
@@ -764,14 +740,10 @@ function onEnter() {
   // });
 }
 
-function printaj(token) {
-
-  // selectedItem = token;
-
-  console.log(token);
-}
-
 async function addTag(newTag) {
+
+console.log(newTag, 'TAGTAGTAGTAGTAG');
+
   const ever = new ProviderRpcClient();
   //const token =  await airdropStore.getToken(newTag);
   const root = new ever.Contract(rootAbi, newTag);
@@ -786,7 +758,6 @@ async function addTag(newTag) {
     tokenList.value.push({ label: label.value0, decimals: decimal.value0 * 1, address: newTag, icon: `/avatar/${counter++}.svg` });
     console.log('Usao');
   }
-
 }
     //tokensList.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});
   //  console.log('Tokens list: ', tokensList);
