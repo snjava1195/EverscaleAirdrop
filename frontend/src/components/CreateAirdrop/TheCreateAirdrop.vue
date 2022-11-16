@@ -12,14 +12,42 @@
             <div class="w-full">
               <label class="form-label">Distribution token</label>
               <div class="relative">
-                
-                <template style="display: block">
+
+                <template ref="target" style="display: block">
                   <section class="dropdown-wrap">
                     <div class="dropdown-select" @click="recipientStore.updateDropdownVisibility()">
                       <div v-if="token">
+                        <img :src="token.icon" alt=""/>
+                        <span>{{ token.label }}</span>
+                      </div>
+                      <div v-else>
+                        <p>Select Token</p>
+                      </div>
+                    </div>
 
-                        <!-- watch the tutorial to end -->
+                    <div v-if="recipientStore.isVisible" class="dropdown-popover">
+                      <input 
+                      type="text" 
+                      placeholder="Add a token" 
+                      v-model="customToken" 
+                      @keyup.enter="onEnter"
+                      />
 
+                      <div class="dropdown-options">
+                        <div v-for="(token, i) in tokenList" :key="i" @click="onChange(token)">
+                          <img :src="token.icon" alt="" />
+                          <p>{{ token.label }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </template>
+                
+                <!-- <template ref="target" style="display: block">
+                  <section class="dropdown-wrap">
+
+                    <div class="dropdown-select" @click="recipientStore.updateDropdownVisibility()">
+                      <div v-if="token">
                         <img :src="token.icon" alt="" height="1.25rem" width="1.25rem">
                         <span>{{token.label}}</span>
                       </div>
@@ -27,17 +55,20 @@
                         <p>Select Token</p>
                       </div>
                     </div>
+
                     <div v-if="recipientStore.isVisible" class="dropdown-popover">
+
                       <input type="text" placeholder="Add a token" v-model="token" @update:modelValue="onChange(token)">
+
                       <div class="dropdown-options">
-                        <div v-for="(token, i) in tokenList" :key="i">
+                        <div v-for="(token, i) in tokenList" :key="i" @click="onChange(token)">
                             <img :src="token.icon" alt="">
                             <p>{{token.label}}</p> 
                         </div>
                       </div>
                     </div>
                   </section>
-                </template>
+                </template> -->
 
                   <!-- <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
                   :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)"
@@ -345,6 +376,7 @@ import { fromNano } from '@/utils';
 import axios from 'axios';
 import { useWalletStore } from '@/stores/wallet';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
+import { onClickOutside } from '@vueuse/core';
 
 // PAGINATION entities //
 const recipientStore = useRecipientStore();
@@ -390,8 +422,10 @@ const rootAbi = {
 const items = ref(recipientsList);
 let fullRecList = ref(items.value.slice());
 let numberPerPage = recipientStore.itemsPerPage;
+const target = ref(null);
 const airdropName = ref(null);
 const token = ref(null);
+const customToken = ref(null);
 const tokenList = ref(tokensList);
 const lockDuration = ref(null);
 const hoverItem = ref(null);
@@ -405,6 +439,11 @@ const walletStore = useWalletStore();
 const deployStatus = "";
 let counter = 0;
 let address = "";
+
+onClickOutside(target, () => {
+  if (recipientStore.isVisible) recipientStore.updateDropdownVisibility();
+});
+
 /*const step = computed(() => {
   return airdropStore.step;
 });*/
@@ -528,12 +567,6 @@ function readFile(file) {
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-}
-async function onChange(token) {
-  await airdropStore.getExpectedAddress(token);
-  await airdropStore.calculateFees("deploy", "giver", "EVER", "");
-  console.log('Fee: ', airdropStore.fees);
-  //airdropStore.step =1;
 }
 
 function reset() {
@@ -675,6 +708,67 @@ function getRecipients(num, page) {
   items.value = arr;
 
   recipientStore.getRecipients(pages.length, page);
+}
+
+// TODO:
+async function onChangeInput(address) {
+
+  var found = false;
+  var error = false;
+
+  for (var i = 0; i < tokenList.value.length; i++) {
+    // console.log(tokenList.value[i].label);
+    // console.log(tokenList.value[i].address == address);
+    if (tokenList.value[i].address == address) {
+      console.log('1111111 Existing token');
+      found = true;
+      onChange(tokenList.value[i]);
+    } else if (address.length < 66) {
+      console.log('2222222 ERROR IN ADDRESS');
+      error = true;
+      token.value = {
+        label: 'Error: Address too short',
+        icon: '',
+        address: '',
+        decimals: '',
+      };
+    }
+  }
+
+  console.log('After 4loop ' + `found: ${found} + error: ${error}`);
+  if (found == false && error == false) {
+    console.log('New address spotted!');
+    // var token = {
+    //   label: 'EVER',
+    //   decimals: 9,
+    //   address: address,
+    //   icon: 'https://app.flatqube.io/assets/992f1244bd3cbc67afa8.svg',
+    // };
+  }
+}
+async function onChange(value) {
+  token.value = value;
+  await airdropStore.getExpectedAddress(value);
+  await airdropStore.calculateFees("deploy", "giver", "EVER", "");
+  console.log('Fee: ', airdropStore.fees);
+  //airdropStore.step =1;
+}
+function onEnter() {
+  // console.log('customToken: ', customToken.value);
+  onChangeInput(customToken.value);
+  // tokenList.value.push({
+  //   label: '',
+  //   decimals: '',
+  //   address: customToken.value,
+  //   icon: '',
+  // });
+}
+
+function printaj(token) {
+
+  // selectedItem = token;
+
+  console.log(token);
 }
 
 async function addTag(newTag) {
