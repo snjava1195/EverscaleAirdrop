@@ -284,3 +284,63 @@ input.multiselect__input {
   pointer-events: none;
   /* background-color: #a6aab2; */
 }
+
+/*Styles for the new dropdown: Select Token*/
+.dropdown-wrap {
+  margin: 0;
+  position: relative;
+}
+.dropdown-select {
+  z-index: 10;
+  height: 43px;
+  border: 1px solid lightgray;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+.dropdown-popover {
+  z-index: 10;
+  position: absolute;
+  border: 1px solid lightgray;
+  /* top: 46px; */
+  left: 0;
+  right: 0;
+  background-color: white;
+  /* width: 100%; */
+  max-width: 100%;
+  /* padding: 10px; */
+}
+.dropdown-popover input {
+  width: 90%;
+  height: 43px;
+  border: 1px solid lightgray;
+  font-size: 16px;
+  padding-left: 10px;
+  margin-left: 5%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+.dropdown-options {
+  width: 100%;
+  max-height: 200px;
+  overflow-y: scroll;
+}
+.dropdown-options div {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  height: 43px;
+  text-align: left;
+  /* margin-left: 5%; */
+  padding-left: 5%;
+  /* border-top: 1px solid lightgrey; */
+}
+.dropdown-options div img {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.dropdown-options div p {
+  margin-left: 5%;
+}

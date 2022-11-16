@@ -126,12 +126,12 @@
                 </div>
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
-                  <input :disabled="true" v-model="item.address" class="h-full w-full px-[12px]" type="text"
+                  <input :disabled="canEdit" v-model="item.address" class="h-full w-full px-[12px]" type="text"
                     name="address" placeholder="Recipient address" />
                 </div>
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
-                  <input :disabled="true" v-model="item.amount" type="number" name="amount"
+                  <input :disabled="canEdit" v-model="item.amount" type="number" name="amount"
                     class="h-full w-full px-[12px]" :placeholder="`Amount, ${token.label}`" />
                 </div>
               </div>
@@ -522,5 +522,11 @@ function reset()
   recipientStore.resetPagination();
 
 }
+
+function canEditList() {
+  var isTrueOrNot = airdropStore.step >= 2 ? false : true;
+  return isTrueOrNot;
+}
+var canEdit = canEditList();
 
 </script>

@@ -12,20 +12,53 @@
             <div class="w-full">
               <label class="form-label">Distribution token</label>
               <div class="relative">
-                <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
-                  :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)" :taggable="true" @tag="addTag" :multiple="false">
-                  <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"/>
-                     <!-- :alt="props.option.label" />-->
-                    <span class="option__desc">
-                      <span class="option__title">{{ props.option.label }}</span>
-                    </span></template>
-                  <template v-slot:option="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"/>
-                   <!--  :alt="props.option.label" />--> 
-                    <div class="option__desc">
-                      <span class="option__title">{{ props.option.label }}</span>
+                
+                <template style="display: block">
+                  <section class="dropdown-wrap">
+                    <div class="dropdown-select" @click="recipientStore.updateDropdownVisibility()">
+                      <div v-if="token">
+
+                        <!-- watch the tutorial to end -->
+
+                        <img :src="token.icon" alt="" height="1.25rem" width="1.25rem">
+                        <span>{{token.label}}</span>
+                      </div>
+                      <div v-else>
+                        <p>Select Token</p>
+                      </div>
                     </div>
-                  </template>
-                </multiselect>
+                    <div v-if="recipientStore.isVisible" class="dropdown-popover">
+                      <input type="text" placeholder="Add a token" v-model="token" @update:modelValue="onChange(token)">
+                      <div class="dropdown-options">
+                        <div v-for="(token, i) in tokenList" :key="i">
+                            <img :src="token.icon" alt="">
+                            <p>{{token.label}}</p> 
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </template>
+
+                  <!-- <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
+                  :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)"
+                  :taggable="true" @tag="addTag" :multiple="false" >
+
+                    <template v-slot:singleLabel="props">
+                      <img class="option__image pr-1 w-5 h-5" :src="props.option.icon" />
+                      <span class="option__desc">
+                        <span class="option__title">{{ props.option.label }}</span>
+                      </span>
+                    </template>
+  
+                    <template v-slot:option="props">
+                      <img class="option__image pr-1 w-5 h-5" :src="props.option.icon" />
+                      <div class="option__desc">
+                        <span class="option__title">{{ props.option.label }}</span>
+                      </div>
+                    </template>
+          
+                  </multiselect> -->
+
                 <p class="form-dropdown-message">The token you are going to airdrop</p>
               </div>
             </div>
@@ -52,8 +85,8 @@
             </div>
           </form>
         </div>
-
-        <template v-if="token && airdropStore.step<2">
+<!-- todo -->
+        <template v-if="token && airdropStore.step < 2">
           <div class="mt-[48px] max-w-[660px]">
             <header>
               <h2 class="recipients-list-subtitle font-[500] leading-[28px]">Recipients list</h2>
@@ -153,7 +186,7 @@
               </div>
             </div>
 
-            
+
 
             <!--PAGINATION component-->
             <div class="paginationToEdit justify-start lg:mt-[-80px] 
@@ -201,7 +234,8 @@
                 </span>
               </div>
 
-              <input :disabled="true" ref="file" @change="onFileChanged($event)" type="file" name="file" class="upload-csv"
+              <input :disabled="true" ref="file" @change="onFileChanged($event)" type="file" name="file"
+                class="upload-csv"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 @click="$event.target.value = ''" />
 
@@ -236,14 +270,14 @@
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t  border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input :disabled="true" v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
-                    placeholder="Recipient address" />
+                  <input :disabled="true" v-model="item.address" class="h-full w-full px-[12px]" type="text"
+                    name="address" placeholder="Recipient address" />
                 </div>
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input :disabled="true" v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
-                    :placeholder="`Amount`" />
+                  <input :disabled="true" v-model="item.amount" type="number" name="amount"
+                    class="h-full w-full px-[12px]" :placeholder="`Amount`" />
                 </div>
 
                 <div class="pl-2 bg-white absolute md:relative right-0 
@@ -253,20 +287,20 @@
                   space-x-[17px]">
                     <span v-if="hoverItem === i" @click="addItem(i)" class="plusSign 
                     cursor-pointer relative left-1">
-                   <!--  <PlusIcon />--> 
+                      <!--  <PlusIcon />-->
                     </span>
 
                     <span v-if="hoverItem === i && (items.length > 1)
                     || hoverItem === i && recipientStore.currentPage != 1" @click="removeItem(i)"
                       class="deleteSign cursor-pointer">
-                     <!-- <TrashIcon /> -->
+                      <!-- <TrashIcon /> -->
                     </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            
+
 
             <!--PAGINATION component-->
             <div class="paginationToEdit justify-start lg:mt-[-80px] 
@@ -280,13 +314,9 @@
         </template>
       </main>
 
-      <TheSidebar
-        :items="fullRecList"
-        :token="token"
-        :shareNetwork="{
-          airdropName: airdropName,
-        }"
-      />
+      <TheSidebar :items="fullRecList" :token="token" :shareNetwork="{
+        airdropName: airdropName,
+      }" />
     </div>
   </div>
 </template>
@@ -373,8 +403,8 @@ const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
 const deployStatus = "";
-let counter=0;
-let address="";
+let counter = 0;
+let address = "";
 /*const step = computed(() => {
   return airdropStore.step;
 });*/
@@ -516,8 +546,7 @@ function reset() {
     items.value[i].address = "";
     items.value[i].amount = "";
   }
-  for(let i=0;i<fullRecList.value.length;i++)
-  {
+  for (let i = 0; i < fullRecList.value.length; i++) {
     fullRecList.value[i].address = "";
     fullRecList.value[i].amount = "";
   }
@@ -530,12 +559,11 @@ function reset() {
   airdropStore.transactionId.distributeContractId = "";
   airdropStore.transactionId.redeemContractId = "";
   airdropStore.fees = 0;
-  airdropStore.airdropName="";
+  airdropStore.airdropName = "";
 
 }
 
-async function checkForContractStatus()
-{
+async function checkForContractStatus() {
 
 }
 
@@ -575,10 +603,6 @@ async function addCustomTokens() {
     .catch(function (error) {
       console.log(error);
     });
-
-
-
-
 
   //const rootAcc = new ever.Contract(rootAbi, this.token.address);
 
@@ -653,39 +677,37 @@ function getRecipients(num, page) {
   recipientStore.getRecipients(pages.length, page);
 }
 
-async function addTag(newTag)
-{
+async function addTag(newTag) {
   const ever = new ProviderRpcClient();
   //const token =  await airdropStore.getToken(newTag);
   const root = new ever.Contract(rootAbi, newTag);
-  
-    const decimal = await root.methods.decimals({answerId: 1}).call();
-    console.log(decimal);
-    const label = await root.methods.symbol({answerId: 1}).call();
-    console.log(label);
-    const token = tokensList.find(token=>token.address == newTag);
-   console.log('If token', token);
-          if(token==undefined)
-          {
-            tokenList.value.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/${counter++}.svg`});
-            console.log('Usao');
-          }
-    
-    }
+
+  const decimal = await root.methods.decimals({ answerId: 1 }).call();
+  console.log(decimal);
+  const label = await root.methods.symbol({ answerId: 1 }).call();
+  console.log(label);
+  const token = tokensList.find(token => token.address == newTag);
+  console.log('If token', token);
+  if (token == undefined) {
+    tokenList.value.push({ label: label.value0, decimals: decimal.value0 * 1, address: newTag, icon: `/avatar/${counter++}.svg` });
+    console.log('Usao');
+  }
+
+}
     //tokensList.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});
   //  console.log('Tokens list: ', tokensList);
   //  console.log('Props value:', tokenList.value);
    // airdropStore.tokensList.push({label: label.value0, decimals: decimal.value0*1, address: tokenAddr, icon:`/avatar/5.svg`});
     //console.log('Tokens list: ', tokensList);
   //console.log('Token: ', token);
-  /*const tag = {
-    label:'New token',
-    decimals:9,
-    address: newTag,
-    icon: ''
+/*const tag = {
+  label:'New token',
+  decimals:9,
+  address: newTag,
+  icon: ''
 
-  }
-  tokenList.value.push(tag);*/
+}
+tokenList.value.push(tag);*/
 
 
 </script>

@@ -500,7 +500,7 @@ const redeemExpired = computed(() => {
   return false;
 });
 const currentBatch = computed(() => {
-  return airdropStore.currentBatch;
+  return airdropStore.currentBatch; /// TODO: Ne vraca value ako se refreshuje na step 4 i kliknes na resume airdrop
 });
 const maxBatches = computed(() => {
   return airdropStore.maxBatches;
