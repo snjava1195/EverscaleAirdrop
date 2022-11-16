@@ -353,3 +353,15 @@ input.multiselect__input {
 .dropdown-options div p {
   margin-left: 5%;
 }
+
+.dp__sidebar_left{
+  width: 120px;
+}
+.left-sidebar-button {
+  padding-top: 16px;
+  padding-right: 28px;
+  padding-bottom: 0px;
+  padding-left: 28px;
+  line-height: 20px;
+  color: #8B909A;
+}

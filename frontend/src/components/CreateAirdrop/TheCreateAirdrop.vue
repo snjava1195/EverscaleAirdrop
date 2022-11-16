@@ -78,7 +78,14 @@
               <label for="airdropName" class="form-label">Lock duration</label>
               <Datepicker v-model="airdropStore.lockDuration" inputClassName="dp-custom-input"
                 placeholder="Date and time of unlock" :minDate="new Date()"
-                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"></Datepicker>
+                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }">
+                <template #left-sidebar>
+                  <div @click="addHours(1)" class="cursor-pointer left-sidebar-button">1 hour</div>
+                  <div @click="addHours(2)"  class="cursor-pointer left-sidebar-button">2 hours</div>
+                  <div @click="addHours(24)"  class="cursor-pointer left-sidebar-button">1 day</div>
+                  <div @click="addHours(168)"  class="cursor-pointer left-sidebar-button">1 week</div>
+                </template>
+              </Datepicker>
             </div>
 
             <div class="w-full">
@@ -774,5 +781,9 @@ console.log(newTag, 'TAGTAGTAGTAGTAG');
 }
 tokenList.value.push(tag);*/
 
-
+function addHours(hours, value = new Date()) {
+  let ms = hours * 60 * 60 * 1000;
+  value.setTime(value.getTime() + ms);
+  airdropStore.lockDuration = value;
+}
 </script>
