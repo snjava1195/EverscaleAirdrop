@@ -337,6 +337,9 @@ input.multiselect__input {
   overflow-y: scroll;
 }
 .dropdown-options div {
+
+}
+.dropdown-options div div {
   display: flex;
   /* justify-content: space-between; */
   align-items: center;
@@ -346,13 +349,21 @@ input.multiselect__input {
   padding-left: 5%;
   /* border-top: 1px solid lightgrey; */
 }
-.dropdown-options div img {
+.dropdown-options div div img {
   width: 1.25rem;
   height: 1.25rem;
 }
-.dropdown-options div p {
+.dropdown-options div div p {
   margin-left: 5%;
 }
+.addr_input {
+  border: 2px solid black;
+  outline: none;
+}
+.addr_input:focus {
+  border: 2px solid #bd12c6;
+}
+
 
 .dp__sidebar_left{
   width: 120px;

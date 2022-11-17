@@ -486,8 +486,6 @@ function getRecipients(num, page) {
     pages[Math.floor(i / num)].push(a[i]);
     // console.log(pages);
   }
-  // console.log(`Number of items per page: ${num}`);
-  // console.log(`Page num: ${page}`);
 
   let arr = fullRecList.value.slice();
   let begin = num * (page - 1);

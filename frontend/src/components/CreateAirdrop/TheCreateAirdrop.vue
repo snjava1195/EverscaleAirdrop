@@ -26,7 +26,7 @@
                     </div>
 
                     <div v-if="recipientStore.isVisible" class="dropdown-popover">
-                      <input 
+                      <input class="addr_input"
                       type="text" 
                       placeholder="Add a token" 
                       v-model="customToken" 
@@ -35,8 +35,11 @@
 
                       <div class="dropdown-options">
                         <div v-for="(token, i) in tokenList" :key="i" @click="onChange(token)">
-                          <img :src="token.icon" alt="" />
-                          <p>{{ token.label }}</p>
+                          <div @click="recipientStore.updateDropdownVisibility()">
+                            <img :src="token.icon" alt="" />
+                            <p>{{ token.label }}</p>
+                          </div>
+                         
                         </div>
                       </div>
                     </div>
@@ -517,6 +520,7 @@ function CSVToJSON(data, delimiter = ',') {
             amount: values[1].replace(/^"(.*)"$/, '$1'),
           });
           console.log(values[0]);
+          console.log(values[1]);
         }
       })
     );
@@ -693,6 +697,7 @@ async function onChangeInput(address) {
       console.log('1111111 Existing token');
       found = true;
       onChange(tokenList.value[i]);
+      recipientStore.updateDropdownVisibility();
     } else if (address.length < 66) {
       console.log('2222222 ERROR IN ADDRESS');
       error = true;
@@ -714,12 +719,13 @@ async function onChangeInput(address) {
     }
   }
 
-  if (found == false && error == false) {
+  if (!found && !error) {
     console.log('New address spotted!');
     await addTag(address);
     var my_array = tokenList.value;
     var last_element = my_array[my_array.length - 1];
     onChange(last_element);
+    recipientStore.updateDropdownVisibility();
   }
 }
 async function onChange(value) {

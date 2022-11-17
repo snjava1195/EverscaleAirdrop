@@ -11,6 +11,8 @@ export const useRecipientStore = defineStore({
 
         },
         isVisible: false,
+
+        itemsListStorage: []
     }),
     getters: {
         nextPage: (state) => {
@@ -79,5 +81,16 @@ export const useRecipientStore = defineStore({
         updateDropdownVisibility() {
           this.isVisible = !this.isVisible;
         },
+        // TODO: Save the list of addresses and ammounts
+        // of a certain contractAddr in order to refill
+        // an undeployed contract if user returns to it
+        // to finish the deployment
+        saveItemsList(items, addr) {
+          var itemsList = {
+            contractAddr: addr,
+            items: items,
+          }
+          this.itemsListStorage.push(itemsList);
+        }
       }
 });
