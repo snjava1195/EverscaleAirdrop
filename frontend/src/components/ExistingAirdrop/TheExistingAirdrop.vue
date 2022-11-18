@@ -449,6 +449,8 @@ async function getAirdrop() {
   airdropStore.airdropName = airdropName.value;
   console.log('Name: ', airdropName.value);
 
+  airdropStore.lockDuration = null;
+
   const amounts = await contract.methods.batchAmounts({}).call();
   const recipients = await contract.methods.batchAddresses({}).call();
   
