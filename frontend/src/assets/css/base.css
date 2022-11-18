@@ -300,6 +300,9 @@ input.multiselect__input {
   align-items: center;
   font-size: 16px;
 }
+.dropdown-hint {
+  color: #4c4c4c;
+}
 .dropdown-select div {
   display: flex; 
   justify-content: center; 
@@ -310,13 +313,14 @@ input.multiselect__input {
   height: 1.25rem; width: 1.25rem; margin-right: 10px
 }
 .dropdown-popover {
+  margin-top: 0.2rem;
   z-index: 10;
   position: absolute;
   border: 1px solid lightgray;
   /* top: 46px; */
   left: 0;
   right: 0;
-  background-color: white;
+  background-color: rgb(245, 245, 245);
   /* width: 100%; */
   max-width: 100%;
   /* padding: 10px; */
@@ -335,6 +339,9 @@ input.multiselect__input {
   width: 100%;
   max-height: 200px;
   overflow-y: scroll;
+}
+#drop-label-color {
+  color: black;
 }
 .dropdown-options div {
 

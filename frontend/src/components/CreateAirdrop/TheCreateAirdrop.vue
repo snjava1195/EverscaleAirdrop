@@ -10,18 +10,18 @@
 
           <form class="form">
             <div class="w-full">
-              <label class="form-label">Distribution token</label>
+              <label class="form-label" :style="filterStyle2()" >Distribution token</label>
               <div class="relative">
 
                 <template ref="target" style="display: block">
                   <section class="dropdown-wrap">
-                    <div class="dropdown-select" @click="recipientStore.updateDropdownVisibility()">
+                    <div class="dropdown-select" :style="filterStyle()" @click="recipientStore.updateDropdownVisibility()">
                       <div v-if="token">
                         <img :src="token.icon" alt=""/>
                         <span>{{ token.label }}</span>
                       </div>
                       <div v-else>
-                        <p>Select Token</p>
+                        <p class="dropdown-hint">Select Token</p>
                       </div>
                     </div>
 
@@ -421,6 +421,27 @@ const walletStore = useWalletStore();
 const deployStatus = "";
 let counter = 0;
 let address = "";
+
+function filterStyle() {
+  if (recipientStore.isVisible) {
+      return {
+        border: '2px solid #2b63f1',
+      };
+  } else {
+    return {border: '1px solid lightgray',};
+  }
+}
+function filterStyle2() {
+  if (recipientStore.isVisible) {
+      return {
+        color: '#2b63f1',
+      };
+  } else {
+    return {
+      color: 'black',
+    };
+  }
+}
 
 onClickOutside(target, () => {
   if (recipientStore.isVisible) recipientStore.updateDropdownVisibility();
