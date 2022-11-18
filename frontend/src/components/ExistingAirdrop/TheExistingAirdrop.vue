@@ -15,7 +15,7 @@
 
                 <template ref="target" style="display: block">
                   <section class="dropdown-wrap">
-                    <div class="dropdown-select" @click="recipientStore.updateDropdownVisibility()">
+                    <div class="dropdown-select" :style="filterStyle()" @click="recipientStore.updateDropdownVisibility()">
                       <div v-if="token">
                         <img :src="token.icon" alt=""/>
                         <span>{{ token.label }}</span>
