@@ -10,7 +10,7 @@
 
           <form class="form">
             <div class="w-full">
-              <label class="form-label">Distribution token</label>
+              <label class="form-label" :style="filterStyle2()">Distribution token</label>
               <div class="relative">
 
                 <template ref="target" style="display: block">
@@ -35,8 +35,11 @@
 
                       <div class="dropdown-options">
                         <div v-for="(token, i) in tokenList" :key="i" @click="onChange(token)">
-                          <img :src="token.icon" alt="" />
-                          <p>{{ token.label }}</p>
+                          <div @click="recipientStore.updateDropdownVisibility()">
+                            <img :src="token.icon" alt="" />
+                            <p>{{ token.label }}</p>
+                          </div>
+                         
                         </div>
                       </div>
                     </div>
@@ -421,6 +424,27 @@ const deployStatus = "";
 let counter = 0;
 let address = "";
 const ever = new ProviderRpcClient();
+
+function filterStyle() {
+  if (recipientStore.isVisible) {
+      return {
+        border: '2px solid #2b63f1',
+      };
+  } else {
+    return {border: '1px solid lightgray',};
+  }
+}
+function filterStyle2() {
+  if (recipientStore.isVisible) {
+      return {
+        color: '#2b63f1',
+      };
+  } else {
+    return {
+      color: 'black',
+    };
+  }
+}
 
 getAirdrop();
 
