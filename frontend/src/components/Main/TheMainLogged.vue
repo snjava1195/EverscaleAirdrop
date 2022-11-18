@@ -25,7 +25,7 @@
               Create new airdrop
             </button>
           </router-link>
-          <button class="add-airdrop-btn hover:bg-blue-100">Add existing airdrop</button>
+          <button class="add-airdrop-btn hover:bg-blue-100" @click="showAddExistingAirdropModal = true">Add existing airdrop</button>
         </div>
       </div>
 
@@ -43,11 +43,14 @@
       <ItemLoading v-else-if="airdropStore.airdropsLoading" />
 
       <EmptyItemBox v-else />
+
+      <AddExistingAirdropModal :show="showAddExistingAirdropModal" @close-add-existing-airdrop-modal="showAddExistingAirdropModal = false"></AddExistingAirdropModal>
     </main>
   </div>
 </template>
+
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useWalletStore } from '@/stores/wallet';
 import ItemBox from '@/components/Main/ItemBox.vue';
 import EmptyItemBox from '@/components/Main/EmptyItemBox.vue';
@@ -55,7 +58,9 @@ import ItemLoading from '@/components/Main/ItemLoading.vue';
 import AppPagination from '@/components/Reusable/AppPagination.vue';
 import ExportItems from '@/components/Main/ExportItems.vue';
 import { useAirdropStore } from '@/stores/airdrop';
+import AddExistingAirdropModal from '@/components/ExistingAirdrop/AddExistingAirdropModal.vue';
 
+const showAddExistingAirdropModal = ref(false);
 const walletStore = useWalletStore();
 const airdropStore = useAirdropStore();
 airdropStore.getBalances();

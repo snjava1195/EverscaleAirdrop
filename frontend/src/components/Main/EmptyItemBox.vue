@@ -36,7 +36,7 @@
                   </button>
                 </router-link>
 
-                <button class="bg-[#ECF1FE] text-[#2B63F1] w-full md:w-[177px] h-[46px]">
+                <button class="bg-[#ECF1FE] text-[#2B63F1] w-full md:w-[177px] h-[46px]" @click="showAddExistingAirdropModal = true">
                   Add existing airdrop
                 </button>
               </div>
@@ -46,8 +46,13 @@
       </tbody>
     </table>
   </div>
+  <AddExistingAirdropModal :show="showAddExistingAirdropModal" @close-add-existing-airdrop-modal="showAddExistingAirdropModal = false"></AddExistingAirdropModal>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import ItemBoxHeading from '@/components/Main/ItemBoxHeading.vue';
+import AddExistingAirdropModal from '@/components/ExistingAirdrop/AddExistingAirdropModal.vue';
+
+const showAddExistingAirdropModal = ref(false);
 </script>

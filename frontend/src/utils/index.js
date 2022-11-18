@@ -102,3 +102,15 @@ export const chunk = (array, chunkSize) => {
   }
   return output;
 }
+
+export const validateAirdropAddress = (address) => {
+  if (!addressReg.test(address)) {
+    notify({
+      text: 'Incorrect address format',
+      type: 'error',
+    });
+    return false;
+  }
+
+  return true;
+}
