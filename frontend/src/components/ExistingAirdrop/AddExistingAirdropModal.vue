@@ -34,6 +34,7 @@ import { validateAirdropAddress } from '@/utils';
 import airdrop2Tvc from '../../../../build/Airdrop.base64?raw';
 import { ProviderRpcClient } from 'everscale-inpage-provider';
 import { useWalletStore } from '@/stores/wallet';
+import { useAirdropStore } from '@/stores/airdrop';
 import { notify } from '@kyvg/vue3-notification';
 import { onClickOutside } from '@vueuse/core';
 
@@ -73,7 +74,9 @@ async function goToExistingAirdrop() {
   }
   
   emit('close-add-existing-airdrop-modal');
-  router.push({ name: 'ExistingAirdrop', params: { address: airdropAddress.value } });
+  const airdropStore = useAirdropStore();
+  airdropStore.existingAirdropAddress = airdropAddress.value;
+  router.push({ name: 'ExistingAirdrop' });
 }
 
 function pasteText()
