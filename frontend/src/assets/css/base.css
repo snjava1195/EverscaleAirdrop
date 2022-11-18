@@ -376,3 +376,52 @@ input.multiselect__input {
   line-height: 20px;
   color: #8B909A;
 }
+
+.main_modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.main_modal div div {
+  background-color: white;
+}
+.main_modal div div h3 {
+  font-size: 2rem;
+  font-weight: 600; 
+  color: black;
+}
+.modal_label {
+  color: black !important;
+  font-weight: 600 !important;
+}
+.modal_input {
+  background-color: white !important;
+}
+
+.custom-input-wrap {
+  position: relative;
+  width: 100%;
+}
+.custom-input {
+  width: 100%;
+  padding-right: 4rem !important;
+  /* padding: 10px 4rem 10px 20px;  */
+  line-height: 1;
+  box-sizing: border-box;
+  outline: none;
+}
+.custom-input-button {
+  position: absolute;
+  right: 3px; 
+  top: 3px;
+  bottom: 3px;
+  color: #2b63f1 !important;
+  border: 0;
+  background: white;
+  outline: none;
+  margin: 0;
+  padding: 0 10px;
+  z-index: 2;
+}
