@@ -427,9 +427,10 @@ getAirdrop();
 async function getAirdrop() {
   const route = useRoute();
   token.value = tokensList.find(token => token.label == 'EVER');
-  const address = route.params.address;
+  const address = airdropStore.existingAirdropAddress;
   const contract = new ever.Contract(airdrop2Abi, address);
-  airdropStore.address = address;
+  const newArdropAddress = airdropStore.getExpectedAddress(token);
+  airdropStore.address = newArdropAddress;
   airdropStore.abi = airdrop2Abi;
   const tokenAddress = await contract.methods.tokenRootAddress({}).call();
   //console.log('Token address value: ', tokenAddress.tokenRootAddress);
@@ -448,6 +449,8 @@ async function getAirdrop() {
   airdropName.value = name.contract_notes;
   airdropStore.airdropName = airdropName.value;
   console.log('Name: ', airdropName.value);
+
+  airdropStore.lockDuration = null;
 
   const amounts = await contract.methods.batchAmounts({}).call();
   const recipients = await contract.methods.batchAddresses({}).call();

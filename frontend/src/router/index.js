@@ -21,7 +21,7 @@ const router = createRouter({
       component: () => import('@/views/EditAirdropView.vue'),
     },
     {
-      path: '/existing-airdrop/:address',
+      path: '/existing-airdrop',
       name: 'ExistingAirdrop',
       component: () => import('@/views/ExistingAirdropView.vue'),
     },
