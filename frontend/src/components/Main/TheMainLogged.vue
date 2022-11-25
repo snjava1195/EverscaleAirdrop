@@ -69,6 +69,7 @@ const transactions = computed(() => {
   return airdropStore.airdropData;
 });
 
+walletStore.getBalance();
 function getTransactions(value, page) {
  // console.log(`Usao u get trx: ${value} ${page}`);
   airdropStore.getAirdropTransactions(value, page);

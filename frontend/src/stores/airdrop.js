@@ -429,7 +429,10 @@ export const useAirdropStore = defineStore({
         // const amounts = arr.map((amount) => toNano(amount.amount));
 
         console.log('token address', token.address);
-
+        if(this.token_root_address==undefined)
+        {
+          this.token_root_address=token.address;
+        }
         const data = /*token.label === 'EVER' ?*/ {
           _contract_notes: airdropName,
           _refund_destination: walletStore.profile.address,
@@ -869,7 +872,17 @@ export const useAirdropStore = defineStore({
       {
         const loopNr=everAirDropContract.methods.usao({}).call();
         this.currentBatch=loopNr.usao;
-        console.log('Current batch: ', loopNr);
+          console.log('LoopNr.usao: ', loopNr.usao);
+          if(loopNr.usao==undefined)
+          {
+            console.log('Undefined sam');
+            this.currentBatch = loopStart+1;
+          }
+          else
+          {
+        this.currentBatch=loopNr.usao;
+          }
+        console.log('Current batch: ', this.currentBatch);
         if (this.token.label === 'EVER')
           {
           /*sendTransaction = await everAirDropContract.methods.distribute({
@@ -920,6 +933,18 @@ export const useAirdropStore = defineStore({
         
         else
         {
+         /* const loopNr=everAirDropContract.methods.usao({}).call();
+          console.log('LoopNr.usao: ', loopNr.usao);
+          if(loopNr.usao==undefined)
+          {
+            console.log('Undefined sam');
+            this.currentBatch = loopStart;
+          }
+          else
+          {
+        this.currentBatch=loopNr.usao;
+          }
+        console.log('Current batch: ', this.currentBatch);*/
           let fee=0;
           //for(let i=0;i<addresses.length;i++)
          // {

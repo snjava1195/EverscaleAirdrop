@@ -518,6 +518,7 @@ watch(props.items, (newX) => {
   }
 })
 
+logHashes();
 
 
 function availableToRedeem() {
@@ -571,6 +572,7 @@ async function onDeployContract() {
    // console.log('airdropName:', airdropName.value);
    if(airdropStore.deployStatus!="Deploying")
     {
+      console.log('Add existing airdrop, props.token: ', props.token);
    const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
    // const fees = await airdropStore.getEstimatedFee();
    airdropStore.transactionId.deployContractId = data.transaction.id.hash;
@@ -578,11 +580,11 @@ async function onDeployContract() {
     }
     if(airdropStore.deployStatus=="Deploying")
     {
-      if(airdropStore.transactionId.giverContractId=="")
+      if(airdropStore.transactionId.giverContractId!="")
       {
     await airdropStore.setTransactionsHash(airdropStore.transactionId.giverContractId);
       }
-      if(airdropStore.transactionId.deployContractId=="")
+      if(airdropStore.transactionId.deployContractId!="")
       {
     await airdropStore.setTransactionsHash(airdropStore.transactionId.deployContractId);
       }
@@ -632,6 +634,8 @@ async function onResumeAirdrop(isResumed) {
     error.value = false;
     console.log('Recipients list:', recipientsList.value);
     const data = await airdropStore.distribute(recipientsList.value, isResumed);
+    console.log('Distribute hash: ', data.id.hash);
+    console.log('Transaction ids: ', transactionId.value);
     airdropStore.transactionId.distributeContractId = data.id.hash;
     await airdropStore.setTransactionsHash(airdropStore.transactionId.distributeContractId);
     availableToRedeem();
@@ -677,6 +681,11 @@ async function onRedeemFunds() {
     loading.value = false;
     // error.value = true;
   }
+}
+
+function logHashes()
+{
+  console.log('Hashes: ', transactionId.value);
 }
 
 </script>

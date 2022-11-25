@@ -206,7 +206,9 @@ const airdropStore = useAirdropStore();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
 reset();
+
 getAirdrop();
+var canEdit = canEditList();
 function onFileChanged($event) {
   const target = $event.target;
   if (target && target.files) {
@@ -525,6 +527,6 @@ function canEditList() {
   var isTrueOrNot = airdropStore.step >= 2 ? false : true;
   return isTrueOrNot;
 }
-var canEdit = canEditList();
+
 
 </script>

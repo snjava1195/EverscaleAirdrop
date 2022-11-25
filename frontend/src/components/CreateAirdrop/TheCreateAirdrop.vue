@@ -421,7 +421,8 @@ const walletStore = useWalletStore();
 const deployStatus = "";
 let counter = 0;
 let address = "";
-
+let reloadItems;
+walletStore.getBalance();
 function filterStyle() {
   if (recipientStore.isVisible) {
       return {
@@ -454,7 +455,26 @@ let tokenAddr;
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
-reset();
+//if(window.location.reload())
+//{
+
+//}
+//else
+//{
+  
+  performance.getEntriesByType("navigation")
+    .forEach((p, i) => {
+      console.log(`= Navigation entry[${i}]`);
+      console.log('Type: ', p.type);
+    });
+  
+   
+    reset();
+    
+ 
+
+
+//}
 //addCustomTokens();
 getBalances();
 function addItem(index) {
@@ -706,6 +726,8 @@ function getRecipients(num, page) {
   items.value = arr;
 
   recipientStore.getRecipients(pages.length, page);
+  reloadItems = fullRecList;
+  console.log('Reload items: ', reloadItems.value);
 }
 // /////////////////////////////////////
 // DROPDOWN Functions
