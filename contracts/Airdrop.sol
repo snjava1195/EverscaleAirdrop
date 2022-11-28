@@ -1,30 +1,17 @@
 pragma ever-solidity >= 0.59.0;
 pragma AbiHeader expire;
-import "Distributer.sol";
-import "Tip31Distributer.sol";
-import "TIP31TokenRoot.sol";
-import "TIP31TokenWallet.sol";
-import "IAcceptTokensTransferCallback.sol";
-import 'InternalOwner.sol';
-import 'CheckPubKey.sol';
-//import 'RandomNonce.sol';
-import "MsgFlag.sol";
-import 'TokenWallet.sol';
+import "./Interfaces/TIP31TokenRoot.sol";
+import "./Interfaces/TIP31TokenWallet.sol";
+import "./Interfaces/IAcceptTokensTransferCallback.sol";
+import './Helpers/InternalOwner.sol';
+import './Helpers/CheckPubKey.sol';
+import "./Libraries/MsgFlag.sol";
+import './Tip3/TokenWallet.sol';
 //Contract used for airdrop of evers
 contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     address refund_destination;
-    address addr;
     uint256 refund_lock_duration_end;
-    bool distributed = false;
     uint128 total_amount = 0;
-    uint required_fee = 0.5 ever; 
-    uint public static _randomNonce;
-    TvmCell public static distributerCode;
-    bool[] statusArray;
-    uint public nonce = 1;
-    address[] public deployedContracts;
-    bool[] distributedContracts;
-    TvmCell public stateInit;
     string public contract_notes;
     uint128 public totalAmount=0;
     uint256 public recipientNumber=0;
@@ -34,14 +21,8 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     address walletAddress;
     uint flag;
     uint deposit = 0;
-    uint128 private transferGas = 0.8 ever;
-    uint128 numberOfRecipients;
     string public status="Preparing";
     uint256 public batches=0;
-    address[] public allRecipients;
-    uint128[] public allAmounts;
-    uint public messageValue;
-    uint128 public balanceWallet;
     string[] public transactionHashes;
     mapping(uint=>address[]) public batchAddresses;
     mapping(uint=>uint256[]) public batchAmounts;
@@ -95,7 +76,6 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         	setUpTokenWallet();
         	flag=1;
         }
-	//buildAirdropCode(msg.sender);
 	tvm.setcode(_newCode);
 	status="Deploying";
     }
@@ -123,35 +103,39 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 
     function callDistribute() internal returns(bool finished)
     {
-        //tvm.rawReserve(reserve(), 0);
+        
         uint count=1;
         bool distribute = false;
         while(usao<batches)
         {
 
-
-            //if(distribute==true)
-            
-//                distribute = distribute();
-  //          if(distribute==false)
-    //        {
         if(flag==0)
         {
+            uint sufficient_balance=0;
+            for(uint i=0;i<batchAddresses[usao].length;i++)
+            {
+                sufficient_balance = sufficient_balance+batchAmounts[usao][i];
+            }
+            require(address(this).balance>sufficient_balance);
             for(uint j=0;j<batchAddresses[usao].length;j++)
             {
                 payable(batchAddresses[usao][j]).transfer(uint128(batchAmounts[usao][j]), false, 1);
             }
-         //   address addr = address.makeAddrExtern(address(this));
          
         }
         else
         {
             TvmCell empty;
+            uint sufficient_balance=0;
+            for(uint i=0;i<batchAddresses[usao].length;i++)
+            {
+                sufficient_balance = sufficient_balance+batchAmounts[usao][i];
+            }
+            require(deposit>=sufficient_balance);
             for (uint j = 0; j < batchAddresses[usao].length; j++) {
 		    	address recipient = batchAddresses[usao][j];
 		    	uint128 amountPerTransfer = uint128(batchAmounts[usao][j]);
 		    		
-	       	//TIP31TokenWallet(walletAddress).transfer{value: 0.12 ever, flag: 0}(amountPerTransfer, recipient, 0.03 ever, remaining, false, empty);
 			TIP31TokenWallet(walletAddress).transfer{value: 0.11 ever, flag: 0+1}(amountPerTransfer, recipient, 0.025 ever, msg.sender, true, empty);
 	       }
         }
@@ -168,37 +152,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
                 break;
             }
         }
-            return finished;    //this.callDistribute{value:0.1 ever, flag: 1}();
-      //      }
-            //Airdrop(address(this)).distribute{value: 0.5 ever, callback: Airdrop.onDistributeNew}();
-            /*if(distributedContracts.length<deployedContracts.length)
-            {
-                uint index = deployedContracts.length-1;
-			Distributer(deployedContracts[index]).distribute{value: 0.5 ever, callback: Airdrop.onDistribute}(batchAddresses[length], batchAmounts[length]);
-            
-            }*/
-            //uint128 total_Amount=0;
-          /*  if(batches==1)
-            {
-                for(uint j=0;j<allRecipients.length;j++)
-                {
-                    batchAddresses[i].push(allRecipients[j]); 
-                batchAmounts[i].push(allAmounts[j]);
-              //  total_Amount = total_Amount+allAmounts[j];
-                }
-            }
-            else
-            {
-            for(uint j=(count-1)*99;j<count*99;j++)
-            {
-                batchAddresses[i].push(allRecipients[j]); 
-                batchAmounts[i].push(allAmounts[j]);
-                //total_Amount = total_Amount+allAmounts[j];
-            }
-            count++;*/
-            //address[] tempAddresses = allAddresses[]
-          //  Airdrop(address(this)).distribute{value: 0.5 ever, callback: Airdrop.onDistributeNew}(batchAddresses[i], batchAmounts[i], 0, total_Amount);
-            //distribute(batchAddresses[i], batchAmounts[i], 0, total_Amount);
+            return finished;   
             
         }
     
@@ -218,153 +172,6 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         }
     }
     
-    /**
-     * @dev Distributes contract balance to the receivers from the addresses if there is enough gas on the contract. Distributer contracts are deployed and their distribution method is triggered
-    */
-  /*  function distribute() public {
-    
-        
-        tvm.accept();*/
-        //distributeS = false;
-          //uint count=1;
-       // for(uint i=0;i<batches;i++)
-        //{
-            //length = 0;
-        //    usao++;
-            //uint total_Amount=0;
-            //deployedContracts.length;
-              //  for(uint j=0;j<batchAmounts[length].length;j++)
-               // {
-            //        batchAddresses[i].push(allRecipients[j]); 
-           //     batchAmounts[i].push(allAmounts[j]);
-               // total_Amount = total_Amount+batchAmounts[length][j];
-               // }
-            
-            //address[] tempAddresses = allAddresses[]
-          //  Airdrop(address(this)).distribute{value: 0.5 ever, callback: Airdrop.onDistributeNew}(batchAddresses[i], batchAmounts[i], 0, total_Amount);
-            //distribute(batchAddresses[i], batchAmounts[i], 0, total_Amount);
-       /*     if(flag==0)
-        {
-          //  while(true)
-           // {
-                
-        	//everything runs smoothly, continue with distribution
-		if(deployedContracts.length==distributedContracts.length)
-		{
-           // address[] addresses = batchAddresses[i];
-           // uint128[] amounts = batchAmounts[i];
-            //require(_amounts.length == _addresses.length, 101);
-       // require((_addresses.length > 0) && (_addresses.length < 100), 102);
-            //for(uint i=0;i<batchAddresses[length].length;i++)*/
-
-		/*{
-		 payable(batchAddresses[length][i]).transfer(batchAmounts[length][i], false, 1);
-		 }
-         length++;*/
-	    	//transfer amounts[i] evers to addresses[i] address from this contract
-	/*	uint _initialBalance = total_Amount + required_fee;
-       
-		address distributer = deployWithMsgBody(0, _initialBalance, uint128(total_Amount));
-		Distributer(distributer).distribute{value: 0.1 ever, callback: Airdrop.onDistribute}(batchAddresses[length], batchAmounts[length]);
-        //distributeS = true;
-         length = deployedContracts.length;
-        
-		}
-		
-		//if something went wrong and the distribution wasn't triggered but the distributer was deployed and has enough funds for distribution, trigger again
-		else
-		{
-			uint index = deployedContracts.length-1;
-			Distributer(deployedContracts[index]).distribute{value: 0.3 ever, callback: Airdrop.onDistribute}(batchAddresses[length], batchAmounts[length]);
-         //   distributeS = true;
-        }
-        }
-        else
-        {
-            //length = 0;
-        	TvmCell payload = tvm.encodeBody(Tip31Distributer, tokenRootAddress, batchAddresses[length], batchAmounts[length], address(this), senderAddress);
-	stateInit = tvm.buildStateInit({code: distributerCode,
-					 contr: Tip31Distributer,
-					 varInit: {_randomNonce: nonce, _owner: address(this)},
-					 pubkey: tvm.pubkey()
-					});
-       addr = address.makeAddrStd(0, tvm.hash(stateInit));
-       numberOfRecipients = uint128(batchAddresses[length].length);
-       uint128 initialBalance = numberOfRecipients*0.3 ever;
-       total_Amount = 0;
-       for(uint i=0;i<batchAmounts[length].length;i++)
-       {
-        total_Amount = total_Amount+batchAmounts[length][i];
-       }
-       //require(deposit>=total_Amount, 1001);
-        addr.transfer({stateInit:stateInit,body: payload, value: initialBalance, bounce: false});	
-    	TvmCell _empty;
-		
-        	deployedContracts.push(addr);
-		nonce++;
-		
-		TIP31TokenWallet(walletAddress).transfer{value: transferGas, flag: 0}(uint128(total_Amount), addr, 0.5 ever, address(this), true, _empty);
-		
-		deposit = deposit-total_Amount;
-        length=deployedContracts.length;
-        //balanceWallet = deposit;
-		status = "Executed";
-        //distributeS = true;
-        }
-        
-            
-          *///  messageValue = msg.value;
-       // return distributeS;
-       // }
-        
-    
-     
-
-    //Deploys Distributor contract using address.transfer
-    /*function deployWithMsgBody(int8 _wid,uint _initialBalance, uint128 _totalAmount) internal returns(address){
-		
-	TvmCell payload = tvm.encodeBody(Distributer);
-	stateInit = tvm.buildStateInit({code: distributerCode,
-					 contr: Distributer,
-					 varInit: {_randomNonce: nonce, _owner: address(this), totalAmount: _totalAmount},
-					 pubkey: 0
-					});
-        addr = address.makeAddrStd(_wid, tvm.hash(stateInit));
-        addr.transfer({stateInit:stateInit,body: payload, value: uint128(_initialBalance), bounce: true});	 
-        	
-        deployedContracts.push(addr);
-  	nonce = deployedContracts.length+1;
-	return addr;
-    }
-
-    function onDistributeNew(bool distributedS) public view
-    {
-
-    }
-	
-
-    //returns list of all created Distributers accessible by nonce
-    function getDistributorAddress(uint _nonce) public view returns(address){
-        return deployedContracts[_nonce-1];
-    }
-
-    //Callback for Distributor's distribute method
-    function onDistribute(bool _distributed, uint256 amount, uint256 recipientNr) public  
-    {
-    	//address distributer = getDistributorAddress(nonce-1);
-        //require(msg.sender == distributer, 101);
-    	 distributedContracts.push(_distributed);
-    	 if(distributedContracts.length==batches)
-    	 {
-    	 	status="Executed";
-    	 }
-    	 else
-    	 {
-    	 	status="Executing";
-    	 }
-    	 //totalAmount+=amount;
-    	// recipientNumber+=recipientNr;
-    }*/
     
     
      /**
@@ -372,20 +179,16 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
      *      Can be executed only after refund lock passed
      */
     function refund() refundLockPassed public {
-        
+        require(msg.sender==senderAddress, 1101);//???
         if(flag==0)
         {
+
     		payable(refund_destination).transfer(0, false, 128);
     		status = "Redeemed";
         }
         else
         {
         	tvm.accept();
-            //TokenWallet(deployedContracts[0]).balance{value: 0.1 ever, callback: onBalance, flag: 0}();
-        	/*for(uint i=0;i<deployedContracts.length;i++)
-        	{
-        		Tip31Distributer(deployedContracts[i]).refund{value:0.1 ever, flag:0}();
-        	}*/
             
         	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 1}(senderAddress);
         	payable(senderAddress).transfer(0, false, 128);
@@ -394,11 +197,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         }
     }
 
-   /* function onBalance(uint128 balance) public 
-    {
-        balanceWallet = balance;
-    }
-    */
+ 
     //Builds specific contract code based on the owner's address
     function buildAirdropCode(address ownerAddress) public pure returns(TvmCell)
     {
@@ -407,14 +206,6 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     	salt.store(ownerAddress);
     	return tvm.setCodeSalt(airdropCode, salt.toCell());
     }	
-    
-    //retrieves addresses of the deployed Distributor contracts
-    
-    function getDeployedContracts() public view returns (address[])
-    {
-        emit BatchDone(usao);
-    	return deployedContracts;
-    } 
     
     //gets the name of the contract
     
@@ -430,10 +221,6 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     	return refund_lock_duration_end;
     }
     
-    function getDistributedContracts() public view returns(bool[])
-    {
-    	return distributedContracts;
-    }
     
     function getCodeHash() public returns(uint256)
     {
@@ -450,25 +237,21 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         TvmCell payload
     ) external override 
     {
-	tvm.accept();
+	require(msg.sender==walletAddress, 1101); 
         walletAddress = msg.sender;
         deposit = deposit + amount;
         status="Preparing";
-       // balanceWallet = deposit;
     }
     
-    function setRecipients(address[] recipients/*, uint128[] amounts*/) public 
+    function setRecipients(address[] recipients) public 
     {
         tvm.accept();
     	for(uint i=0;i<recipients.length;i++)
     	{
     	batchAddresses[counterRec].push(recipients[i]);
-    	//allAmounts.push(amounts[i]);
     	}
         
        counterRec++;
-   // 	messageValue = messageValue + msg.value;
-    	//return allRecipients;
     }
     
     function setAmounts(uint256[] amounts) public
@@ -486,9 +269,6 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         {
             status="Deployed";
         }
-//        uint128 initialValue = 0.1 ever;
-  //       deployWithMsgBody(0, initialValue, total_Amount);
-    	//messageValue = messageValue+msg.value;
     }
 
     

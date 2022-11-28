@@ -1,7 +1,7 @@
 pragma ton-solidity >= 0.57.0;
 
-import "TIP3TokenWallet.sol";
-import "SID.sol";
+import "./TIP3TokenWallet.sol";
+import "./SID.sol";
 
 interface ITokenWallet is TIP3TokenWallet, SID {
 

@@ -1,6 +1,6 @@
 pragma ton-solidity >= 0.57.0;
 
-import "ICallbackParamsStructure.sol";
+import "./ICallbackParamsStructure.sol";
 
 interface ITransferableOwnership is ICallbackParamsStructure {
     /*

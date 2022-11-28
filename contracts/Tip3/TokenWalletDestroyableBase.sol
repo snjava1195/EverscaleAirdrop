@@ -3,11 +3,11 @@ pragma ton-solidity >= 0.57.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-import "TokenWalletBase.sol";
-import "ITokenRoot.sol";
-import "IDestroyable.sol";
-import "TokenErrors.sol";
-import "TokenMsgFlag.sol";
+import "./TokenWalletBase.sol";
+import "../Interfaces/ITokenRoot.sol";
+import "../Interfaces/IDestroyable.sol";
+import "../Libraries/TokenErrors.sol";
+import "../Libraries/TokenMsgFlag.sol";
 
 
 abstract contract TokenWalletDestroyableBase is TokenWalletBase, IDestroyable {

@@ -50,14 +50,6 @@
 			]
 		},
 		{
-			"name": "getDeployedContracts",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"address[]"}
-			]
-		},
-		{
 			"name": "getContractNotes",
 			"inputs": [
 			],
@@ -71,14 +63,6 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"uint256"}
-			]
-		},
-		{
-			"name": "getDistributedContracts",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"bool[]"}
 			]
 		},
 		{
@@ -150,46 +134,6 @@
 			]
 		},
 		{
-			"name": "_randomNonce",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"_randomNonce","type":"uint256"}
-			]
-		},
-		{
-			"name": "distributerCode",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"distributerCode","type":"cell"}
-			]
-		},
-		{
-			"name": "nonce",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"nonce","type":"uint256"}
-			]
-		},
-		{
-			"name": "deployedContracts",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"deployedContracts","type":"address[]"}
-			]
-		},
-		{
-			"name": "stateInit",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"stateInit","type":"cell"}
-			]
-		},
-		{
 			"name": "contract_notes",
 			"inputs": [
 			],
@@ -246,38 +190,6 @@
 			]
 		},
 		{
-			"name": "allRecipients",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"allRecipients","type":"address[]"}
-			]
-		},
-		{
-			"name": "allAmounts",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"allAmounts","type":"uint128[]"}
-			]
-		},
-		{
-			"name": "messageValue",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"messageValue","type":"uint256"}
-			]
-		},
-		{
-			"name": "balanceWallet",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"balanceWallet","type":"uint128"}
-			]
-		},
-		{
 			"name": "transactionHashes",
 			"inputs": [
 			],
@@ -319,8 +231,6 @@
 		}
 	],
 	"data": [
-		{"key":1,"name":"_randomNonce","type":"uint256"},
-		{"key":2,"name":"distributerCode","type":"cell"}
 	],
 	"events": [
 		{
@@ -347,18 +257,8 @@
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"owner","type":"address"},
 		{"name":"refund_destination","type":"address"},
-		{"name":"addr","type":"address"},
 		{"name":"refund_lock_duration_end","type":"uint256"},
-		{"name":"distributed","type":"bool"},
 		{"name":"total_amount","type":"uint128"},
-		{"name":"required_fee","type":"uint256"},
-		{"name":"_randomNonce","type":"uint256"},
-		{"name":"distributerCode","type":"cell"},
-		{"name":"statusArray","type":"bool[]"},
-		{"name":"nonce","type":"uint256"},
-		{"name":"deployedContracts","type":"address[]"},
-		{"name":"distributedContracts","type":"bool[]"},
-		{"name":"stateInit","type":"cell"},
 		{"name":"contract_notes","type":"string"},
 		{"name":"totalAmount","type":"uint128"},
 		{"name":"recipientNumber","type":"uint256"},
@@ -368,14 +268,8 @@
 		{"name":"walletAddress","type":"address"},
 		{"name":"flag","type":"uint256"},
 		{"name":"deposit","type":"uint256"},
-		{"name":"transferGas","type":"uint128"},
-		{"name":"numberOfRecipients","type":"uint128"},
 		{"name":"status","type":"string"},
 		{"name":"batches","type":"uint256"},
-		{"name":"allRecipients","type":"address[]"},
-		{"name":"allAmounts","type":"uint128[]"},
-		{"name":"messageValue","type":"uint256"},
-		{"name":"balanceWallet","type":"uint128"},
 		{"name":"transactionHashes","type":"string[]"},
 		{"name":"batchAddresses","type":"map(uint256,address[])"},
 		{"name":"batchAmounts","type":"map(uint256,uint256[])"},

@@ -3,9 +3,9 @@ pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
 
-import "ExternalOwner.sol";
-import "RandomNonce.sol";
-import "CheckPubKey.sol";
+import "./ExternalOwner.sol";
+import "./RandomNonce.sol";
+import "./CheckPubKey.sol";
 
 
 /*

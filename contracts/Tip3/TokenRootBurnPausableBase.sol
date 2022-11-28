@@ -3,9 +3,9 @@ pragma ton-solidity >= 0.57.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-import "TokenRootBase.sol";
-import "IBurnPausableTokenRoot.sol";
-import "TokenMsgFlag.sol";
+import "./TokenRootBase.sol";
+import "../Interfaces/IBurnPausableTokenRoot.sol";
+import "../Libraries/TokenMsgFlag.sol";
 
 
 abstract contract TokenRootBurnPausableBase is TokenRootBase, IBurnPausableTokenRoot {

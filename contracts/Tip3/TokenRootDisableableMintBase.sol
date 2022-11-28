@@ -3,10 +3,10 @@ pragma ton-solidity >= 0.57.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-import "TokenRootBase.sol";
-import "IDisableableMintTokenRoot.sol";
-import "TokenErrors.sol";
-import "TokenMsgFlag.sol";
+import "./TokenRootBase.sol";
+import "../Interfaces/IDisableableMintTokenRoot.sol";
+import "../Libraries/TokenErrors.sol";
+import "../Libraries/TokenMsgFlag.sol";
 
 
 abstract contract TokenRootDisableableMintBase is TokenRootBase, IDisableableMintTokenRoot {
