@@ -116,12 +116,18 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             {
                 sufficient_balance = sufficient_balance+batchAmounts[usao][i];
             }
-            require(address(this).balance>sufficient_balance);
-            for(uint j=0;j<batchAddresses[usao].length;j++)
+            if(address(this).balance>sufficient_balance)
             {
-                payable(batchAddresses[usao][j]).transfer(uint128(batchAmounts[usao][j]), false, 1);
+                for(uint j=0;j<batchAddresses[usao].length;j++)
+                {
+                    payable(batchAddresses[usao][j]).transfer(uint128(batchAmounts[usao][j]), false, 1);
+                }
             }
-         
+            else
+            {
+                status="Partial complete";
+                break;
+            }
         }
         else
         {
@@ -131,13 +137,19 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             {
                 sufficient_balance = sufficient_balance+batchAmounts[usao][i];
             }
-            require(deposit>=sufficient_balance);
-            for (uint j = 0; j < batchAddresses[usao].length; j++) {
-		    	address recipient = batchAddresses[usao][j];
-		    	uint128 amountPerTransfer = uint128(batchAmounts[usao][j]);
-		    		
-			TIP31TokenWallet(walletAddress).transfer{value: 0.11 ever, flag: 0+1}(amountPerTransfer, recipient, 0.025 ever, msg.sender, true, empty);
-	       }
+            if(deposit>=sufficient_balance){
+                for (uint j = 0; j < batchAddresses[usao].length; j++) {
+                    address recipient = batchAddresses[usao][j];
+                    uint128 amountPerTransfer = uint128(batchAmounts[usao][j]);
+                        
+                TIP31TokenWallet(walletAddress).transfer{value: 0.11 ever, flag: 0+1}(amountPerTransfer, recipient, 0.025 ever, msg.sender, true, empty);
+                }
+            }
+            else
+            {
+                status="Partial complete";
+                break;
+            }
         }
             usao++;
             if(usao!=batches)
