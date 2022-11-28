@@ -109,6 +109,7 @@ import _, { map } from 'underscore';
 
 const walletStore = useWalletStore();
 const airdropStore = useAirdropStore();
+walletStore.getBalance();
 const transactions = computed(() => {
   return airdropStore.airdropData;
 });
