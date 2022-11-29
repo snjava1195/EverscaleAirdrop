@@ -134,6 +134,14 @@
 			]
 		},
 		{
+			"name": "_randomNonce",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_randomNonce","type":"uint256"}
+			]
+		},
+		{
 			"name": "contract_notes",
 			"inputs": [
 			],
@@ -171,14 +179,6 @@
 			],
 			"outputs": [
 				{"name":"tokenRootAddress","type":"address"}
-			]
-		},
-		{
-			"name": "status",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"status","type":"string"}
 			]
 		},
 		{
@@ -228,9 +228,18 @@
 			"outputs": [
 				{"name":"length","type":"uint256"}
 			]
+		},
+		{
+			"name": "status",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"status","type":"uint8"}
+			]
 		}
 	],
 	"data": [
+		{"key":1,"name":"_randomNonce","type":"uint256"}
 	],
 	"events": [
 		{
@@ -256,6 +265,7 @@
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"owner","type":"address"},
+		{"name":"_randomNonce","type":"uint256"},
 		{"name":"refund_destination","type":"address"},
 		{"name":"refund_lock_duration_end","type":"uint256"},
 		{"name":"total_amount","type":"uint128"},
@@ -268,7 +278,6 @@
 		{"name":"walletAddress","type":"address"},
 		{"name":"flag","type":"uint256"},
 		{"name":"deposit","type":"uint256"},
-		{"name":"status","type":"string"},
 		{"name":"batches","type":"uint256"},
 		{"name":"transactionHashes","type":"string[]"},
 		{"name":"batchAddresses","type":"map(uint256,address[])"},
@@ -276,6 +285,7 @@
 		{"name":"counter","type":"uint256"},
 		{"name":"counterRec","type":"uint256"},
 		{"name":"usao","type":"uint256"},
-		{"name":"length","type":"uint256"}
+		{"name":"length","type":"uint256"},
+		{"name":"status","type":"uint8"}
 	]
 }

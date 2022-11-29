@@ -660,12 +660,14 @@ async function onRedeemFunds() {
 
   try {
     errors.value.error = false;
-    const lastTx = await ever.getTransactions({address: walletStore.profile.address, continuation: undefined, limit: 1});
+    const lastTx = await ever.getTransactions({address: airdropStore.address, continuation: undefined, limit: 1});
     airdropStore.transactionId.redeemContractId =lastTx.transactions[0].id.hash;
-    console.log('Last tx: ', lastTx);
-    console.log('redeemed tx: ', airdropStore.transactionId.redeemContractId);
+    //console.log('Last tx: ', lastTx);
+    //console.log('redeemed tx: ', airdropStore.transactionId.redeemContractId);
     await airdropStore.setTransactionsHash(airdropStore.transactionId.redeemContractId);
     const data = await airdropStore.redeemFunds();
+   // airdropStore.transactionId.redeemContractId =data.id.hash;
+    
     //transactionId.value.redeemContractId = data.id.hash;
     
     

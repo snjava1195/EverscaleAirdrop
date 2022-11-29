@@ -334,24 +334,27 @@ async function getAirdrop() {
 
   // const balance = await contract.methods.balanceWallet({}).call();
   // console.log(balance);
-  if(status.status=="Deploying")
+  if(status.status*1==0)
   {
     airdropStore.step = 2;
     airdropStore.deployStatus="Deploying";
+    console.log("Step2: ", airdropStore.step);
+
   }
-  if (status.status == "Deployed") {
+  if (status.status*1 == 1) {
     airdropStore.step = 3;
     airdropStore.deployStatus="Deployed";
   }
-  if (status.status == "Executed") {
+  if (status.status*1 == 3) {
     airdropStore.step = 5;
   }
-  if (status.status == "Redeemed") {
+  if (status.status*1 == 4) {
     airdropStore.step = 6;
   }
-  if (status.status.includes('Executing')) {
+  if (status.status*1==5) {
     airdropStore.step = 4;
   }
+  
   for (let i = 0; i < airdropStore.airdropData.length; i++) {
     if (airdropStore.airdropData[i].address == address) {
 
@@ -374,8 +377,8 @@ async function getAirdrop() {
   airdropStore.topUpRequiredAmount = fromNano(totalAmount.totalAmount, 9);
   const date = await contract.methods.creationDate({}).call();
   const batches = await contract.methods.batches({}).call();
-  const distributed = await contract.methods.getDistributedContracts({}).call();
-  const deployed = await contract.methods.getDeployedContracts({}).call();
+  const distributed = await contract.methods.usao({}).call();
+  //const deployed = await contract.methods.getDeployedContracts({}).call();
   const recipients = await contract.methods.batchAddresses({}).call();
   const transactionHashes = await contract.methods.transactionHashes({}).call();
   //console.log(recipients.allRecipients);
@@ -469,7 +472,7 @@ async function getAirdrop() {
   //console.log('Items: ', items.value);
 
   airdropStore.loopCount = batches.batches;
-  airdropStore.currentBatch = distributed.value0.length;
+  airdropStore.currentBatch = distributed.usao;
   airdropStore.maxBatches = batches.batches;
   return Promise.resolve(refundDuration);
 }

@@ -9,6 +9,7 @@ import "./Libraries/MsgFlag.sol";
 import './Tip3/TokenWallet.sol';
 //Contract used for airdrop of evers
 contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
+    uint static public _randomNonce;
     address refund_destination;
     uint256 refund_lock_duration_end;
     uint128 total_amount = 0;
@@ -21,7 +22,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     address walletAddress;
     uint flag;
     uint deposit = 0;
-    string public status="Preparing";
+    //string public status="Preparing";
     uint256 public batches=0;
     string[] public transactionHashes;
     mapping(uint=>address[]) public batchAddresses;
@@ -31,6 +32,8 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     uint public usao=0;
     uint public length = 0;
     event BatchDone(uint batchProcesses);
+    enum Status{Deploying, Deployed, Preparing, Executed, Redeemed, PartialComplete}
+    Status public status = Status.Preparing;
     // Checks whether refund lock time has passed and distribution is over
     modifier refundLockPassed() {
         require(now > refund_lock_duration_end, 107);
@@ -77,7 +80,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         	flag=1;
         }
 	tvm.setcode(_newCode);
-	status="Deploying";
+	status=Status.Deploying;
     }
     
     function setUpTokenWallet() internal view 
@@ -125,7 +128,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             }
             else
             {
-                status="Partial complete";
+                status=Status.PartialComplete;
                 break;
             }
         }
@@ -147,7 +150,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             }
             else
             {
-                status="Partial complete";
+                status=Status.PartialComplete;
                 break;
             }
         }
@@ -160,7 +163,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             else
             {
                 finished = true;
-                status="Executed";
+                status=Status.Executed;
                 break;
             }
         }
@@ -196,7 +199,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         {
 
     		payable(refund_destination).transfer(0, false, 128);
-    		status = "Redeemed";
+    		status = Status.Redeemed;
         }
         else
         {
@@ -204,7 +207,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
             
         	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 1}(senderAddress);
         	payable(senderAddress).transfer(0, false, 128);
-        	status="Redeemed";
+        	status=Status.Redeemed;
         
         }
     }
@@ -252,7 +255,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
 	require(msg.sender==walletAddress, 1101); 
         walletAddress = msg.sender;
         deposit = deposit + amount;
-        status="Preparing";
+        status=Status.Preparing;
     }
     
     function setRecipients(address[] recipients) public 
@@ -279,7 +282,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         counter++;
         if(counter==batches)
         {
-            status="Deployed";
+            status=Status.Deployed;
         }
     }
 
