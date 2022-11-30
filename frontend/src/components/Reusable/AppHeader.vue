@@ -39,8 +39,8 @@
       <!--<SwitchIcon />-->
      <!-- <img class="option__image pr-1 w-4 h-4" src="/avatar/7f56a5f7df1ce514936b6ae80a3f873d.svg"/> -->
       
-     <svg style="height: 18px; width:18px;" viewBox="0 0 255.82 251.08">
-      <path class="swap-acc-icon" 
+     <svg viewBox="0 0 255.82 251.08" class="swap-acc-icon">
+      <path 
         d="M243.2,167.44c-11.77-.89-10.74-12.1-10.6-15.31-.29-77.95,
         9.08-80.32-48.89-79h-129L91.52,
         106.5l-15,15.11L12.82,62.67,68.3,2.88,83.1,

@@ -434,6 +434,11 @@ input.multiselect__input {
 }
 
 .swap-acc-icon {
+  height: 18px;
+  width: 18px;
+}
+
+.swap-acc-icon path {
   stroke:#000;
   fill: #000;
   stroke-miterlimit:10;
