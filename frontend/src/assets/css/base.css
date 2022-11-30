@@ -432,3 +432,7 @@ input.multiselect__input {
   padding: 0 10px;
   z-index: 2;
 }
+
+.swap-acc-icon {
+  stroke:#000;stroke-miterlimit:10;stroke-width:4px;
+}
