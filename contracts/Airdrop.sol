@@ -22,7 +22,6 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
     address walletAddress;
     uint flag;
     uint deposit = 0;
-    //string public status="Preparing";
     uint256 public batches=0;
     string[] public transactionHashes;
     mapping(uint=>address[]) public batchAddresses;
@@ -146,6 +145,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
                     uint128 amountPerTransfer = uint128(batchAmounts[usao][j]);
                         
                 TIP31TokenWallet(walletAddress).transfer{value: 0.11 ever, flag: 0+1}(amountPerTransfer, recipient, 0.025 ever, msg.sender, true, empty);
+                deposit = deposit-amountPerTransfer;
                 }
             }
             else
@@ -182,8 +182,7 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         
         if(result == false)
         {
-           //fee=fee+(uint128(batchAddresses[usao].length)*0.12 ever); 
-        this.distribute2{value: 0.12 ever, flag:0+1}();
+            this.distribute2{value: 0.12 ever, flag:0+1}();
         }
     }
     
@@ -194,7 +193,8 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
      *      Can be executed only after refund lock passed
      */
     function refund() refundLockPassed public {
-        require(msg.sender==senderAddress, 1101);//???
+        require(msg.sender==senderAddress, 1101);
+        TvmCell empty;
         if(flag==0)
         {
 
@@ -203,8 +203,11 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         }
         else
         {
-        	tvm.accept();
-            
+        	//tvm.accept();
+            if(deposit>0)
+            {
+                TIP31TokenWallet(walletAddress).transfer{value: 0.1 ever, flag: 0+1}(uint128(deposit), senderAddress, 0, senderAddress, false, empty);
+            }
         	TokenWallet(walletAddress).sendSurplusGas{value: 0.1 ever, flag: 1}(senderAddress);
         	payable(senderAddress).transfer(0, false, 128);
         	status=Status.Redeemed;
@@ -292,6 +295,15 @@ contract Airdrop is InternalOwner, CheckPubKey, IAcceptTokensTransferCallback{
         tvm.accept();
         transactionHashes.push(transaction);
     }
-    
-   
+
+    function upgrade(TvmCell code) public
+    {
+        require(msg.pubkey() == tvm.pubkey(), 102);
+		tvm.accept();
+        tvm.setcode(code);
+        tvm.setCurrentCode(code);
+        onCodeUpgrade();
+    }
+
+    function onCodeUpgrade() private {}
  }
