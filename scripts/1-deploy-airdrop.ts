@@ -1,6 +1,6 @@
 import { Contract, Signer } from "locklift";
 import { FactorySource } from "../build/factorySource";
-const { setupTip31Airdrop } = require('./utils');
+//const { setupTip31Airdrop } = require('./utils');
 const {load} = require('csv-load-sync');
 const {use} = require("chai");
 
@@ -8,17 +8,19 @@ const prompts = require('prompts');
 const _ = require('underscore');
 const fs  = require("fs");
 const { parse } = require('csv-parse/lib/sync');
-let airdrop: Contract<FactorySource["Tip31Airdrop"]>;
+let airdrop: Contract<FactorySource["Airdrop"]>;
 let user: Contract<FactorySource["Wallet"]>;
-
+let tokenOwner: Contract<FactorySource["Wallet"]>;
+let owner: Contract<FactorySource["Wallet"]>;
+let root: Contract<FactorySource["TokenRoot"]>;
 
 async function main() {
- 	/*const response = await prompts([
+ 	const response = await prompts([
         			{
             				type: 'text',
             				name: 'data',
             				message: 'Name of the csv file with airdrop addresses and amount, should be placed in the repo root',
-            				initial: 'proba.csv',
+            				initial: 'proba2.csv',
         			}
     			]);
 
@@ -28,7 +30,13 @@ async function main() {
     
 	const addresses = records.map(i => i[0]);
 	const amounts = records.map(i => parseInt(i[1], 10));
-  	const codeDistributer = locklift.factory.getContractArtifacts("Tip31Distributer");
+	let total =0;
+	for(let i=0;i<amounts.length;i++)
+	{
+		total+=amounts[i];
+	}
+	console.log('Total amount: ', total);
+  	//const codeDistributer = locklift.factory.getContractArtifacts("Tip31Distributer");
   	const refund_lock_duration = 120;
   	let accountsFactory = await locklift.factory.getAccountsFactory("Wallet");
 	const _randomNonce = locklift.utils.getRandomNonce();
@@ -55,7 +63,21 @@ const chunkAddresses = chunk(addresses, 99);
 	const chunkAmounts = chunk(amounts, 99);
 	console.log(chunkAmounts);
 	//deploys future contract's owner
-	const { account } = await accountsFactory.deployNewAccount({
+	const { account: tokenOwner } = await accountsFactory.deployNewAccount({
+		constructorParams: {},
+		initParams: {
+				_randomNonce,
+		},
+		publicKey: signer.publicKey,
+		value:locklift.utils.toNano(100)
+		});
+		//tokenOwner = account;
+		tokenOwner.publicKey = signer.publicKey;
+		console.log(`Account deployed at ${tokenOwner.address}`);
+		//let nrOfRecipients = addresses.length;
+		//console.log('Number of rec: ', nrOfRecipients);
+
+		/*const { account:owner } = await accountsFactory.deployNewAccount({
 								constructorParams: {},
 								initParams: {
 		    							_randomNonce,
@@ -63,43 +85,75 @@ const chunkAddresses = chunk(addresses, 99);
 								publicKey: signer.publicKey,
 								value:locklift.utils.toNano(15)
 	    						});
-    	const owner = account;
+    	//const owner = account;
     	owner.publicKey = signer.publicKey;
-    	console.log(`Account deployed at ${owner.address}`);
-	
+    	console.log(`Account deployed at ${owner.address}`);*/
+		let nrOfRecipients = addresses.length;
+		console.log('Number of rec: ', nrOfRecipients);
 	//deploys EverAirdrop contract
 	//const codeDistributer = locklift.factory.getContractArtifacts("Distributer");
+
+	const sampleRootData = await locklift.factory.getContractArtifacts("TokenWallet");
+  const { contract: root } = await locklift.factory.deployContract({
+  		contract: "TokenRoot",
+  		constructorParams: {
+            initialSupplyTo: tokenOwner.address,
+            initialSupply: 500000000,
+
+            deployWalletValue: locklift.utils.toNano(1),
+            mintDisabled: false,
+            burnByRootDisabled: true,
+            burnPaused: false,
+            remainingGasTo: "0:0000000000000000000000000000000000000000000000000000000000000000",
+        },
+        initParams: {
+            deployer_: "0:0000000000000000000000000000000000000000000000000000000000000000",
+            randomNonce_: locklift.utils.getRandomNonce(),
+            rootOwner_: tokenOwner.address,
+            name_: 'Airdrop token',
+            symbol_: 'AIRDROP_5',
+            decimals_: 5,
+            walletCode_: sampleRootData.code,
+        },
+        publicKey: tokenOwner.publicKey,
+        value: locklift.utils.toNano(3),
+        });
+        console.log(root.address);
+        //root = contract;
+
 	const codeAirdrop = locklift.factory.getContractArtifacts("Airdrop");
    	const { contract, tx } = await locklift.factory.deployContract({
         				contract: "Airdrop",
         				publicKey: signer.publicKey,
         				initParams: {
         					_randomNonce: locklift.utils.getRandomNonce(),
-						distributerCode: codeDistributer.code,
+						//distributerCode: codeDistributer.code,
         				},
         				constructorParams: {
              						_contract_notes: 'Airdrop_12345',
-             						_refund_destination: owner.address,
+             						_refund_destination: tokenOwner.address,
              						_refund_lock_duration: refund_lock_duration,
              						_newCode: codeAirdrop.code,
-             						_sender_address: owner.address,
+             						_sender_address: tokenOwner.address,
              						//_token_root_address: "0:0000000000000000000000000000000000000000000000000000000000000000",
-             						_token_root_address: "0:a50def2df0f7f531b82b7ffec7baf8e7ce4279605726b94927c9ee6ded09f5c2",
-             						_number_of_recipients: 546,
-             						_total_amount: 100,
+             						_token_root_address: root.address,
+             						_number_of_recipients: nrOfRecipients,
+             						_total_amount: total,
         				},
-        				value: locklift.utils.toNano(1.5),
+        				value: locklift.utils.toNano(5),
     					});
     	const airdrop = contract;
     	console.log(`Airdrop deployed at: ${airdrop.address.toString()}`);
-
+		console.log('Token root address: ', root.address);
 		for(let i=0;i<chunkAddresses.length;i++)
 		{
-		const setAmounts = await airdrop.methods.setAmounts({amounts: chunkAmounts[i]}).sendExternal(pubKey: owner.publicKey, withoutSignature: true);
-			
+		const setRecipients = await airdrop.methods.setRecipients({recipients: chunkAddresses[i][1]}).sendExternal({publicKey: tokenOwner.publicKey, withoutSignature: true});
+		console.log('Set recipients: ', setRecipients);
+		const setAmounts = await airdrop.methods.setAmounts({amounts: chunkAmounts[i][1]}).sendExternal({publicKey: tokenOwner.publicKey, withoutSignature: true});
+		console.log('Set amounts: ', setAmounts);
 
-		}*/
-		await locklift.giver.sendTo("0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63", locklift.utils.toNano(50));
+		}
+		//await locklift.giver.sendTo("0:102cf118b6875d201a3011d5dc17a358ee4d4333ad7e167824515171ed8f6f63", locklift.utils.toNano(50));
     	/*const batch = await airdrop.methods.batches({}).call();
     	console.log(batch);
     	let totalFileAmount=0;

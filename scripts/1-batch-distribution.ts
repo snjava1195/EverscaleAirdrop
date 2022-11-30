@@ -7,9 +7,8 @@ const fs  = require("fs");
 const { parse } = require('csv-parse/lib/sync');
 const {load} = require('csv-load-sync');
 let owner: Contract<FactorySource["Wallet"]>;
-let airdrop: Contract<FactorySource["EverAirdrop"]>;
+let airdrop: Contract<FactorySource["Airdrop"]>;
 
-let distributer: Contract<FactorySource["Distributer"]>;
 
 //Script used for continuation in case of interrupted distribution
 
@@ -50,7 +49,7 @@ function chunk(array, chunkSize) {
    	
    	//address of interrupted airdrop (not enough gas...)
    	airdrop = await locklift.factory.getDeployedContract(
-  		"EverAirdrop", // name of your contract
+  		"Airdrop", // name of your contract
   		"0:931dc9da8562eda5f4259840d6b8141490cfe10fd13eee643dd4bca8c583e054",
 		);
 	console.log(`Airdrop: ${airdrop.address}`);
@@ -74,13 +73,13 @@ function chunk(array, chunkSize) {
 	console.log(chunkAmounts);
 	
 	//array of already deployed distributers
-	const deployedArray = await airdrop.methods.getDeployedContracts({}).call();
-    	console.log(deployedArray.value0.length);
+	const deployedArray = await airdrop.methods.batches({}).call();
+    	console.log(deployedArray.batches);
     		
  
   
 
-    	let counter = deployedArray.value0.length;
+    	let counter = deployedArray.batches*1;
     	
     	//sends gas to the airdrop
 	await locklift.giver.sendTo(airdrop.address, locklift.utils.toNano(10050));
@@ -103,7 +102,7 @@ function chunk(array, chunkSize) {
     					publicKey: signer.publicKey,
     					},
     				airdrop =>
-    					airdrop.methods.distribute({
+    					airdrop.methods.distribute2({
     						     _addresses: chunkAddresses[counter][1], 							     _amounts: chunkAmounts[counter][1], 
     						     _wid: 0,
     						     _totalAmount:totalAmount

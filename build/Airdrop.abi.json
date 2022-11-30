@@ -111,6 +111,14 @@
 			]
 		},
 		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "transferOwnership",
 			"inputs": [
 				{"name":"newOwner","type":"address"}
