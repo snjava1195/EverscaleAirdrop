@@ -338,6 +338,7 @@
 // PAGINATION Import //
 import AppPagination from '@/components/Reusable/AppRecipientListPagination.vue';
 import { useRecipientStore } from '@/stores/recipientStore';
+import { watch } from 'vue';
 
 import { ref, computed } from 'vue';
 import { useDropZone } from '@vueuse/core';
@@ -464,6 +465,13 @@ useDropZone(dropZoneRef, onDrop);
   
   performance.getEntriesByType("navigation")
     .forEach((p, i) => {
+      if (i == 0) {
+        console.log('HALO', recipientStore.returnLastList()?.items);
+        if (recipientStore.returnLastList()?.items !== undefined) {
+          fullRecList.value = recipientStore.returnLastList()?.items;
+        } 
+      }
+    
       console.log(`= Navigation entry[${i}]`);
       console.log('Type: ', p.type);
     });
@@ -781,6 +789,13 @@ async function onChange(value) {
 function onEnter() {
   onChangeInput(customToken.value);
 }
+
+// watch(fullRecList.value, (newX) => {
+//   console.log('Saved items list');
+//   // if (airdropStore.step == 2) {
+//     recipientStore.saveItemsList(airdropStore.address, fullRecList);
+//   // }
+// });
 
 async function addTag(newTag) {
   const ever = new ProviderRpcClient();

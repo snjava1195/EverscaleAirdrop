@@ -392,6 +392,9 @@ import { getSeconds } from '@/utils';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
 dayjs.extend(relativeTime);
 
+import { useRecipientStore } from '@/stores/recipientStore';
+const recipientStore = useRecipientStore();
+
 const props = defineProps({
   items: {
     type: Array,
@@ -539,6 +542,10 @@ async function onTopUpEver() {
 
   try {
     errors.value.error = false;
+
+    // TODO: Add here the address and list to be stored
+    recipientStore.saveAirdropList(recipientsList.value, airdropStore.address);
+
     const data = await airdropStore.getGiverContract2(props.token.label, recipientsList.value.length);
     console.log('Data id: ', data.id.hash);
     airdropStore.transactionId.giverContractId = data.id.hash;
