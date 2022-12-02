@@ -102,7 +102,7 @@ export const useRecipientStore = defineStore({
             var listFromStorage = JSON.parse(localStorage.listToStorage);
             /// Check if any of the addresses are the same as the current airdrop
             // for (var i = 0; i < listFromStorage.length; i++) {
-              /// If yes, add the data to the listToStorage
+              // / If yes, add the data to the listToStorage
               // if (listFromStorage[i].contractAddr == addr) {
             this.listToStorage = listFromStorage.slice();
               // }
@@ -110,10 +110,10 @@ export const useRecipientStore = defineStore({
             console.log('STORAGE list at startup: ',  JSON.parse(localStorage.listToStorage));
             console.log('The current list after slice', this.listToStorage);
 
-            /// Delete storage data
-            // for (var i = 0; i < listFromStorage.length; i++) {
-            //   localStorage.removeItem('listToStorage');
-            // }
+            //  Delete storage data
+            for (var i = 0; i < listFromStorage.length; i++) {
+              localStorage.removeItem('listToStorage');
+            }
           }
           /// Add or update airdrop storage data
           if (this.listToStorage.length !== 0) {
@@ -146,13 +146,15 @@ export const useRecipientStore = defineStore({
         },
         returnLastList() {
           var klol;
-          if (this.listToStorage == []) {
+          console.log('list to store for return', this.listToStorage);
+          if (this.listToStorage?.length == undefined) {
+            console.log('is undef');
             klol = {
               contractAddr: addr,
               items: items,
             };
           } else {
-            klol = this.listToStorage[this.listToStorage.length - 1];
+            klol = this.listToStorage[this.listToStorage?.length - 1];
           }
           return klol;
         },

@@ -463,21 +463,21 @@ useDropZone(dropZoneRef, onDrop);
 //else
 //{
   
-  performance.getEntriesByType("navigation")
-    .forEach((p, i) => {
-      if (i == 0) {
-        console.log('HALO', recipientStore.returnLastList()?.items);
-        if (recipientStore.returnLastList()?.items !== undefined) {
-          fullRecList.value = recipientStore.returnLastList()?.items;
-        } 
-      }
-    
-      console.log(`= Navigation entry[${i}]`);
-      console.log('Type: ', p.type);
-    });
+performance.getEntriesByType("navigation")
+  .forEach((p, i) => {
+    if (i == 0) {
+      console.log('HALO', recipientStore.returnLastList()?.items);
+      if (recipientStore.returnLastList()?.items !== undefined) {
+        fullRecList.value = recipientStore.returnLastList()?.items;
+      } 
+    }
   
-   
-    reset();
+    console.log(`= Navigation entry[${i}]`);
+    console.log('Type: ', p.type);
+});
+
+  
+reset();
     
  
 
