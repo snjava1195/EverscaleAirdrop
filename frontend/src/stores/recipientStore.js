@@ -11,7 +11,7 @@ export const useRecipientStore = defineStore({
 
         },
         isVisible: false,
-        listToStorage: []
+        listToStorage: [],
     }),
     getters: {
         nextPage: (state) => {
@@ -76,103 +76,49 @@ export const useRecipientStore = defineStore({
           // console.log(`Reset State`);
           this.resetPagination();
         },
-
         updateDropdownVisibility() {
           this.isVisible = !this.isVisible;
         },
 
         // TODO: Save the list of addresses and ammounts
-        // of a certain contractAddr in order to refill
-        // an undeployed contract if user returns to it
-        // to finish the deployment
-
-        saveAirdropList(items, addr) {
+        saveAirdropData(items, addr) {
           console.log('Save Items List');
           // Airdrop data (address and list of recs with amounts)
-          var airdropAddrWList = {
+          var airdropData = {
             contractAddr: addr,
             items: items,
           }
+          var data = JSON.stringify(airdropData);
+          localStorage.setItem("airdrop", data);
+          var parsed = JSON.parse(localStorage.getItem("airdrop"));
+          console.log('PARSED Drop:', parsed);
+
+        },
+        checkForAirdropInLocalStorage(addr) {
           /// Check if storage has any saved airdrops
-          if (
-            localStorage.listToStorage 
-            && this.listToStorage.length == 0
-          ) {
-            /// Parse the data from storage
-            var listFromStorage = JSON.parse(localStorage.listToStorage);
-            /// Check if any of the addresses are the same as the current airdrop
-            // for (var i = 0; i < listFromStorage.length; i++) {
-              // / If yes, add the data to the listToStorage
-              // if (listFromStorage[i].contractAddr == addr) {
-            this.listToStorage = listFromStorage.slice();
-              // }
-            // }
-            console.log('STORAGE list at startup: ',  JSON.parse(localStorage.listToStorage));
-            console.log('The current list after slice', this.listToStorage);
-
-            //  Delete storage data
-            for (var i = 0; i < listFromStorage.length; i++) {
-              localStorage.removeItem('listToStorage');
-            }
-          }
-          /// Add or update airdrop storage data
-          if (this.listToStorage.length !== 0) {
-            console.log('Start');
-            for (let i = 0; i < this.listToStorage.length; i++) {
-              console.log('For');
-              /// Check to see if old data is present and remove it
-              if (addr == this.listToStorage[i].contractAddr) {
-                this.listToStorage.splice(i, 1);
-                console.log('List item removed: ', this.listToStorage[i]);
-              }
-            }
-            /// Add new data to the storage
-            this.listToStorage.push(airdropAddrWList);
-            localStorage.listToStorage = JSON.stringify(this.listToStorage);
-          } else {
-            this.listToStorage.push(airdropAddrWList);
-            localStorage.listToStorage = JSON.stringify(this.listToStorage);
-          }
-          console.log('Added list item: ', this.listToStorage);
-          console.log('SAVED IN LOCAL STORAGE: ', localStorage.listToStorage);
+          var parsed = JSON.parse(localStorage.getItem("airdrop"));
+          if (parsed.contractAddr == addr) {
+            return true;
+          } false;
         },
-
-        returnAirdropList(addr) {
-          for(var i = 0; i < this.listToStorage.length; i++) {
-            if (addr == this.listToStorage[i].contractAddr) {
-              return this.listToStorage[i];
-            }
-          }
+        returnAirdropData() {
+          var parsed = JSON.parse(localStorage.getItem("airdrop"));
+          return parsed;
         },
-        returnLastList() {
-          var klol;
-          console.log('list to store for return', this.listToStorage);
-          if (this.listToStorage?.length == undefined) {
-            console.log('is undef');
-            klol = {
-              contractAddr: addr,
-              items: items,
-            };
-          } else {
-            klol = this.listToStorage[this.listToStorage?.length - 1];
+        removeAirdropFromStorage(addr) {
+          var parsed = JSON.parse(localStorage.getItem("airdrop"));
+          if (parsed.contractAddr == addr) {
+            localStorage.removeItem("airdrop");
           }
-          return klol;
+          // localStorage.removeItem("airdrop");
+          console.log('is removed?', localStorage.getItem("airdrop"));
         },
-        removeListItem(addr) {
-          for(var i = 0; i < this.listToStorage.length; i++) {
-            if (addr == this.listToStorage[i].contractAddr) {
-              this.listToStorage.splice(i, 1);
-            }
-          }
-        },
-        clearItemsList() {
-          this.listToStorage.splice();
-        }
       },
-      mounted() {
-        if (localStorage.listToStorage) {
-          // this.listToStorage = localStorage.listToStorage;
-          console.log('Saved LIST: ', this.listToStorage);
-        }
-      },
+      // mounted() {
+      //   // if (localStorage.airdrops) {
+      //     console.log('MOUNTED');
+      //     this.listToStorage = JSON.parse(localStorage.airdrops);
+      //     // console.log('Saved LIST: ', this.listToStorage);
+      //   // }
+      // },
 });

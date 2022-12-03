@@ -465,11 +465,12 @@ useDropZone(dropZoneRef, onDrop);
   
 performance.getEntriesByType("navigation")
   .forEach((p, i) => {
-    if (i == 0) {
-      console.log('HALO', recipientStore.returnLastList()?.items);
-      if (recipientStore.returnLastList()?.items !== undefined) {
-        fullRecList.value = recipientStore.returnLastList()?.items;
-      } 
+
+    console.log('Fetch data');
+
+    if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
+      console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
+      // fullRecList.value = returnAirdropData().
     }
   
     console.log(`= Navigation entry[${i}]`);

@@ -126,12 +126,12 @@
                 </div>
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
-                  <input :disabled="canEdit" v-model="item.address" class="h-full w-full px-[12px]" type="text"
+                  <input :disabled="!canEdit" v-model="item.address" class="h-full w-full px-[12px]" type="text"
                     name="address" placeholder="Recipient address" />
                 </div>
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
-                  <input :disabled="canEdit" v-model="item.amount" type="number" name="amount"
+                  <input :disabled="!canEdit" v-model="item.amount" type="number" name="amount"
                     class="h-full w-full px-[12px]" :placeholder="`Amount, ${token.label}`" />
                 </div>
               </div>
@@ -179,6 +179,7 @@ import { useAirdropStore } from '@/stores/airdrop';
 import { useRoute } from 'vue-router';
 import { ProviderRpcClient } from 'everscale-inpage-provider';
 import dayjs from 'dayjs';
+import { watch } from 'vue';
 
 // PAGINATION entities //
 const recipientStore = useRecipientStore();
@@ -186,10 +187,13 @@ const recipientStore = useRecipientStore();
 const ever = new ProviderRpcClient();
 let items = ref(recipientsList);
 
-recipientStore.resetState();
+// recipientStore.resetState();
+
 /// FULL LIST
 let fullRecList = ref(recipientsList);
 let numberPerPage = recipientStore.itemsPerPage;
+
+const status = ref(null);
 
 const airdropName = ref(null);
 const token = ref(null);
@@ -208,7 +212,6 @@ useDropZone(dropZoneRef, onDrop);
 reset();
 
 getAirdrop();
-var canEdit = canEditList();
 function onFileChanged($event) {
   const target = $event.target;
   if (target && target.files) {
@@ -329,49 +332,52 @@ async function getAirdrop() {
   airdropStore.lockDuration = dayjs.unix(refundDuration.value0).format('ddd MMM DD YYYY HH:mm:ss');
 
   console.log('Lock duration: ', airdropStore.lockDuration);
-  const status = await contract.methods.status({}).call();
-  console.log(status);
+  status.value = await contract.methods.status({}).call();
+  let status0 = status.value;
+  console.log(status0);
 
   // const balance = await contract.methods.balanceWallet({}).call();
   // console.log(balance);
-  if(status.status*1==0)
-  {
-    airdropStore.step = 2;
-    airdropStore.deployStatus="Deploying";
-    console.log("Step2: ", airdropStore.step);
 
-  }
-  if (status.status*1 == 1) {
-    airdropStore.step = 3;
-    airdropStore.deployStatus="Deployed";
-  }
-  if (status.status*1 == 3) {
-    airdropStore.step = 5;
-  }
-  if (status.status*1 == 4) {
-    airdropStore.step = 6;
-  }
-  if (status.status*1==5) {
-    airdropStore.step = 4;
-  }
-  
-  for (let i = 0; i < airdropStore.airdropData.length; i++) {
-    if (airdropStore.airdropData[i].address == address) {
+  function stepCount() {
+    if (status0.status*1==0) {
+      airdropStore.step = 2;
+      airdropStore.deployStatus="Deploying";
+      console.log("Step2: ", airdropStore.step);
 
-      if (airdropStore.airdropData[i].status == "Preparing") {
-        airdropStore.step = 4;
+    }
+    if (status0.status*1 == 1) {
+      airdropStore.step = 3;
+      airdropStore.deployStatus="Deployed";
+    }
+    if (status0.status*1 == 3) {
+      airdropStore.step = 5;
+    }
+    if (status0.status*1 == 4) {
+      airdropStore.step = 6;
+    }
+    if (status0.status*1==5) {
+      airdropStore.step = 4;
+    }
+    for (let i = 0; i < airdropStore.airdropData.length; i++) {
+      if (airdropStore.airdropData[i].address == address) {
+
+        if (airdropStore.airdropData[i].status == "Preparing") {
+          airdropStore.step = 4;
+        }
+        /*else if(airdropStore.airdropData[i].status == "Redeemed")
+        {
+          airdropStore.step = 6;
+        }
+        else if(airdropStore.airdropData[i].status.includes('Executing'))
+        {
+          airdropStore.step=4;
+        }*/
       }
-      /*else if(airdropStore.airdropData[i].status == "Redeemed")
-      {
-        airdropStore.step = 6;
-      }
-      else if(airdropStore.airdropData[i].status.includes('Executing'))
-      {
-        airdropStore.step=4;
-      }*/
     }
   }
-
+  stepCount();
+ 
   const recipientsNr = await contract.methods.recipientNumber({}).call();
   const totalAmount = await contract.methods.totalAmount({}).call();
   airdropStore.topUpRequiredAmount = fromNano(totalAmount.totalAmount, 9);
@@ -505,6 +511,7 @@ function getRecipients(num, page) {
 
 function reset()
 {
+  console.log('RESET STARTED');
   items.value.length=10;
   fullRecList.value.length=10;
 
@@ -523,13 +530,43 @@ function reset()
   console.log('Reset recipients list value: ', fullRecList.value);
   airdropStore.airdropName="";
   recipientStore.resetPagination();
-
 }
 
+/// If step is less than or equal to 2, you can edit the list of rec and amounts
 function canEditList() {
-  var isTrueOrNot = airdropStore.step >= 2 ? false : true;
+  console.log('CANEDIT STARTED');
+  var isTrueOrNot = airdropStore.step > 2 ? false : true;
   return isTrueOrNot;
 }
+/// Func to return saved airdrop recipients data after refresh or back
+function reloadAirdropData() {
+  console.log(
+    'RELOAD DATA STARTED', 
+    'ADDRESS OF CONTR:', airdropStore.address,
+    'AIRDROP STEP:', airdropStore.step,
+    'CAN EDIT?', canEditList()
+  );
+  // Check to prevent inserting data after step 2
+  if (canEditList()) {
+    // Check if the data is for this current contract and insert if true
+    if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
+        fullRecList.value =  recipientStore.returnAirdropData().items;
+        items.value =  fullRecList.value;
+    }
+  }
+}
+// Can edit initially false (to prevent users from typing untill it is true for sure)
+var canEdit = false;
+// Watch for status change
+watch(status, (newX) => {
+  reloadAirdropData();
+  canEdit = canEditList();
+});
+// Watch for recipients list change in order to update the stored data (still not working)
+watch(items, (newX) => {
+  console.log('refresh items value in storage');
+  recipientStore.saveAirdropData(items.value, airdropStore.address);
+});
 
 
 </script>

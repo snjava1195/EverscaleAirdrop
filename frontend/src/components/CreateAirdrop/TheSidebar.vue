@@ -390,10 +390,11 @@ import ShareAirdrop from '@/components/CreateAirdrop/ShareAirdrop.vue';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { getSeconds } from '@/utils';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
-dayjs.extend(relativeTime);
-
+/// Recipient Store 
 import { useRecipientStore } from '@/stores/recipientStore';
 const recipientStore = useRecipientStore();
+
+dayjs.extend(relativeTime);
 
 const props = defineProps({
   items: {
@@ -544,13 +545,14 @@ async function onTopUpEver() {
     errors.value.error = false;
 
     // TODO: Add here the address and list to be stored
-    recipientStore.saveAirdropList(recipientsList.value, airdropStore.address);
+    recipientStore.saveAirdropData(recipientsList.value, airdropStore.address);
 
     const data = await airdropStore.getGiverContract2(props.token.label, recipientsList.value.length);
     console.log('Data id: ', data.id.hash);
     airdropStore.transactionId.giverContractId = data.id.hash;
     
     airdropStore.step = 2;
+
   } catch (e) {
     console.log('e: ', e);
     errors.value.error = true;
@@ -558,6 +560,7 @@ async function onTopUpEver() {
   } finally {
     loading.value = false;
   }
+
 }
 
 async function onDeployContract() {
@@ -603,6 +606,8 @@ async function onDeployContract() {
     if(airdropStore.deployStatus=="Deployed")
     {
     airdropStore.step = 3;
+    // TODO: Remove the saved airdrop data after deploying the contract succesfuly
+    recipientStore.removeAirdropFromStorage(airdropStore.address);
     }
   } catch (e) {
     errors.value.error = true;
