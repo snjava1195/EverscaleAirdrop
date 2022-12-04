@@ -467,12 +467,17 @@ performance.getEntriesByType("navigation")
   .forEach((p, i) => {
 
     console.log('Fetch data');
-
+if(airdropStore.address!=null)
+{
+  console.log('Local storage: ', localStorage.getItem("airdrop"));
+  if(localStorage.getItem("airdrop")!=null)
+  {
     if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
       console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
       // fullRecList.value = returnAirdropData().
     }
-  
+  }
+}
     console.log(`= Navigation entry[${i}]`);
     console.log('Type: ', p.type);
 });

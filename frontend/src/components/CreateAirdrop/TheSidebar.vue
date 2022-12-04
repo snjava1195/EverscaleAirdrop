@@ -10,7 +10,9 @@
         </div>
 
         <div class="flex items-center space-x-[10px]">
-          <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/accounts/${airdropStore.address}`">{{ $filters.addressFormat(airdropStore.address) }}</a>
+          <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/accounts/${airdropStore.address}`">{{
+              $filters.addressFormat(airdropStore.address)
+          }}</a>
 
           <span @click="copy(airdropStore.address)" class="cursor-pointer">
             <CopyIcon />
@@ -44,39 +46,34 @@
         <!-- Step 1 -->
         <li class="flex items-center" :class="{ 'justify-between': step > 1 }">
           <div class="flex items-center">
-            <span
-              class="list-number"
-              :class="
-                !recipientsList.length
-                  ? 'bg-[#E4E5EA] text-[#6C7078]'
-                  : step === 1
+            <span class="list-number" :class="
+              !recipientsList.length
+                ? 'bg-[#E4E5EA] text-[#6C7078]'
+                : step === 1
                   ? 'bg-[#2B63F1] text-white'
                   : step > 1
-                  ? 'bg-[#4AB44A] text-white'
-                  : ''
-              "
-            >
+                    ? 'bg-[#4AB44A] text-white'
+                    : ''
+            ">
               <span v-if="step <= 1">1</span>
               <CheckIcon v-else />
             </span>
-            <a
-              :class="
-                !recipientsList.length
-                  ? 'text-[#A6AAB2]'
-                  : step === 1
+            <a :class="
+              !recipientsList.length
+                ? 'text-[#A6AAB2]'
+                : step === 1
                   ? 'text-black'
                   : step > 1
-                  ? 'text-[#4AB44A] font-medium'
-                  : ''
-              "
-              >Top up {{(token == null || token.label == 'EVER') ? topUpValue+0.5 + " EVER" : topUpValue+1.5 +" "+ " EVER"}}</a
-            >
+                    ? 'text-[#4AB44A] font-medium'
+                    : ''
+            ">Top up {{ (token == null || token.label == 'EVER') ? topUpValue + 0.5 + " EVER" : topUpValue + 1.5 + " " + "EVER"}}</a>
           </div>
 
           <div v-if="step > 1" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.giverContractId}`">{{
-              $filters.addressFormat(transactionId.giverContractId)
-            }}</a>
+            <a class="text-[#2B63F1]" target="_blank"
+              :href="`https://everscan.io/transactions/${transactionId.giverContractId}`">{{
+                  $filters.addressFormat(transactionId.giverContractId)
+              }}</a>
             <span @click="copy(transactionId.giverContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
@@ -86,40 +83,35 @@
         <!-- Step 2 -->
         <li class="flex items-center" :class="{ 'justify-between': step > 2 }">
           <div class="flex items-center">
-            <span
-              class="list-number"
-              :class="
-                !recipientsList.length || step === 1
-                  ? 'bg-[#E4E5EA] text-[#6C7078]'
-                  : step === 2
+            <span class="list-number" :class="
+              !recipientsList.length || step === 1
+                ? 'bg-[#E4E5EA] text-[#6C7078]'
+                : step === 2
                   ? 'bg-[#2B63F1] text-white'
                   : step > 2
-                  ? 'bg-[#4AB44A] text-white'
-                  : ''
-              "
-            >
+                    ? 'bg-[#4AB44A] text-white'
+                    : ''
+            ">
               <span v-if="step <= 2">2</span>
               <CheckIcon v-else />
             </span>
 
-            <a
-              :class="
-                !recipientsList.length
-                  ? 'text-[#A6AAB2]'
-                  : step === 2
+            <a :class="
+              !recipientsList.length
+                ? 'text-[#A6AAB2]'
+                : step === 2
                   ? 'text-black'
                   : step > 2
-                  ? 'text-[#4AB44A] font-medium'
-                  : ''
-              "
-              >Deploy contract</a
-            >
+                    ? 'text-[#4AB44A] font-medium'
+                    : ''
+            ">Deploy contract</a>
           </div>
 
           <div v-if="step > 2" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.deployContractId}`">{{
-              $filters.addressFormat(transactionId.deployContractId)
-            }}</a>
+            <a class="text-[#2B63F1]" target="_blank"
+              :href="`https://everscan.io/transactions/${transactionId.deployContractId}`">{{
+                  $filters.addressFormat(transactionId.deployContractId)
+              }}</a>
 
             <span @click="copy(transactionId.deployContractId)" class="cursor-pointer">
               <CopyIcon />
@@ -130,42 +122,37 @@
         <!-- Step 3 -->
         <li class="flex items-center" :class="{ 'justify-between': step > 3 }">
           <div class="flex items-center">
-            <span
-              class="list-number"
-              :class="
-                !recipientsList.length || step === 1 || step === 2
-                  ? 'bg-[#E4E5EA] text-[#6C7078]'
-                  : step === 3
+            <span class="list-number" :class="
+              !recipientsList.length || step === 1 || step === 2
+                ? 'bg-[#E4E5EA] text-[#6C7078]'
+                : step === 3
                   ? 'bg-[#2B63F1] text-white'
                   : step > 3
-                  ? 'bg-[#4AB44A] text-white'
-                  : ''
-              "
-            >
+                    ? 'bg-[#4AB44A] text-white'
+                    : ''
+            ">
               <span v-if="step <= 3">3</span>
               <CheckIcon v-else />
             </span>
-            <a
-              :class="
-                !recipientsList.length
-                  ? 'text-[#A6AAB2]'
-                  : step === 3
+            <a :class="
+              !recipientsList.length
+                ? 'text-[#A6AAB2]'
+                : step === 3
                   ? 'text-black'
                   : step > 3
-                  ? 'text-[#4AB44A] font-medium'
-                  : ''
-              "
-              >Top-up {{ totalTokens }} {{ token ? token.label : 'EVER' }}</a
-            >
+                    ? 'text-[#4AB44A] font-medium'
+                    : ''
+            ">Top-up {{ totalTokens }} {{ token ? token.label : 'EVER' }}</a>
           </div>
 
           <div v-if="step > 3" class="flex items-center space-x-[6px]">
             <!-- <a class="text-[#2B63F1]" :href="`https://everscan.io/transactions/${transactionId.amountContractId}`">{{ -->
-              <!-- $filters.addressFormat(transactionId.amountContractId) -->
+            <!-- $filters.addressFormat(transactionId.amountContractId) -->
             <!-- }}</a> -->
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.amountContractId}`">{{
-               $filters.addressFormat(transactionId.amountContractId) 
-             }}</a> 
+            <a class="text-[#2B63F1]" target="_blank"
+              :href="`https://everscan.io/transactions/${transactionId.amountContractId}`">{{
+                  $filters.addressFormat(transactionId.amountContractId)
+              }}</a>
             <span @click="copy(transactionId.amountContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
@@ -175,125 +162,102 @@
         <!-- Step 4 -->
         <li class="flex items-center" :class="{ 'justify-between': step > 4 }">
           <div class="flex items-center">
-            <span
-              class="list-number"
-              :class="
-                !recipientsList.length || step === 1 || step === 2 || step === 3
-                  ? 'bg-[#E4E5EA] text-[#6C7078]'
-                  : step === 4 && !error
+            <span class="list-number" :class="
+              !recipientsList.length || step === 1 || step === 2 || step === 3
+                ? 'bg-[#E4E5EA] text-[#6C7078]'
+                : step === 4 && !error
                   ? 'bg-[#2B63F1] text-white'
                   : step > 4
-                  ? 'bg-[#4AB44A] text-white'
-                  : step === 4 && error
-                  ? 'bg-[#D83F5A] text-white'
-                  : ''
-              "
-            >
+                    ? 'bg-[#4AB44A] text-white'
+                    : step === 4 && error
+                      ? 'bg-[#D83F5A] text-white'
+                      : ''
+            ">
               <span v-if="step <= 4">4</span>
               <CheckIcon v-else />
             </span>
-            <a
-              :class="
-                !recipientsList.length
-                  ? 'text-[#A6AAB2]'
-                  : step === 4 && !error
+            <a :class="
+              !recipientsList.length
+                ? 'text-[#A6AAB2]'
+                : step === 4 && !error
                   ? 'text-black'
                   : step > 4
-                  ? 'text-[#4AB44A] font-medium'
-                  : step === 4 && error
-                  ? 'text-[#D83F5A]'
-                  : ''
-              "
-              >Run airdrop</a
-            >
+                    ? 'text-[#4AB44A] font-medium'
+                    : step === 4 && error
+                      ? 'text-[#D83F5A]'
+                      : ''
+            ">Run airdrop</a>
           </div>
 
           <div v-if="step > 4" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.distributeContractId}`">{{
-              $filters.addressFormat(transactionId.distributeContractId)
-            }}</a>
+            <a class="text-[#2B63F1]" target="_blank"
+              :href="`https://everscan.io/transactions/${transactionId.distributeContractId}`">{{
+                  $filters.addressFormat(transactionId.distributeContractId)
+              }}</a>
             <span @click="copy(transactionId.distributeContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
           </div>
         </li>
-        <span
-          v-if="step === 4"
-          class="ml-[32px]"
-          :class="!error ? 'text-[#8B909A]' : 'text-[#D83F5A]'"
-          >Batches: {{ currentBatch }} / {{ maxBatches }}</span
-        >
+        <span v-if="step === 4" class="ml-[32px]" :class="!error ? 'text-[#8B909A]' : 'text-[#D83F5A]'">Batches: {{
+            currentBatch
+        }} / {{ maxBatches }}</span>
 
         <!-- Step 5 -->
         <li class="flex items-center" :class="{ 'justify-between': step > 5 }">
           <div class="flex items-center">
-            <span
-              class="list-number"
-              :class="
-                !recipientsList.length || step === 1 || step === 2 || step === 3 || step === 4
-                  ? 'bg-[#E4E5EA] text-[#6C7078]'
-                  : step === 5
+            <span class="list-number" :class="
+              !recipientsList.length || step === 1 || step === 2 || step === 3 || step === 4
+                ? 'bg-[#E4E5EA] text-[#6C7078]'
+                : step === 5
                   ? 'bg-[#2B63F1] text-white'
                   : step > 5
-                  ? 'bg-[#4AB44A] text-white'
-                  : ''
-              "
-            >
+                    ? 'bg-[#4AB44A] text-white'
+                    : ''
+            ">
               <span v-if="step <= 5">5</span>
               <CheckIcon v-else />
             </span>
-            <a
-              :class="
-                !recipientsList.length
-                  ? 'text-[#A6AAB2]'
-                  : step === 5
+            <a :class="
+              !recipientsList.length
+                ? 'text-[#A6AAB2]'
+                : step === 5
                   ? 'text-black'
                   : step > 5
-                  ? 'text-[#4AB44A] font-medium'
-                  : ''
-              "
-              >Redeem unused funds</a
-            >
+                    ? 'text-[#4AB44A] font-medium'
+                    : ''
+            ">Redeem unused funds</a>
           </div>
 
           <div v-if="step > 5" class="flex items-center space-x-[6px]">
-            <a class="text-[#2B63F1]" target="_blank" :href="`https://everscan.io/transactions/${transactionId.redeemContractId}`">{{
-              $filters.addressFormat(transactionId.redeemContractId)
-            }}</a>
+            <a class="text-[#2B63F1]" target="_blank"
+              :href="`https://everscan.io/transactions/${transactionId.redeemContractId}`">{{
+                  $filters.addressFormat(transactionId.redeemContractId)
+              }}</a>
             <span @click="copy(transactionId.redeemContractId)" class="cursor-pointer">
               <CopyIcon />
             </span>
           </div>
         </li>
-        <a
-          v-if="!redeemExpired"
-          class="ml-8 text-sm"
-          :class="
-            !recipientsList.length
-              ? 'text-[#A6AAB2]'
-              : step === 5
+        <a v-if="!redeemExpired" class="ml-8 text-sm" :class="
+          !recipientsList.length
+            ? 'text-[#A6AAB2]'
+            : step === 5
               ? 'text-black'
               : step > 5
-              ? 'text-[#4AB44A] font-medium'
-              : ''
-          "
-          >Available {{ reedemText }}</a
-        >
+                ? 'text-[#4AB44A] font-medium'
+                : ''
+        ">Available {{ reedemText }}</a>
       </ul>
 
       <!-- Step 1 -->
-      <button
-        v-if="step === 1"
-        @click="onTopUpEver"
-        type="button"
-        class="aside-btn"
-        :class="[
-          !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1] hover:bg-blue-700',
-          { 'is-loading': loading },
-        ]"
-        :disabled="!recipientsList.length"
-      >
-      Top up {{((token == null  || !recipientsList)|| token.label == 'EVER') ? topUpValue+0.5 + " EVER" : topUpValue+1.5 +" "+ " EVER"}}
+      <button v-if="step === 1" @click="onTopUpEver" type="button" class="aside-btn" :class="[
+        !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1] hover:bg-blue-700',
+        { 'is-loading': loading },
+      ]" :disabled="!recipientsList.length">
+        Top up {{ ((token == null || !recipientsList) || token.label == 'EVER') ? topUpValue + 0.5 + " EVER" :
+            topUpValue + 1.5 + " " + " EVER"
+        }}
       </button>
 
       <!-- Step 2 -->
@@ -302,58 +266,33 @@
           <p>The form will not be edited after deployment.</p>
         </div>
 
-        <button
-          @click="onDeployContract"
-          type="button"
-          class="aside-btn bg-[#2B63F1] text-white mt-[8px] hover:bg-blue-700"
-          :class="{ 'is-loading': loading }"
-        >
+        <button @click="onDeployContract" type="button"
+          class="aside-btn bg-[#2B63F1] text-white mt-[8px] hover:bg-blue-700" :class="{ 'is-loading': loading }">
           Deploy contract
         </button>
       </template>
 
       <!-- Step 3 -->
-      <button
-        v-if="step === 3"
-        @click="onTopUpToken"
-        type="button"
-        class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700"
-        :class="{ 'is-loading': loading }"
-      >
+      <button v-if="step === 3" @click="onTopUpToken" type="button"
+        class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700" :class="{ 'is-loading': loading }">
         Top-up {{ totalTokens }} {{ token ? token.label : 'EVER' }}
       </button>
 
       <!-- Step 4 -->
       <template v-if="step === 4">
-        <button
-          v-if="!error"
-          @click="onResumeAirdrop(false)"
-          type="button"
-          class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700"
-          :class="{ 'is-loading': loading }"
-        >
+        <button v-if="!error" @click="onResumeAirdrop(false)" type="button"
+          class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700" :class="{ 'is-loading': loading }">
           Run airdrop
         </button>
-        <button
-          v-else
-          @click="onResumeAirdrop(true)"
-          type="button"
-          class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700"
-          :class="{ 'is-loading': loading }"
-        >
+        <button v-else @click="onResumeAirdrop(true)" type="button"
+          class="aside-btn bg-[#2B63F1] text-white mt-[24px] hover:bg-blue-700" :class="{ 'is-loading': loading }">
           Resume airdrop
         </button>
       </template>
 
       <!-- Step 5 -->
-      <button
-        v-if="step === 5"
-        @click="onRedeemFunds"
-        type="button"
-        class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
-        :class="{ 'is-loading': loading, 'bg-[#DAE4FD] hover:bg-blue-700': !redeemExpired }"
-        :disabled="!redeemExpired"
-      >
+      <button v-if="step === 5" @click="onRedeemFunds" type="button" class="aside-btn bg-[#2B63F1] text-white mt-[24px]"
+        :class="{ 'is-loading': loading, 'bg-[#DAE4FD] hover:bg-blue-700': !redeemExpired }" :disabled="!redeemExpired">
         Redeem funds
       </button>
 
@@ -361,16 +300,13 @@
         <p>{{ errors.message }}</p>
       </div>
 
-      <ShareAirdrop
-        v-if="step === 5 || step === 6"
-        :shareNetwork="{
-          airdropName: airdropName,
-          totalAmount: totalTokens,
-          totalAddresses: recipientsList.length,
-          contractAddress: airdropStore.address,
-          tokenName: token.label,
-        }"
-      />
+      <ShareAirdrop v-if="step === 5 || step === 6" :shareNetwork="{
+        airdropName: airdropName,
+        totalAmount: totalTokens,
+        totalAddresses: recipientsList.length,
+        contractAddress: airdropStore.address,
+        tokenName: token.label,
+      }" />
     </main>
   </aside>
 </template>
@@ -460,30 +396,28 @@ const totalTokens = computed(() => {
   const totalRecipientsTokens = recipientsList.value.reduce((accumulator, object) => {
     return accumulator + Number(object.amount);
   }, 0);
-//  console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
-  return totalRecipientsTokens>0.01 ? Number(Math.round(totalRecipientsTokens+'e2')+'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
+  //  console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
+  return totalRecipientsTokens > 0.01 ? Number(Math.round(totalRecipientsTokens + 'e2') + 'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
 });
 const topUpValue = computed(() => {
-  
+
   let loopCount = Math.floor(recipientsList.value.length / 99);
-        if (recipientsList.value.length % 99 !== 0) {
-          loopCount++;
-        }
-        let amountForSetting=0;
-        
-          if(recipientsList.value.length==1)
-          {
-            amountForSetting = 0.02;
-            //console.log('Usao u jednog');
-          }
-          else 
-          {
-            amountForSetting = 0.02+((recipientsList.value.length*0.006)*2);
-            //console.log('Usao u 99');
-          }
-          
-        
-        return recipientsList.value.length !=0 ? amountForSetting : 0;
+  if (recipientsList.value.length % 99 !== 0) {
+    loopCount++;
+  }
+  let amountForSetting = 0;
+
+  if (recipientsList.value.length == 1) {
+    amountForSetting = 0.02;
+    //console.log('Usao u jednog');
+  }
+  else {
+    amountForSetting = 0.02 + ((recipientsList.value.length * 0.006) * 2);
+    //console.log('Usao u 99');
+  }
+
+
+  return recipientsList.value.length != 0 ? amountForSetting : 0;
 });
 
 const ever = new ProviderRpcClient();
@@ -515,8 +449,7 @@ const transactionId = computed(() => {
 })
 
 watch(props.items, (newX) => {
-  if(airdropStore.step<=3)
-  {
+  if (airdropStore.step <= 3) {
     airdropStore.getRequiredAmount(totalTokens.value, recipientsList.value.length);
     console.log('Required amount: ', airdropStore.topUpRequiredAmount);
   }
@@ -538,7 +471,7 @@ function availableToRedeem() {
 // airdropStore.getExpectedAddress(props.token);
 
 async function onTopUpEver() {
- // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+  // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
   loading.value = true;
 
   try {
@@ -550,7 +483,7 @@ async function onTopUpEver() {
     const data = await airdropStore.getGiverContract2(props.token.label, recipientsList.value.length);
     console.log('Data id: ', data.id.hash);
     airdropStore.transactionId.giverContractId = data.id.hash;
-    
+
     airdropStore.step = 2;
 
   } catch (e) {
@@ -564,13 +497,13 @@ async function onTopUpEver() {
 }
 
 async function onDeployContract() {
- // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
-  if (airdropStore.lockDuration==null) {
-    const date = new Date(Date.now()+(3*60*1000));
+  // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+  if (airdropStore.lockDuration == null) {
+    const date = new Date(Date.now() + (3 * 60 * 1000));
     const lockDuration = date;//{ date: date, hours: new Date().getHours(), minutes: new Date().getMinutes() + 2 }
-   // console.log('Date:', lockDuration);
+    // console.log('Date:', lockDuration);
     airdropStore.lockDuration = date;//Math.floor(lockDuration.getTime()/1000);
-  //  console.log('Lock duration: ', airdropStore.lockDuration);
+    //  console.log('Lock duration: ', airdropStore.lockDuration);
   }
   //console.log('Lock duration: ', airdropStore.lockDuration)
   loading.value = true;
@@ -579,43 +512,50 @@ async function onDeployContract() {
     errors.value.error = false;
     //airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     airdropStore.airdropName = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
-   // console.log('airdropName:', airdropName.value);
-   if(airdropStore.deployStatus!="Deploying")
-    {
+    // console.log('airdropName:', airdropName.value);
+    if (airdropStore.deployStatus != "Deploying") {
       console.log('Add existing airdrop, props.token: ', props.token);
-   const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
-   // const fees = await airdropStore.getEstimatedFee();
-   airdropStore.transactionId.deployContractId = data.transaction.id.hash;
-    console.log('Tr id:', airdropStore.transactionId.deployContractId);
+      const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
+      // const fees = await airdropStore.getEstimatedFee();
+      airdropStore.transactionId.deployContractId = data.transaction.id.hash;
+      console.log('Tr id:', airdropStore.transactionId.deployContractId);
     }
-    if(airdropStore.deployStatus=="Deploying")
-    {
-      if(airdropStore.transactionId.giverContractId!="")
-      {
-    await airdropStore.setTransactionsHash(airdropStore.transactionId.giverContractId);
+    if (airdropStore.deployStatus == "Deploying") {
+      const hashes = await airdropStore.getTransactionHashes();
+      console.log('Hashes length: ', hashes.transactionHashes.length);
+      if (hashes.transactionHashes.length < 1) {
+        if (airdropStore.transactionId.giverContractId != "") {
+          await airdropStore.setTransactionsHash(airdropStore.transactionId.giverContractId);
+        }
       }
-      if(airdropStore.transactionId.deployContractId!="")
-      {
-    await airdropStore.setTransactionsHash(airdropStore.transactionId.deployContractId);
+      if (hashes.transactionHashes.length < 2) {
+        if (airdropStore.transactionId.deployContractId != "") {
+          await airdropStore.setTransactionsHash(airdropStore.transactionId.deployContractId);
+        }
       }
-    await airdropStore.setRecipients(recipientsList.value);
-    await airdropStore.setAmounts(recipientsList.value);
+      const batchAddresses = await airdropStore.getRecipients();
+      console.log('Get recipients data: ', batchAddresses);
+      if (batchAddresses.batchAddresses.length < 1) {
+        await airdropStore.setRecipients(recipientsList.value);
+      }
+      const batchAmounts = await airdropStore.getAmounts();
+      if (batchAmounts.batchAmounts.length < 1) {
+        await airdropStore.setAmounts(recipientsList.value);
+      }
     }
     await airdropStore.calculateFees("topup", "giver", '', []);
     console.log('Fees calculated: ', airdropStore.fees);
-    if(airdropStore.deployStatus=="Deployed")
-    {
-    airdropStore.step = 3;
-    // TODO: Remove the saved airdrop data after deploying the contract succesfuly
-    recipientStore.removeAirdropFromStorage(airdropStore.address);
+    if (airdropStore.deployStatus == "Deployed") {
+      airdropStore.step = 3;
+      // TODO: Remove the saved airdrop data after deploying the contract succesfuly
+      recipientStore.removeAirdropFromStorage(airdropStore.address);
     }
   } catch (e) {
     errors.value.error = true;
     errors.value.message = e.message;
   } finally {
-    if(airdropStore.deployStatus=="Deployed")
-    {
-    loading.value = false;
+    if (airdropStore.deployStatus == "Deployed") {
+      loading.value = false;
     }
   }
 }
@@ -672,19 +612,19 @@ async function onRedeemFunds() {
 
   try {
     errors.value.error = false;
-    const lastTx = await ever.getTransactions({address: airdropStore.address, continuation: undefined, limit: 1});
-    airdropStore.transactionId.redeemContractId =lastTx.transactions[0].id.hash;
+    const lastTx = await ever.getTransactions({ address: airdropStore.address, continuation: undefined, limit: 1 });
+    airdropStore.transactionId.redeemContractId = lastTx.transactions[0].id.hash;
     //console.log('Last tx: ', lastTx);
     //console.log('redeemed tx: ', airdropStore.transactionId.redeemContractId);
     await airdropStore.setTransactionsHash(airdropStore.transactionId.redeemContractId);
     const data = await airdropStore.redeemFunds();
-   // airdropStore.transactionId.redeemContractId =data.id.hash;
-    
+    // airdropStore.transactionId.redeemContractId =data.id.hash;
+
     //transactionId.value.redeemContractId = data.id.hash;
-    
-    
-    
-  
+
+
+
+
     // error.value = true;
     airdropStore.step = 6;
   } catch (e) {
@@ -697,8 +637,7 @@ async function onRedeemFunds() {
   }
 }
 
-function logHashes()
-{
+function logHashes() {
   console.log('Hashes: ', transactionId.value);
 }
 

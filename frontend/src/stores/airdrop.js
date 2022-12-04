@@ -665,6 +665,47 @@ export const useAirdropStore = defineStore({
       }
 
     },
+    async getRecipients()
+    {
+      const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
+      try{
+      const recipients = await everAirDropContract.methods.batchAddresses({}).call();
+      return Promise.resolve(recipients);
+      }
+      catch(e)
+      {
+        console.log(e);
+        return Promise.reject(e);
+      }
+    },
+
+    async getAmounts()
+    {
+      const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
+      try{
+      const recipients = await everAirDropContract.methods.batchAmounts({}).call();
+      return Promise.resolve(recipients);
+      }
+      catch(e)
+      {
+        console.log(e);
+        return Promise.reject(e);
+      }
+    },
+
+    async getTransactionHashes()
+    {
+      const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
+      try{
+      const transactionHashes = await everAirDropContract.methods.transactionHashes({}).call();
+      return Promise.resolve(transactionHashes);
+      }
+      catch(e)
+      {
+        console.log(e);
+        return Promise.reject(e);
+      }
+    },
 
     async getRequiredAmount(totalTokens, totalRecipients) {
       console.log('Total tokens', totalTokens);
@@ -1201,13 +1242,13 @@ export const useAirdropStore = defineStore({
               else
                 finalStatus = "Deployed";
             }
-            /*else
+            else
             {
-              if(deposit>0) ///TODO: staviti pravu cifru
+              if(status.status*1==2) ///TODO: staviti pravu cifru
                 finalStatus = "Preparing";
               else
-                finalStatus = status.status;
-            }*/
+                finalStatus = "Deployed";
+            }
           }
           else if(status.status*1==5)
           {
