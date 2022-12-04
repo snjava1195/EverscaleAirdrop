@@ -471,12 +471,17 @@ function availableToRedeem() {
 // airdropStore.getExpectedAddress(props.token);
 
 async function onTopUpEver() {
-  // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
+  console.log('Total tokens.value: ', totalTokens.value);
+  console.log('airdropStore.tokenWalletBalance: ', airdropStore.tokenWalletBalance);
+   if (!validateAddressAmountList(props.items, totalTokens.value, airdropStore.tokenWalletBalance)) return;
   loading.value = true;
 
   try {
     errors.value.error = false;
-
+   /* if(airdropStore.tokenWalletBalance<totalTokens.value)
+    {
+      errors.value.error=true;
+    }*/
     // TODO: Add here the address and list to be stored
     recipientStore.saveAirdropData(recipientsList.value, airdropStore.address);
 
@@ -494,6 +499,12 @@ async function onTopUpEver() {
     loading.value = false;
   }
 
+}
+
+function sufficientBalance()
+{
+  const token = airdropStore.tokenAddr.balances.find(token=>token.rootAddress == props.token.address);
+    console.log('Token from token wallet: ', token);
 }
 
 async function onDeployContract() {

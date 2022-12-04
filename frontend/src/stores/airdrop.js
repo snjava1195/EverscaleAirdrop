@@ -179,7 +179,8 @@ export const useAirdropStore = defineStore({
     },
     airdropName: "",
     deployStatus: "",
-    existingAirdropAddress: null
+    existingAirdropAddress: null,
+    tokenWalletBalance: 0,
   }),
   getters: {},
   actions: {

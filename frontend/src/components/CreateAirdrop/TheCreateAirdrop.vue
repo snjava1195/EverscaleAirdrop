@@ -787,6 +787,11 @@ async function onChangeInput(address) {
 }
 async function onChange(value) {
   token.value = value;
+  console.log('token.value: ', token.value.address);
+  const tokenRoot = airdropStore.tokenAddr.balances.find(tokencic=>tokencic.rootAddress == token.value.address);
+    console.log('Token from token wallet: ', tokenRoot);
+    airdropStore.tokenWalletBalance = tokenRoot.amount*1;
+    console.log('Token wallet balance: ', airdropStore.tokenWalletBalance);
   await airdropStore.getExpectedAddress(value);
   await airdropStore.calculateFees("deploy", "giver", "EVER", "");
   console.log('Fee: ', airdropStore.fees);

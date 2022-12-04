@@ -18,7 +18,7 @@ export const getSeconds = (date) => {
   return d.diff(dayjs(), 's');
 };
 
-export const validateAddressAmountList = (arr, totalTokens) => {
+export const validateAddressAmountList = (arr, totalTokens, tokenBalance) => {
   const walletStore = useWalletStore();
   if (arr.length > 0) {
     for (let i = 0; i < arr.length; i++) {
@@ -62,6 +62,14 @@ export const validateAddressAmountList = (arr, totalTokens) => {
   if (totalTokens > walletStore.profile.balance) {
     notify({
       text: 'Insufficient funds',
+      type: 'error',
+    });
+    return false;
+  }
+  if(totalTokens>tokenBalance)
+  {
+    notify({
+      text: 'Insuficcient tokens in wallet',
       type: 'error',
     });
     return false;
