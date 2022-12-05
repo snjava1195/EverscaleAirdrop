@@ -479,22 +479,28 @@ window.onunload = function() {
             deployTXId: airdropStore.transactionId.deployContractId,
             items: fullRecList.value,
           };
-  recipientStore.saveSingleAirdrop(airdropData);
+  if (airdropStore.step < 2) {
+    recipientStore.saveSingleAirdrop(airdropData);
+    console.log('Saved temporary data for airdrop', readSingleAirdrop());
+  }
 }
+
+reset();
 
 performance.getEntriesByType("navigation")
   .forEach((p, i) => {
-
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju, a reset mozda gurnuti gore, ili ovo spustiti nize niz vodopad
     console.log('AIRDROP STEP: ', airdropStore.step);
     if (airdropStore.step < 2) {
-      if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
-        console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
-        const storageReturn = recipientStore.returnAirdropData(airdropStore.address);
 
-        items.value = storageReturn.items;
-        airdropStore.address = storageReturn.contractAddr;
-    //   fullRecList.value = returnAirdropData()
+      let preservedAirdropData = recipientStore.readSingleAirdrop();
+      console.log('Get data after refresh: ', preservedAirdropData);
+
+      if (preservedAirdropData !== null) {
+        fullRecList.value = preservedAirdropData.items;
+        items.value = fullRecList.value;
+        // Remove previously stored data
+        recipientStore.removeSingleAirdrop();
       }
     }
 
@@ -522,7 +528,7 @@ console.log('fullRecList.value: ', fullRecList.value);
 });
 
   
-reset();
+
     
  
 
