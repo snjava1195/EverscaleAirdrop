@@ -14,6 +14,15 @@ export const useRecipientStore = defineStore({
         isVisible: false,
         listToStorage: [],
     }),
+
+    mounted() {
+      console.log(`Mounting the component triggered`);
+    },
+
+    // beforeDestroy() {
+    //   console.log('Before destroy triggered');
+    // },
+
     getters: {
         nextPage: (state) => {
           let temp = state.currentPage;
@@ -82,11 +91,15 @@ export const useRecipientStore = defineStore({
         },
 
         // TODO: Save the list of addresses and ammounts
-        saveAirdropData(items, addr) {
+        saveAirdropData(items, addr, step, TR, giverTXId, deployTXId) {
           console.log('Save Airdrop To List');
           // Airdrop data (address and list of recs with amounts)
           let airdropData = {
             contractAddr: addr,
+            step: step,
+            tokenRootAddr: TR,
+            giverTXId: giverTXId,
+            deployTXId: deployTXId,
             items: items,
           }
           console.log('should be empty -> ', localStorage.getItem('00123lalala'));
@@ -170,13 +183,25 @@ export const useRecipientStore = defineStore({
         removeAllAirdrops() {
           localStorage.removeItem("airdropsListData");
           console.log('Airdrops in storage deleted: ', localStorage.getItem('airdropsListData'));
+        },
+        // Save single airdrop if user refreshes page before deploying
+        saveSingleAirdrop(data) {
+          let dataToStorage = JSON.stringify(data);
+          localStorage.setItem('AirdropBackup', dataToStorage);
+        },
+        readSingleAirdrop() {
+          // let returnData = 
+          if (localStorage.getItem('AirdropBackup') !== null) {
+            return JSON.parse('AirdropBackup');
+          } else {
+            return null;
+          }
+          // let dataFromStorage = JSON.parse('AirdropBackup');
+          // return dataFromStorage;
+        },
+        removeSingleAirdrop() {
+          localStorage.removeItem('AirdropBackup');
         }
+
       },
-      // mounted() {
-      //   // if (localStorage.airdrops) {
-      //     console.log('MOUNTED');
-      //     this.listToStorage = JSON.parse(localStorage.airdrops);
-      //     // console.log('Saved LIST: ', this.listToStorage);
-      //   // }
-      // },
 });

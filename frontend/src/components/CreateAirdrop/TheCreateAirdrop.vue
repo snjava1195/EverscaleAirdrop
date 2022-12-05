@@ -334,6 +334,11 @@
   </div>
 </template>
 
+<script>
+// window.onload = function(){console.log('ONLOAD using js'); alert('onloading');}
+// window.onunload = function(){console.log('ONUNLOAD using js'); alert('unloading');}
+</script>
+
 <script setup>
 // PAGINATION Import //
 import AppPagination from '@/components/Reusable/AppRecipientListPagination.vue';
@@ -402,9 +407,9 @@ const rootAbi = {
   events: []
 }
 
-const items = ref(recipientsList);
-let fullRecList = ref(items.value.slice());
 let numberPerPage = recipientStore.itemsPerPage;
+const items = ref(recipientsList);
+const fullRecList = ref(items.value.slice());
 const target = ref(null);
 const airdropName = ref(null);
 const token = ref(null);
@@ -462,34 +467,62 @@ useDropZone(dropZoneRef, onDrop);
 //}
 //else
 //{
-  
+
+/// TODO: EVO GA!!! Koriscenjem ovog lifecycle hook-a mozes cuvati podatke u local storage
+window.onunload = function() {
+  console.log('ONUNLOAD');
+  let airdropData = {
+            contractAddr: airdropStore.address,
+            step: airdropStore.step,
+            tokenRootAddr: airdropStore.token_root_address,
+            giverTXId: airdropStore.transactionId.giverContractId,
+            deployTXId: airdropStore.transactionId.deployContractId,
+            items: fullRecList.value,
+          };
+  recipientStore.saveSingleAirdrop(airdropData);
+}
+
 performance.getEntriesByType("navigation")
   .forEach((p, i) => {
+
+    /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju, a reset mozda gurnuti gore, ili ovo spustiti nize niz vodopad
+    console.log('AIRDROP STEP: ', airdropStore.step);
+    if (airdropStore.step < 2) {
+      if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
+        console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
+        const storageReturn = recipientStore.returnAirdropData(airdropStore.address);
+
+        items.value = storageReturn.items;
+        airdropStore.address = storageReturn.contractAddr;
+    //   fullRecList.value = returnAirdropData()
+      }
+    }
+
 
     console.log('Fetch data');
 //if(airdropStore.address!=null)
 //{
-  console.log('Local storage: ', localStorage.getItem('airdrop'));
-  const storage = localStorage.getItem('airdrop');
+  // console.log('Local storage: ', localStorage.getItem('airdrop'));
+  // const storage = localStorage.getItem('airdrop');
  // if(localStorage.getItem('airdrop')!=null)
   //{
     //if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
-      console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
-      const storageReturn = recipientStore.returnAirdropData();
+      // console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
+      // const storageReturn = recipientStore.returnAirdropData();
     //   fullRecList.value = returnAirdropData()
    // }
   // fullRecList.value = 
   //}
 //}
-items.value = storageReturn.items;
-airdropStore.address = storageReturn.contractAddr;
+// items.value = storageReturn.items;
+// airdropStore.address = storageReturn.contractAddr;
 console.log('fullRecList.value: ', fullRecList.value);
     console.log(`= Navigation entry[${i}]`);
     console.log('Type: ', p.type);
 });
 
   
-//reset();
+reset();
     
  
 

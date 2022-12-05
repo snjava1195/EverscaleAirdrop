@@ -494,7 +494,10 @@ async function onTopUpEver() {
       errors.value.error=true;
     }*/
     // TODO: Add here the address and list to be stored
-    recipientStore.saveAirdropData(recipientsList.value, airdropStore.address);
+    recipientStore.saveAirdropData(recipientsList.value, airdropStore.address, airdropStore.step, props.token.address);
+
+    // airdropStore.transactionId.giverContractId
+    // airdropStore.transactionId.deployContractId
 
     const data = await airdropStore.getGiverContract2(props.token.label, recipientsList.value.length);
     console.log('Data id: ', data.id.hash);
