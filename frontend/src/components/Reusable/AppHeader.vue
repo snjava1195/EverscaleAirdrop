@@ -81,7 +81,9 @@ function onLogin() {
   
 }
 function onLogout() {
+  
   walletStore.logout();
+  
 }
 
 function onChange()

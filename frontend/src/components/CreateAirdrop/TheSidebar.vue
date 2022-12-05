@@ -66,7 +66,8 @@
                   : step > 1
                     ? 'text-[#4AB44A] font-medium'
                     : ''
-            ">Top up {{ (token == null || token.label == 'EVER') ? topUpValue + 0.5 + " EVER" : topUpValue + 1.5 + " " + "EVER"}}</a>
+            ">Top up {{ (token == null || token.label == 'EVER') ? Number(Math.round((topUpValue + 0.5) + 'e2') + 'e-2') + " EVER" :
+            Number(Math.round((topUpValue + 1.5) + 'e2') + 'e-2') + " " + " EVER"}}</a>
           </div>
 
           <div v-if="step > 1" class="flex items-center space-x-[6px]">
@@ -255,8 +256,8 @@
         !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1] hover:bg-blue-700',
         { 'is-loading': loading },
       ]" :disabled="!recipientsList.length">
-        Top up {{ ((token == null || !recipientsList) || token.label == 'EVER') ? topUpValue + 0.5 + " EVER" :
-            topUpValue + 1.5 + " " + " EVER"
+        Top up {{ ((token == null || !recipientsList) || token.label == 'EVER') ? Number(Math.round((topUpValue + 0.5) + 'e2') + 'e-2') + " EVER" :
+            Number(Math.round((topUpValue + 1.5) + 'e2') + 'e-2') + " " + " EVER"
         }}
       </button>
 
@@ -318,7 +319,7 @@ import { useAirdropStore } from '@/stores/airdrop';
 import { useWalletStore } from '@/stores/wallet';
 import { useClipboard } from '@vueuse/core';
 import dayjs from 'dayjs';
-import { validateAddressAmountList, validateLockDuration, fromNano } from '@/utils';
+import { validateAddressAmountList, validateLockDuration, fromNano, validateBalance } from '@/utils';
 import InfoIcon from '@/components/icons/IconInfo.vue';
 import CopyIcon from '@/components/icons/IconCopy.vue';
 import CheckIcon from '@/components/icons/IconCheck.vue';
@@ -347,7 +348,9 @@ const props = defineProps({
 
 // same as beforeRouteLeave option with no access to `this`
 onBeforeRouteLeave((to, from) => {
-  if (step.value < 3) {
+  console.log('to: ', to);
+  console.log('from: ', from);
+  if (step.value < 3 && !walletStore.leave) {
     const answer = window.confirm(
       'Do you really want to leave? Airdrop contract will not be saved!'
     )
@@ -415,9 +418,9 @@ const topUpValue = computed(() => {
     amountForSetting = 0.02 + ((recipientsList.value.length * 0.006) * 2);
     //console.log('Usao u 99');
   }
+  console.log('Number(Math.round(amountForSetting)): ', Number(Math.round(amountForSetting + 'e2') + 'e-2'));
 
-
-  return recipientsList.value.length != 0 ? amountForSetting : 0;
+  return recipientsList.value.length != 0 ? Number(Math.round(amountForSetting + 'e2') + 'e-2')/*.toFixed(amountForSetting.toString().split('-')[1])*/ : 0;
 });
 
 const ever = new ProviderRpcClient();
@@ -473,7 +476,15 @@ function availableToRedeem() {
 async function onTopUpEver() {
   console.log('Total tokens.value: ', totalTokens.value);
   console.log('airdropStore.tokenWalletBalance: ', airdropStore.tokenWalletBalance);
-   if (!validateAddressAmountList(props.items, totalTokens.value, airdropStore.tokenWalletBalance)) return;
+  console.log('walletStore.profile.balance: ', walletStore.profile.balance);
+  if(props.token.label!=='EVER')
+  {
+   if (!validateBalance(totalTokens.value, airdropStore.tokenWalletBalance)) return;
+  }
+  else
+  {
+    if (!validateBalance(totalTokens.value, walletStore.profile.balance)) return;
+  }
   loading.value = true;
 
   try {

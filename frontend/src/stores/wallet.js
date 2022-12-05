@@ -17,6 +17,7 @@ export const useWalletStore = defineStore({
     currentPage: 1,
     continuation: {},
     itemsPerPage: 10,
+    leave: false,
   }),
   getters: {
     isLogged: (state) => !!state.profile.address,
@@ -76,6 +77,7 @@ export const useWalletStore = defineStore({
         throw new Error('Extension is not installed');
       }
       await ever.ensureInitialized();
+      this.leave=true;
       const { accountInteraction } = await ever.rawApi.disconnect({
         permissions: ['basic', 'accountInteraction'],
       });

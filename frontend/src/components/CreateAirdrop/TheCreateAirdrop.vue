@@ -467,23 +467,29 @@ performance.getEntriesByType("navigation")
   .forEach((p, i) => {
 
     console.log('Fetch data');
-if(airdropStore.address!=null)
-{
-  console.log('Local storage: ', localStorage.getItem("airdrop"));
-  if(localStorage.getItem("airdrop")!=null)
-  {
-    if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
+//if(airdropStore.address!=null)
+//{
+  console.log('Local storage: ', localStorage.getItem('airdrop'));
+  const storage = localStorage.getItem('airdrop');
+ // if(localStorage.getItem('airdrop')!=null)
+  //{
+    //if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
       console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
-      // fullRecList.value = returnAirdropData().
-    }
-  }
-}
+      const storageReturn = recipientStore.returnAirdropData();
+    //   fullRecList.value = returnAirdropData()
+   // }
+  // fullRecList.value = 
+  //}
+//}
+items.value = storageReturn.items;
+airdropStore.address = storageReturn.contractAddr;
+console.log('fullRecList.value: ', fullRecList.value);
     console.log(`= Navigation entry[${i}]`);
     console.log('Type: ', p.type);
 });
 
   
-reset();
+//reset();
     
  
 
@@ -788,10 +794,15 @@ async function onChangeInput(address) {
 async function onChange(value) {
   token.value = value;
   console.log('token.value: ', token.value.address);
+  if(token.value.label!=='EVER')
+  {
+
+  
   const tokenRoot = airdropStore.tokenAddr.balances.find(tokencic=>tokencic.rootAddress == token.value.address);
     console.log('Token from token wallet: ', tokenRoot);
     airdropStore.tokenWalletBalance = tokenRoot.amount*1;
     console.log('Token wallet balance: ', airdropStore.tokenWalletBalance);
+  }
   await airdropStore.getExpectedAddress(value);
   await airdropStore.calculateFees("deploy", "giver", "EVER", "");
   console.log('Fee: ', airdropStore.fees);

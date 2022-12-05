@@ -181,6 +181,7 @@ export const useAirdropStore = defineStore({
     deployStatus: "",
     existingAirdropAddress: null,
     tokenWalletBalance: 0,
+    
   }),
   getters: {},
   actions: {
@@ -363,6 +364,7 @@ export const useAirdropStore = defineStore({
         else 
         {
           amountForSetting = 0.02+((recipientsListLength*0.006)*2);
+          console.log('amountForSetting: ', amountForSetting);
         }
        
        // console.log('Amount for setting: ', amountForSetting);
