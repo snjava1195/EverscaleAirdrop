@@ -550,7 +550,7 @@ function reloadAirdropData() {
   if (canEditList()) {
     // Check if the data is for this current contract and insert if true
     if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
-        fullRecList.value =  recipientStore.returnAirdropData().items;
+        fullRecList.value =  recipientStore.returnAirdropData(airdropStore.address).items;
         items.value =  fullRecList.value;
     }
   }
@@ -564,8 +564,10 @@ watch(status, (newX) => {
 });
 // Watch for recipients list change in order to update the stored data (still not working)
 watch(items, (newX) => {
-  console.log('refresh items value in storage');
+  console.log('refresh items value in storage and check step:', airdropStore.step);
+  if (airdropStore.step <= 2) {
   recipientStore.saveAirdropData(items.value, airdropStore.address);
+  }
 });
 
 

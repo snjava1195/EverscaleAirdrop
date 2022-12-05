@@ -568,9 +568,11 @@ async function onDeployContract() {
     await airdropStore.calculateFees("topup", "giver", '', []);
     console.log('Fees calculated: ', airdropStore.fees);
     if (airdropStore.deployStatus == "Deployed") {
-      airdropStore.step = 3;
+
       // TODO: Remove the saved airdrop data after deploying the contract succesfuly
       recipientStore.removeAirdropFromStorage(airdropStore.address);
+
+      airdropStore.step = 3;
     }
   } catch (e) {
     errors.value.error = true;
