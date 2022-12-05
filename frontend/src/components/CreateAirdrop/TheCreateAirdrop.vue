@@ -509,7 +509,6 @@ console.log('fullRecList.value: ', fullRecList.value);
 });
 
   
-
     
  
 

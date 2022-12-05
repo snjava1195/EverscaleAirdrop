@@ -121,6 +121,7 @@ export const useWalletStore = defineStore({
       this.itemsPerPage = 10;
       this.resetPagination();
       router.push('/');
+      this.leave = false;
     },
 
     

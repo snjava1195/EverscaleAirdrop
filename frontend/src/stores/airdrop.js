@@ -1146,7 +1146,7 @@ export const useAirdropStore = defineStore({
         if (existingPage !== undefined) {
           console.log('Existing page: ', existingPage);
           walletStore.continuation = existingPage.continuation;
-          console.log(existingPage.continuation);
+          console.log('Existing page continuation: ', existingPage.continuation);
         }
       } else {
         await walletStore.getPagination(page);
@@ -1168,12 +1168,12 @@ export const useAirdropStore = defineStore({
         }
 
         accounts = await ever.getAccountsByCodeHash(paginationObject);
-
+        console.log('paginationObject: ', paginationObject);  
         this.airdrops =accounts;
         
         
        // console.log(this.airdrops);
-       // console.log(this.airdrops.accounts);
+        console.log(this.airdrops.accounts);
         this.airdropData=[];
         for (let i = 0; i < this.airdrops.accounts.length; i++) {
 
@@ -1315,7 +1315,7 @@ export const useAirdropStore = defineStore({
         //limit: limit,
         // });
         const existingPage = walletStore.getExistingPage(walletStore.nextPage);
-       // console.log('Existing page: ', existingPage);
+        console.log('Existing page: ', existingPage);
         if (existingPage === undefined) {
           if(accounts.length<limit)
           {
@@ -1331,6 +1331,7 @@ export const useAirdropStore = defineStore({
 
             }
             const accByCodeHash = await ever.getAccountsByCodeHash(temp);
+            console.log('accByCodeHash: ', accByCodeHash);
           //  console.log('Acc by code hash:',accByCodeHash);
             if(accByCodeHash.length!=0)
             {
