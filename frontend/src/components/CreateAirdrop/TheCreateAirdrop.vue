@@ -485,17 +485,16 @@ window.onunload = function() {
   }
 }
 
+// TODO: Stavio sam reset ovde gore da ne bi izbrisao data iz local storage-a posle ucitavanja
 reset();
-
 performance.getEntriesByType("navigation")
   .forEach((p, i) => {
-    /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju, a reset mozda gurnuti gore, ili ovo spustiti nize niz vodopad
+    /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
+    // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
     console.log('AIRDROP STEP: ', airdropStore.step);
     if (airdropStore.step < 2) {
-
       let preservedAirdropData = recipientStore.readSingleAirdrop();
       console.log('Get data after refresh: ', preservedAirdropData);
-
       if (preservedAirdropData !== null) {
         fullRecList.value = preservedAirdropData.items;
         items.value = fullRecList.value;
@@ -503,25 +502,7 @@ performance.getEntriesByType("navigation")
         recipientStore.removeSingleAirdrop();
       }
     }
-
-
-    console.log('Fetch data');
-//if(airdropStore.address!=null)
-//{
-  // console.log('Local storage: ', localStorage.getItem('airdrop'));
-  // const storage = localStorage.getItem('airdrop');
- // if(localStorage.getItem('airdrop')!=null)
-  //{
-    //if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
-      // console.log('Returned Airdrop Data', recipientStore.returnAirdropData());
-      // const storageReturn = recipientStore.returnAirdropData();
-    //   fullRecList.value = returnAirdropData()
-   // }
-  // fullRecList.value = 
-  //}
-//}
-// items.value = storageReturn.items;
-// airdropStore.address = storageReturn.contractAddr;
+console.log('Fetch data');
 console.log('fullRecList.value: ', fullRecList.value);
     console.log(`= Navigation entry[${i}]`);
     console.log('Type: ', p.type);
