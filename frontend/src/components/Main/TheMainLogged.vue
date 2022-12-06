@@ -52,6 +52,8 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useWalletStore } from '@/stores/wallet';
+import { watch } from 'vue';
+// import { Route } from 'vue-router';
 import ItemBox from '@/components/Main/ItemBox.vue';
 import EmptyItemBox from '@/components/Main/EmptyItemBox.vue';
 import ItemLoading from '@/components/Main/ItemLoading.vue';
@@ -59,14 +61,18 @@ import AppPagination from '@/components/Reusable/AppPagination.vue';
 import ExportItems from '@/components/Main/ExportItems.vue';
 import { useAirdropStore } from '@/stores/airdrop';
 import AddExistingAirdropModal from '@/components/ExistingAirdrop/AddExistingAirdropModal.vue';
+import { useRecipientStore } from '@/stores/recipientStore';
+import router from '@/./router';
+const recipientStore = useRecipientStore();
 
 const showAddExistingAirdropModal = ref(false);
 const walletStore = useWalletStore();
 const airdropStore = useAirdropStore();
 airdropStore.getBalances();
-getTransactions(10, 1);
+getTransactions(walletStore.itemsPerPage, 1);
 const transactions = computed(() => {
   return airdropStore.airdropData;
+
 });
 
 walletStore.getBalance();
@@ -74,4 +80,9 @@ function getTransactions(value, page) {
  // console.log(`Usao u get trx: ${value} ${page}`);
   airdropStore.getAirdropTransactions(value, page);
 }
+
+router.afterEach((to, from) => {
+  console.log('ROUTER ACTIVATED:', from, to);
+  recipientStore.removeSingleAirdrop();
+});
 </script>

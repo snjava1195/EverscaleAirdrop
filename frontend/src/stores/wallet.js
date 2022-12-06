@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { ProviderRpcClient } from 'everscale-inpage-provider';
 import router from '@/router';
-import { useAirdropStore } from '@/stores/airdrop';
 const ever = new ProviderRpcClient();
 
 export const useWalletStore = defineStore({
@@ -18,6 +17,7 @@ export const useWalletStore = defineStore({
     continuation: {},
     itemsPerPage: 10,
     leave: false,
+    canOpenPopupAgain: true,
   }),
   getters: {
     isLogged: (state) => !!state.profile.address,
@@ -52,23 +52,43 @@ export const useWalletStore = defineStore({
   },
   actions: {
     async login() {
-      const airdropStore = useAirdropStore();
+      // Check to see if you can open a connect wallet window, or its open already
+      if (this.canOpenPopupAgain) {
+        console.log('CAN!');
+      } else {
+        console.log('CONNECT WALLET WINDOW ALREADY OPEN.');
+      }
+
       try {
-        if (!(await ever.hasProvider())) {
-          throw new Error('Extension is not installed');
+
+        if (this.canOpenPopupAgain) {
+
+          if (!(await ever.hasProvider())) {
+            throw new Error('Extension is not installed');
+          }
+          // Prevents opening multiple connect wallet windows
+          this.canOpenPopupAgain = false;
+          await ever.ensureInitialized();
+          const { accountInteraction } = await ever.requestPermissions({
+            permissions: ['basic', 'accountInteraction'],
+          });
+          if (accountInteraction == null) {
+            // console.log('TEST LOC 2');
+            throw new Error('Insufficient permissions');
+          }
+          this.profile.loading = true;
+          this.profile.address = accountInteraction.address._address;
+          await this.getBalance();
+          // makes possible to open the connect wallet popup
+          this.canOpenPopupAgain = true;
+          return accountInteraction.address;
         }
-        await ever.ensureInitialized();
-        const { accountInteraction } = await ever.requestPermissions({
-          permissions: ['basic', 'accountInteraction'],
-        });
-        if (accountInteraction == null) {
-          throw new Error('Insufficient permissions');
-        }
-        this.profile.loading = true;
-        this.profile.address = accountInteraction.address._address;
-        await this.getBalance();
-        return accountInteraction.address;
+        // Should put something here, as returning null prints errors,
+        // althou no performance issues arise
       } catch (e) {
+        // If you close the popup, this will trigger
+        this.canOpenPopupAgain = true;
+        // console.log('TEST LOC 3');
         console.log('e: ', e);
       }
     },

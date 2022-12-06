@@ -21,4 +21,5 @@ import AppHeader from '@/components/Reusable/AppHeader.vue';
 import AppFooter from '@/components/Reusable/AppFooter.vue';
 
 const walletStore = useWalletStore();
+
 </script>

@@ -289,7 +289,7 @@
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input :disabled="true" v-model="item.amount" type="number" name="amount"
+                  <input :disabled="true" v-model="item.amount" type="number" name="amount" min="0" 
                     class="h-full w-full px-[12px]" :placeholder="`Amount`" />
                 </div>
 
@@ -334,11 +334,6 @@
   </div>
 </template>
 
-<script>
-// window.onload = function(){console.log('ONLOAD using js'); alert('onloading');}
-// window.onunload = function(){console.log('ONUNLOAD using js'); alert('unloading');}
-</script>
-
 <script setup>
 // PAGINATION Import //
 import AppPagination from '@/components/Reusable/AppRecipientListPagination.vue';
@@ -368,6 +363,7 @@ import { onClickOutside } from '@vueuse/core';
 
 // PAGINATION entities //
 const recipientStore = useRecipientStore();
+let pages = [];
 
 const rootAbi = {
   'ABI version': 2,
@@ -469,7 +465,7 @@ useDropZone(dropZoneRef, onDrop);
 //else
 //{
 
-/// TODO: EVO GA!!! Koriscenjem ovog lifecycle hook-a mozes cuvati podatke u local storage
+/// TODO: 
 window.onunload = function() {
   console.log('ONUNLOAD');
   let airdropData = {
@@ -488,7 +484,7 @@ window.onunload = function() {
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
-    console.log('Saved temporary data for airdrop', readSingleAirdrop());
+    console.log('Saved temporary data for airdrop', recipientStore.readSingleAirdrop());
   }
 }
 
@@ -497,8 +493,12 @@ reset();
 performance.getEntriesByType("navigation")
   .forEach((p, i) => {
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
+<<<<<<< HEAD
     // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
     
+=======
+    console.log('AIRDROP STEP: ', airdropStore.step);
+>>>>>>> e71a0fedb0cbc22049a2890f7438b4db8cd96d63
     if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
       console.log('Get data after refresh: ', preservedAirdropData);
@@ -532,13 +532,22 @@ performance.getEntriesByType("navigation")
         }
         // Remove previously stored data
         recipientStore.removeSingleAirdrop();
+
+        getRecipients(10, 1);
       }
     }
+<<<<<<< HEAD
    
 console.log('Fetch data');
 console.log('fullRecList.value: ', fullRecList.value);
     console.log(`= Navigation entry[${i}]`);
     console.log('Type: ', p.type);
+=======
+    console.log('Fetch data');
+    console.log('fullRecList.value: ', fullRecList.value);
+    // console.log(`= Navigation entry[${i}]`);
+    // console.log('Type: ', p.type);
+>>>>>>> e71a0fedb0cbc22049a2890f7438b4db8cd96d63
 });
 
   
@@ -564,9 +573,6 @@ function removeItem(index) {
   let pge = recipientStore.currentPage;
   fullRecList.value.splice(ipp * (pge - 1) + index, 1);
   getRecipients(ipp, pge);
-
-  // items.value.splice(index, 1);
-  // fullRecList.value.splice(index, 1);
 }
 function onFileChanged($event) {
   const target = $event.target;
@@ -739,7 +745,7 @@ async function addCustomTokens() {
 
 async function getBalances() {
   const axiosRes = await addCustomTokens();
-  console.log(axiosRes);
+  // console.log(axiosRes);
   // if(axiosRes.status == 200)
   //{//.then(function (response) { tokenAddr = response.data});
   //tokenAddr = axiosRes.data;
@@ -778,7 +784,6 @@ async function getBalances() {
 // /////////////////////////////////////
 // PAGINATION Functions 
 // /////////////////////////////////////////////////////
-let pages = [];
 function getRecipients(num, page) {
   // Save the number of items to be shown per page
   recipientStore.setNumItemsPerPage(num);
@@ -863,13 +868,6 @@ async function onChange(value) {
 function onEnter() {
   onChangeInput(customToken.value);
 }
-
-// watch(fullRecList.value, (newX) => {
-//   console.log('Saved items list');
-//   // if (airdropStore.step == 2) {
-//     recipientStore.saveItemsList(airdropStore.address, fullRecList);
-//   // }
-// });
 
 async function addTag(newTag) {
   const ever = new ProviderRpcClient();

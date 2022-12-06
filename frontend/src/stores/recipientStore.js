@@ -191,19 +191,18 @@ export const useRecipientStore = defineStore({
           console.log('Saved single airdrop', localStorage.getItem('AirdropBackup'));
         },
         readSingleAirdrop() {
-          // let returnData = 
           if (localStorage.getItem('AirdropBackup') !== null) {
             console.log('Read single airdrop', localStorage.getItem('AirdropBackup'));
             return JSON.parse(localStorage.getItem('AirdropBackup'));
           } else {
             return null;
           }
-          // let dataFromStorage = JSON.parse('AirdropBackup');
-          // return dataFromStorage;
         },
         removeSingleAirdrop() {
           localStorage.removeItem('AirdropBackup');
-          console.log('Removed single airdrop', localStorage.getItem('AirdropBackup'));
+          console.log('Removed single airdrop', 
+          localStorage.getItem('AirdropBackup')
+          );
         }
 
       },
