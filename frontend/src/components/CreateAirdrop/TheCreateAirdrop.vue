@@ -493,12 +493,9 @@ reset();
 performance.getEntriesByType("navigation")
   .forEach((p, i) => {
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
-<<<<<<< HEAD
     // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
     
-=======
     console.log('AIRDROP STEP: ', airdropStore.step);
->>>>>>> e71a0fedb0cbc22049a2890f7438b4db8cd96d63
     if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
       console.log('Get data after refresh: ', preservedAirdropData);
@@ -536,18 +533,10 @@ performance.getEntriesByType("navigation")
         getRecipients(10, 1);
       }
     }
-<<<<<<< HEAD
-   
-console.log('Fetch data');
-console.log('fullRecList.value: ', fullRecList.value);
-    console.log(`= Navigation entry[${i}]`);
-    console.log('Type: ', p.type);
-=======
     console.log('Fetch data');
     console.log('fullRecList.value: ', fullRecList.value);
     // console.log(`= Navigation entry[${i}]`);
     // console.log('Type: ', p.type);
->>>>>>> e71a0fedb0cbc22049a2890f7438b4db8cd96d63
 });
 
   
