@@ -289,7 +289,7 @@
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input :disabled="true" v-model="item.amount" type="number" name="amount"
+                  <input :disabled="true" v-model="item.amount" type="number" name="amount" min="0" 
                     class="h-full w-full px-[12px]" :placeholder="`Amount`" />
                 </div>
 
@@ -333,11 +333,6 @@
     </div>
   </div>
 </template>
-
-<script>
-// window.onload = function(){console.log('ONLOAD using js'); alert('onloading');}
-// window.onunload = function(){console.log('ONUNLOAD using js'); alert('unloading');}
-</script>
 
 <script setup>
 // PAGINATION Import //
@@ -469,7 +464,7 @@ useDropZone(dropZoneRef, onDrop);
 //else
 //{
 
-/// TODO: EVO GA!!! Koriscenjem ovog lifecycle hook-a mozes cuvati podatke u local storage
+/// TODO: 
 window.onunload = function() {
   console.log('ONUNLOAD');
   let airdropData = {
@@ -487,7 +482,7 @@ window.onunload = function() {
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
-    console.log('Saved temporary data for airdrop', readSingleAirdrop());
+    console.log('Saved temporary data for airdrop', recipientStore.readSingleAirdrop());
   }
 }
 
@@ -496,7 +491,6 @@ reset();
 performance.getEntriesByType("navigation")
   .forEach((p, i) => {
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
-    // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
     console.log('AIRDROP STEP: ', airdropStore.step);
     if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
@@ -531,10 +525,10 @@ performance.getEntriesByType("navigation")
         recipientStore.removeSingleAirdrop();
       }
     }
-console.log('Fetch data');
-console.log('fullRecList.value: ', fullRecList.value);
-    console.log(`= Navigation entry[${i}]`);
-    console.log('Type: ', p.type);
+    console.log('Fetch data');
+    console.log('fullRecList.value: ', fullRecList.value);
+    // console.log(`= Navigation entry[${i}]`);
+    // console.log('Type: ', p.type);
 });
 
   
@@ -735,7 +729,7 @@ async function addCustomTokens() {
 
 async function getBalances() {
   const axiosRes = await addCustomTokens();
-  console.log(axiosRes);
+  // console.log(axiosRes);
   // if(axiosRes.status == 200)
   //{//.then(function (response) { tokenAddr = response.data});
   //tokenAddr = axiosRes.data;
