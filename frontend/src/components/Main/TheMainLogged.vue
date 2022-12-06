@@ -69,7 +69,7 @@ const showAddExistingAirdropModal = ref(false);
 const walletStore = useWalletStore();
 const airdropStore = useAirdropStore();
 airdropStore.getBalances();
-getTransactions(10, 1);
+getTransactions(walletStore.itemsPerPage, 1);
 const transactions = computed(() => {
   return airdropStore.airdropData;
 

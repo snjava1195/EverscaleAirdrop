@@ -363,6 +363,7 @@ import { onClickOutside } from '@vueuse/core';
 
 // PAGINATION entities //
 const recipientStore = useRecipientStore();
+let pages = [];
 
 const rootAbi = {
   'ABI version': 2,
@@ -523,6 +524,8 @@ performance.getEntriesByType("navigation")
         }
         // Remove previously stored data
         recipientStore.removeSingleAirdrop();
+
+        getRecipients(10, 1);
       }
     }
     console.log('Fetch data');
@@ -554,9 +557,6 @@ function removeItem(index) {
   let pge = recipientStore.currentPage;
   fullRecList.value.splice(ipp * (pge - 1) + index, 1);
   getRecipients(ipp, pge);
-
-  // items.value.splice(index, 1);
-  // fullRecList.value.splice(index, 1);
 }
 function onFileChanged($event) {
   const target = $event.target;
@@ -768,7 +768,6 @@ async function getBalances() {
 // /////////////////////////////////////
 // PAGINATION Functions 
 // /////////////////////////////////////////////////////
-let pages = [];
 function getRecipients(num, page) {
   // Save the number of items to be shown per page
   recipientStore.setNumItemsPerPage(num);
@@ -853,13 +852,6 @@ async function onChange(value) {
 function onEnter() {
   onChangeInput(customToken.value);
 }
-
-// watch(fullRecList.value, (newX) => {
-//   console.log('Saved items list');
-//   // if (airdropStore.step == 2) {
-//     recipientStore.saveItemsList(airdropStore.address, fullRecList);
-//   // }
-// });
 
 async function addTag(newTag) {
   const ever = new ProviderRpcClient();
