@@ -484,6 +484,7 @@ window.onunload = function() {
             items: fullRecList.value,
             randomNonce: airdropStore.deployOptions.initParams._randomNonce,
             refundLock: airdropStore.lockDuration,
+            contractName: airdropStore.airdropName
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
@@ -497,7 +498,7 @@ performance.getEntriesByType("navigation")
   .forEach((p, i) => {
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
     // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
-    console.log('AIRDROP STEP: ', airdropStore.step);
+    
     if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
       console.log('Get data after refresh: ', preservedAirdropData);
@@ -511,8 +512,10 @@ performance.getEntriesByType("navigation")
         airdropStore.step = preservedAirdropData.step;
         airdropStore.token_root_address = preservedAirdropData.tokenRootAddr;
         airdropStore.token = token.value;
+        airdropStore.calculateFees("deploy", "giver", 'EVER', []);
         //if(airdropStore.step==2)
         //{
+          airdropStore.airdropName=preservedAirdropData.contractName;
         airdropStore.transactionId.giverContractId=preservedAirdropData.giverTXId;
         //}
         //if(airdropStore.step==3)
@@ -531,6 +534,7 @@ performance.getEntriesByType("navigation")
         recipientStore.removeSingleAirdrop();
       }
     }
+   
 console.log('Fetch data');
 console.log('fullRecList.value: ', fullRecList.value);
     console.log(`= Navigation entry[${i}]`);

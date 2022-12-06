@@ -547,7 +547,9 @@ async function onDeployContract() {
     //airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     airdropStore.airdropName = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     // console.log('airdropName:', airdropName.value);
-    if (airdropStore.deployStatus != "Deploying") {
+    //await airdropStore.getDeploymentStatus();
+    console.log('deployment status: ', airdropStore.deployStatus);
+    if (airdropStore.deployStatus !== "Deploying") {
       console.log('Add existing airdrop, props.token: ', props.token);
       console.log('totalTokens.value: ', totalTokens.value);
       console.log('recipientsList.value: ', recipientsList.value);
@@ -556,7 +558,7 @@ async function onDeployContract() {
       airdropStore.transactionId.deployContractId = data.transaction.id.hash;
       console.log('Tr id:', airdropStore.transactionId.deployContractId);
     }
-    if (airdropStore.deployStatus == "Deploying") {
+    if (airdropStore.deployStatus === "Deploying") {
       const hashes = await airdropStore.getTransactionHashes();
       console.log('Hashes length: ', hashes.transactionHashes.length);
       if (hashes.transactionHashes.length < 1) {
@@ -571,16 +573,21 @@ async function onDeployContract() {
       }
       const batchAddresses = await airdropStore.getRecipients();
       console.log('Get recipients data: ', batchAddresses);
-      if (batchAddresses.batchAddresses.length < 1) {
+      console.log('Max batches: ', maxBatches.value);  
+      if (batchAddresses.batchAddresses.length < maxBatches.value) {
         await airdropStore.setRecipients(recipientsList.value);
       }
+      console.log('batch addresses: ', batchAddresses);
       const batchAmounts = await airdropStore.getAmounts();
-      if (batchAmounts.batchAmounts.length < 1) {
+      console.log('batchAmounts: ', batchAmounts);
+      if (batchAmounts.batchAmounts.length < maxBatches.value) {
+        console.log('setujem amountove');
         await airdropStore.setAmounts(recipientsList.value);
       }
     }
     await airdropStore.calculateFees("topup", "giver", '', []);
     console.log('Fees calculated: ', airdropStore.fees);
+    airdropStore.getDeploymentStatus();
     if (airdropStore.deployStatus == "Deployed") {
 
       // TODO: Remove the saved airdrop data after deploying the contract succesfuly
