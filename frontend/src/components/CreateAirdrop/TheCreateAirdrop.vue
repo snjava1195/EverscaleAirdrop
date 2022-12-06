@@ -458,6 +458,7 @@ onClickOutside(target, () => {
   return airdropStore.step;
 });*/
 let tokenAddr;
+let randomNonce;
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
@@ -477,9 +478,14 @@ window.onunload = function() {
             tokenRootAddr: airdropStore.token_root_address,
             giverTXId: airdropStore.transactionId.giverContractId,
             deployTXId: airdropStore.transactionId.deployContractId,
+            topupTXId: airdropStore.transactionId.amountContractId,
+            distributeTXId: airdropStore.transactionId.distributeContractId,
+            redeemTXId: airdropStore.transactionId.redeemContractId,
             items: fullRecList.value,
+            randomNonce: airdropStore.deployOptions.initParams._randomNonce,
+            refundLock: airdropStore.lockDuration,
           };
-  if (airdropStore.step < 2) {
+  if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
     console.log('Saved temporary data for airdrop', readSingleAirdrop());
   }
@@ -492,12 +498,35 @@ performance.getEntriesByType("navigation")
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
     // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
     console.log('AIRDROP STEP: ', airdropStore.step);
-    if (airdropStore.step < 2) {
+    if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
       console.log('Get data after refresh: ', preservedAirdropData);
       if (preservedAirdropData !== null) {
         fullRecList.value = preservedAirdropData.items;
         items.value = fullRecList.value;
+        airdropStore.address = preservedAirdropData.contractAddr;
+        const retreivedToken = tokensList.find(token=>token.address == preservedAirdropData.tokenRootAddr);
+        token.value = retreivedToken;
+        console.log('Token: ', token);
+        airdropStore.step = preservedAirdropData.step;
+        airdropStore.token_root_address = preservedAirdropData.tokenRootAddr;
+        airdropStore.token = token.value;
+        //if(airdropStore.step==2)
+        //{
+        airdropStore.transactionId.giverContractId=preservedAirdropData.giverTXId;
+        //}
+        //if(airdropStore.step==3)
+        //{
+          airdropStore.transactionId.deployContractId=preservedAirdropData.deployTXId;
+          airdropStore.transactionId.amountContractId = preservedAirdropData.topupTXId;
+          airdropStore.transactionId.distributeContractId = preservedAirdropData.distributeTXId;
+          airdropStore.transactionId.redeemContractId = preservedAirdropData.redeemTXId;
+        //}
+        airdropStore.deployOptions.initParams._randomNonce = preservedAirdropData.randomNonce;
+        if(airdropStore.step>2)
+        {
+        airdropStore.lockDuration = preservedAirdropData.refundLock;
+        }
         // Remove previously stored data
         recipientStore.removeSingleAirdrop();
       }

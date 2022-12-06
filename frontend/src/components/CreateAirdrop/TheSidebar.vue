@@ -347,7 +347,7 @@ const props = defineProps({
 });
 
 // same as beforeRouteLeave option with no access to `this`
-onBeforeRouteLeave((to, from) => {
+/*onBeforeRouteLeave((to, from) => {
   console.log('to: ', to);
   console.log('from: ', from);
   if (step.value < 3 && !walletStore.leave) {
@@ -357,7 +357,7 @@ onBeforeRouteLeave((to, from) => {
     // cancel the navigation and stay on the same page
     if (!answer) return false
   }
-});
+});*/
 
 onUnmounted(() => clearInterval(redeemPolling.value));
 //calculateInitialFees();
@@ -444,7 +444,11 @@ const currentBatch = computed(() => {
   return airdropStore.currentBatch; /// TODO: Ne vraca value ako se refreshuje na step 4 i kliknes na resume airdrop
 });
 const maxBatches = computed(() => {
-  return airdropStore.maxBatches;
+  let loopCount = Math.floor(recipientsList.value.length / 99);
+  if (recipientsList.value.length % 99 !== 0) {
+    loopCount++;
+  }
+  return airdropStore.maxBatches === 0 ? loopCount : airdropStore.maxBatches;
 });
 
 const transactionId = computed(() => {
@@ -455,6 +459,7 @@ watch(props.items, (newX) => {
   if (airdropStore.step <= 3) {
     airdropStore.getRequiredAmount(totalTokens.value, recipientsList.value.length);
     console.log('Required amount: ', airdropStore.topUpRequiredAmount);
+    console.log('Date now: ', Date.now());
   }
 })
 
@@ -522,13 +527,17 @@ function sufficientBalance()
 }
 
 async function onDeployContract() {
-  // if (!validateAddressAmountList(props.items, totalTokens.value)) return;
-  if (airdropStore.lockDuration == null) {
+  // if (!validateAddressAmountList(props.items, totalTokens.value)) return
+  const storeTime=Math.floor(new Date(airdropStore.lockDuration).getTime() / 1000);
+  console.log('store time: ', storeTime);
+  console.log('airdropStore.lockDuration: ', airdropStore.lockDuration);
+  if (airdropStore.lockDuration == null || storeTime<=Date.now()) {
+    console.log('Date.now: ', Date.now());
     const date = new Date(Date.now() + (3 * 60 * 1000));
     const lockDuration = date;//{ date: date, hours: new Date().getHours(), minutes: new Date().getMinutes() + 2 }
     // console.log('Date:', lockDuration);
     airdropStore.lockDuration = date;//Math.floor(lockDuration.getTime()/1000);
-    //  console.log('Lock duration: ', airdropStore.lockDuration);
+      console.log('Lock duration: ', airdropStore.lockDuration);
   }
   //console.log('Lock duration: ', airdropStore.lockDuration)
   loading.value = true;
@@ -540,6 +549,8 @@ async function onDeployContract() {
     // console.log('airdropName:', airdropName.value);
     if (airdropStore.deployStatus != "Deploying") {
       console.log('Add existing airdrop, props.token: ', props.token);
+      console.log('totalTokens.value: ', totalTokens.value);
+      console.log('recipientsList.value: ', recipientsList.value);
       const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
       // const fees = await airdropStore.getEstimatedFee();
       airdropStore.transactionId.deployContractId = data.transaction.id.hash;
@@ -591,6 +602,7 @@ async function onTopUpToken() {
 
   try {
     //await airdropStore.calculateFees("distribute", "everAirdrop", '', recipientsList.value);
+    airdropStore.getRequiredAmount(totalTokens.value, recipientsList.value.length);
     errors.value.error = false;
     const data = await airdropStore.topUp();
     airdropStore.transactionId.amountContractId = data.id.hash;

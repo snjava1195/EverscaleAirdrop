@@ -190,10 +190,7 @@ export const useAirdropStore = defineStore({
       console.log('token:', token);
        const walletStore = useWalletStore();
      
-       const code2  = await ever.splitTvc(airdrop2Tvc);
-       //(code2);
-       this.hash2 = await ever.setCodeSalt({code: code2.code, salt: { structure: [{name:'ownerAddress', type: 'address'}], data: {ownerAddress: walletStore.profile.address}}});
-      
+       
       try {
         this.token = token;
         this.deployOptions.initParams._randomNonce = getRandomNonce();
@@ -427,12 +424,18 @@ export const useAirdropStore = defineStore({
     async deployContract(airdropName, totalTokens, totalRecipients, token) {
       const walletStore = useWalletStore();
       try {
+        const code2  = await ever.splitTvc(airdrop2Tvc);
+       //(code2);
+       this.hash2 = await ever.setCodeSalt({code: code2.code, salt: { structure: [{name:'ownerAddress', type: 'address'}], data: {ownerAddress: walletStore.profile.address}}});
+       this.deployOptions.tvc = airdrop2Tvc;
+        console.log('this.abi: ', this.abi);
+        this.abi = airdrop2Abi;
         const everAirDropContract = await new ever.Contract(this.abi, new Address(this.address));
         // this.everAirDropContract = everAirDropContract;
 
         const providerState = await ever.getProviderState();
         const stateInit = await ever.getStateInit(this.abi, this.deployOptions);
-
+        console.log('state init: ', stateInit);
         const publicKey = providerState.permissions.accountInteraction.publicKey;
         // const addresses = arr.map((address) => address.address);
         // const amounts = arr.map((amount) => toNano(amount.amount));
@@ -442,6 +445,7 @@ export const useAirdropStore = defineStore({
         {
           this.token_root_address=token.address;
         }
+        //this.lockDuration = 200;
         const data = /*token.label === 'EVER' ?*/ {
           _contract_notes: airdropName,
           _refund_destination: walletStore.profile.address,
@@ -496,6 +500,7 @@ export const useAirdropStore = defineStore({
       const walletStore = useWalletStore();
       try
       {
+        this.abi = airdrop2Abi;
       const everAirDropContract = new ever.Contract(this.abi, new Address(this.address));
       let sendTransaction;
       const providerState = await ever.getProviderState();
@@ -791,6 +796,7 @@ export const useAirdropStore = defineStore({
     },
     async distribute(arr, isResumed) {
       const walletStore = useWalletStore();
+      this.abi=airdrop2Abi;
       try {
         const addresses = arr.map((address) => address.address);
        // console.log('Mapirane adrese:', addresses);
@@ -810,7 +816,10 @@ export const useAirdropStore = defineStore({
         //console.log('loopStart:', loopStart);
         
           this.currentBatch=loopStart*1;
-        
+          this.loopCount = Math.floor(addresses.length / maxNumberOfAddresses);
+          if (addresses.length % maxNumberOfAddresses !== 0) {
+            this.loopCount++;
+          }
           const providerState = await ever.getProviderState();
           const publicKey = providerState.permissions.accountInteraction.publicKey;
         
@@ -1087,6 +1096,7 @@ export const useAirdropStore = defineStore({
       const walletStore = useWalletStore();
       const airdropStore = useAirdropStore();
       let sendTransaction;
+      this.abi=airdrop2Abi;
       try {
         const everAirDropContract = await new ever.Contract(this.abi, new Address(this.address));
         
