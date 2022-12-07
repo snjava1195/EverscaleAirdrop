@@ -64,7 +64,7 @@
     @apply w-[36px] h-[36px] flex items-center justify-center bg-[#ECF1FE];
   }
   .footer {
-    @apply h-[103px] md:h-[64px] w-full bg-[#F7F7F9] flex flex-col md:flex-row justify-center md:justify-between md:items-center px-[20px] clear-both relative mt-[103px] md:mt-[0px];
+    @apply h-[103px] md:h-[64px] w-full bg-[#F7F7F9] flex flex-col md:flex-row justify-center md:justify-between md:items-center px-[20px] clear-both relative mt-[103px] md:mt-[100px];
   }
   .footer-menu {
     @apply space-x-[16px] md:space-x-[40px] text-[14px] text-[#8B909A] font-pt_root;

@@ -214,7 +214,7 @@ reset();
 getAirdrop();
 function onFileChanged($event) {
   const target = $event.target;
-  if (target && target.files) {
+  if (target && target.files && (airdropStore.step < 2)) {
     saveFile(target.files[0]);
   }
 }
@@ -236,7 +236,7 @@ async function saveFile(value) {
   }
 }
 function onDrop(files) {
-  if (files) {
+  if (files && (airdropStore.step < 2)) {
     saveFile(files[0]);
   }
 }

@@ -15,7 +15,7 @@
 
                 <template ref="target" style="display: block">
                   <section class="dropdown-wrap">
-                    <div class="dropdown-select" :style="filterStyle()" @click="recipientStore.updateDropdownVisibility()">
+                    <div class="dropdown-select" :style="filterStyle()" @click="shouldBeDisabledToken()">
                       <div v-if="token">
                         <img :src="token.icon" alt=""/>
                         <span>{{ token.label }}</span>
@@ -81,7 +81,7 @@
               <label for="airdropName" class="form-label">Lock duration</label>
               <Datepicker v-model="airdropStore.lockDuration" inputClassName="dp-custom-input"
                 placeholder="Date and time of unlock" :minDate="new Date()"
-                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }">
+                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }" :disabled=shouldBeDisabledLock()>
                 <template #left-sidebar>
                   <div @click="addHours(1)" class="cursor-pointer left-sidebar-button">1 hour</div>
                   <div @click="addHours(2)"  class="cursor-pointer left-sidebar-button">2 hours</div>
@@ -169,13 +169,13 @@
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t  border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
+                  <input :disabled=isWaiting() v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
                     placeholder="Recipient address" />
                 </div>
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
+                  <input :disabled=isWaiting() v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
                     :placeholder="`Amount`" />
                 </div>
 
@@ -424,6 +424,7 @@ const deployStatus = "";
 let counter = 0;
 let address = "";
 let reloadItems;
+
 walletStore.getBalance();
 function filterStyle() {
   if (recipientStore.isVisible) {
@@ -550,24 +551,30 @@ performance.getEntriesByType("navigation")
 //addCustomTokens();
 getBalances();
 function addItem(index) {
-  let blankItem = {
-    address: null,
-    amount: null,
-  };
-  let ipp = recipientStore.itemsPerPage;
-  let pge = recipientStore.currentPage;
-  fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
-  getRecipients(ipp, pge);
+  if (!isWaiting()) {
+      let blankItem = {
+      address: null,
+      amount: null,
+    };
+    let ipp = recipientStore.itemsPerPage;
+    let pge = recipientStore.currentPage;
+    fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
+    getRecipients(ipp, pge);
+  }
 }
 function removeItem(index) {
-  let ipp = recipientStore.itemsPerPage;
-  let pge = recipientStore.currentPage;
-  fullRecList.value.splice(ipp * (pge - 1) + index, 1);
-  getRecipients(ipp, pge);
+  if (!isWaiting()) {
+    let ipp = recipientStore.itemsPerPage;
+    let pge = recipientStore.currentPage;
+    fullRecList.value.splice(ipp * (pge - 1) + index, 1);
+    getRecipients(ipp, pge);
+  }
 }
 function onFileChanged($event) {
+  console.log('ONFILECHANGE and step:', airdropStore.step);
   const target = $event.target;
-  if (target && target.files) {
+  if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) {
+    console.log('triggered?');
     saveFile(target.files[0]);
   }
 }
@@ -597,7 +604,8 @@ async function saveFile(value) {
   }
 }
 function onDrop(files) {
-  if (files) {
+  console.log('ONDROP');
+  if (files && (airdropStore.step < 2) && !airdropStore.waiting) {
     saveFile(files[0]);
   }
 }
@@ -894,5 +902,17 @@ function addHours(hours, value = new Date()) {
   let ms = hours * 60 * 60 * 1000;
   value.setTime(value.getTime() + ms);
   airdropStore.lockDuration = value;
+}
+
+function shouldBeDisabledToken() {
+  console.log('WAITING 1', airdropStore.waiting);
+  return (airdropStore.step < 2 && !airdropStore.waiting) ? recipientStore.updateDropdownVisibility() : null;
+}
+function shouldBeDisabledLock() {
+  console.log('WAITING 2', airdropStore.waiting);
+  return (airdropStore.step >= 2 || airdropStore.waiting) ? true : false;
+}
+function isWaiting() {
+  return airdropStore.waiting ? true : false;
 }
 </script>

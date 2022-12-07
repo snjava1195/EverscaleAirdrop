@@ -10,9 +10,11 @@ import { useWalletStore } from '@/stores/wallet';
 import { getSeconds, chunk } from '@/utils';
 import tokensList from '@/utils/tokens-list';
 import axios from 'axios';
+import { ref, computed } from 'vue';
+
 //import {ResponseData}  from './ResponseData';
 const ever = new ProviderRpcClient();
-
+// const waiting = ref(false);
 // const walletStore = useWalletStore();
 
 const giverAbi = {
@@ -134,6 +136,7 @@ export const useAirdropStore = defineStore({
       initParams: { _randomNonce: 0 },
       tvc: null,
     },
+    waiting: false,
     lockDuration: new Date().toLocaleDateString(),
     topUpRequiredAmount: 0,
     loopCount: 0,

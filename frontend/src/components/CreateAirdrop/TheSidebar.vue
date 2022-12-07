@@ -492,6 +492,8 @@ function availableToRedeem() {
 // airdropStore.getExpectedAddress(props.token);
 
 async function onTopUpEver() {
+  airdropStore.waiting = true;
+  console.log('WAITING IN SIDE 1', airdropStore.waiting);
   console.log('Total tokens.value: ', totalTokens.value);
   console.log('airdropStore.tokenWalletBalance: ', airdropStore.tokenWalletBalance);
   console.log('walletStore.profile.balance: ', walletStore.profile.balance);
@@ -527,8 +529,14 @@ async function onTopUpEver() {
     console.log('e: ', e);
     errors.value.error = true;
     errors.value.message = e.message;
+    airdropStore.waiting = false;
+    console.log('WAITING IN SIDE 2', airdropStore.waiting);
+
   } finally {
     loading.value = false;
+    airdropStore.waiting = false;
+    console.log('WAITING IN SIDE 3', airdropStore.waiting);
+
   }
 
 }
