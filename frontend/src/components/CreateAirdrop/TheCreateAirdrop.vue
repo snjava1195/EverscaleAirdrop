@@ -487,7 +487,7 @@ window.onunload = function() {
             items: fullRecList.value,
             randomNonce: airdropStore.deployOptions.initParams._randomNonce,
             refundLock: airdropStore.lockDuration,
-            contractName: airdropStore.airdropName
+            contractName: airdropName.value ? airdropName.value : airdropStore.airdropName
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
@@ -501,7 +501,7 @@ performance.getEntriesByType("navigation")
   .forEach((p, i) => {
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
     // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
-    
+    walletStore.getBalance();
     console.log('AIRDROP STEP: ', airdropStore.step);
     if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
@@ -520,6 +520,8 @@ performance.getEntriesByType("navigation")
         //if(airdropStore.step==2)
         //{
           airdropStore.airdropName=preservedAirdropData.contractName;
+          console.log('Airdrop name: ', airdropStore.airdropName);
+          airdropName.value = airdropStore.airdropName;
         airdropStore.transactionId.giverContractId=preservedAirdropData.giverTXId;
         //}
         //if(airdropStore.step==3)

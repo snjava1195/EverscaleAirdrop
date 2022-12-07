@@ -325,7 +325,7 @@ import CopyIcon from '@/components/icons/IconCopy.vue';
 import CheckIcon from '@/components/icons/IconCheck.vue';
 import ShareAirdrop from '@/components/CreateAirdrop/ShareAirdrop.vue';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { getSeconds } from '@/utils';
+import { getSeconds, toNano } from '@/utils';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
 /// Recipient Store 
 import { useRecipientStore } from '@/stores/recipientStore';
@@ -397,10 +397,23 @@ const recipientsList = computed(() => {
 const totalTokens = computed(() => {
   //if(recipientsList.value.)
   const totalRecipientsTokens = recipientsList.value.reduce((accumulator, object) => {
-    return accumulator + Number(object.amount);
+   // console.log('Acumulator: ', accumulator);
+   // console.log('Object: ', object.amount);
+   // console.log('Token: ', props.token.decimals);
+    const acc = toNano(accumulator, props.token.decimals);
+    //console.log('acc: ', acc);
+    const objc = toNano(object.amount, props.token.decimals);
+    
+    //console.log('objc: ', objc);
+    const sum = (acc*1)+(objc*1);
+    //console.log('sum: ', sum);
+    const sum2 = fromNano(sum, props.token.decimals);
+    //console.log('sum2: ', sum2);
+    return sum2*1;
   }, 0);
-  //  console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
-  return totalRecipientsTokens > 0.01 ? Number(Math.round(totalRecipientsTokens + 'e2') + 'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
+
+    console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
+  return totalRecipientsTokens; //> 0.01 ? Number(Math.round(totalRecipientsTokens + 'e2') + 'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
 });
 const topUpValue = computed(() => {
 
