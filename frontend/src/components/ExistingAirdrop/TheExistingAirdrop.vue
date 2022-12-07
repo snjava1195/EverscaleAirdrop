@@ -15,7 +15,7 @@
 
                 <template ref="target" style="display: block">
                   <section class="dropdown-wrap">
-                    <div class="dropdown-select" :style="filterStyle()" @click="recipientStore.updateDropdownVisibility()">
+                    <div class="dropdown-select" :style="filterStyle()" @click="shouldBeDisabledToken()">
                       <div v-if="token">
                         <img :src="token.icon" alt=""/>
                         <span>{{ token.label }}</span>
@@ -81,7 +81,7 @@
               <label for="airdropName" class="form-label">Lock duration</label>
               <Datepicker v-model="airdropStore.lockDuration" inputClassName="dp-custom-input"
                 placeholder="Date and time of unlock" :minDate="new Date()"
-                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }">
+                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }" :disabled=shouldBeDisabledLock()>
                 <template #left-sidebar>
                   <div @click="addHours(1)" class="cursor-pointer left-sidebar-button">1 hour</div>
                   <div @click="addHours(2)"  class="cursor-pointer left-sidebar-button">2 hours</div>
@@ -136,7 +136,7 @@
 
               <input ref="file" @change="onFileChanged($event)" type="file" name="file" class="upload-csv"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                @click="$event.target.value = ''" />
+                @click="isWaiting() ? null : $event.target.value = ''" />
 
               <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
                 <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
@@ -169,13 +169,13 @@
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t  border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
+                  <input :disabled=isWaiting() v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
                     placeholder="Recipient address" />
                 </div>
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
+                  <input :disabled=isWaiting() v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
                     :placeholder="`Amount`" />
                 </div>
 
@@ -250,7 +250,7 @@
               <input :disabled="true" ref="file" @change="onFileChanged($event)" type="file" name="file"
                 class="upload-csv"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                @click="$event.target.value = ''" />
+                @click="isWaiting() ? null : $event.target.value = ''" />
 
               <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
                 <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
@@ -641,27 +641,47 @@ useDropZone(dropZoneRef, onDrop);
 //addCustomTokens();
 getBalances();
 function addItem(index) {
-  let blankItem = {
-    address: null,
-    amount: null,
-  };
-  let ipp = recipientStore.itemsPerPage;
-  let pge = recipientStore.currentPage;
-  fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
-  getRecipients(ipp, pge);
+  if (!isWaiting()) {
+      let blankItem = {
+      address: null,
+      amount: null,
+    };
+    let ipp = recipientStore.itemsPerPage;
+    let pge = recipientStore.currentPage;
+    fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
+    getRecipients(ipp, pge);
+  }
 }
 function removeItem(index) {
-  let ipp = recipientStore.itemsPerPage;
-  let pge = recipientStore.currentPage;
-  fullRecList.value.splice(ipp * (pge - 1) + index, 1);
-  getRecipients(ipp, pge);
-
-  // items.value.splice(index, 1);
-  // fullRecList.value.splice(index, 1);
+  if (!isWaiting()) {
+    let ipp = recipientStore.itemsPerPage;
+    let pge = recipientStore.currentPage;
+    fullRecList.value.splice(ipp * (pge - 1) + index, 1);
+    getRecipients(ipp, pge);
+  }
 }
+// function addItem(index) {
+//   let blankItem = {
+//     address: null,
+//     amount: null,
+//   };
+//   let ipp = recipientStore.itemsPerPage;
+//   let pge = recipientStore.currentPage;
+//   fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
+//   getRecipients(ipp, pge);
+// }
+// function removeItem(index) {
+//   let ipp = recipientStore.itemsPerPage;
+//   let pge = recipientStore.currentPage;
+//   fullRecList.value.splice(ipp * (pge - 1) + index, 1);
+//   getRecipients(ipp, pge);
+
+//   // items.value.splice(index, 1);
+//   // fullRecList.value.splice(index, 1);
+// }
 function onFileChanged($event) {
   const target = $event.target;
-  if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) 
+  if (target && target.files && (airdropStore.step < 2) && airdropStore.waiting) 
   {
     saveFile(target.files[0]);
   }
@@ -985,6 +1005,7 @@ function shouldBeDisabledLock() {
   return (airdropStore.step >= 2 || airdropStore.waiting) ? true : false;
 }
 function isWaiting() {
+  console.log('ISWAITING', airdropStore.waiting);
   return airdropStore.waiting ? true : false;
 }
 </script>

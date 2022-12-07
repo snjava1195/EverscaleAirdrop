@@ -136,7 +136,7 @@
 
               <input ref="file" @change="onFileChanged($event)" type="file" name="file" class="upload-csv"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                @click="$event.target.value = ''" />
+                @click="isWaiting() ? null : $event.target.value = ''" />
 
               <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
                 <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
@@ -250,7 +250,7 @@
               <input :disabled="true" ref="file" @change="onFileChanged($event)" type="file" name="file"
                 class="upload-csv"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                @click="$event.target.value = ''" />
+                @click="isWaiting() ? null : $event.target.value = ''" />
 
               <div class="relative text-center mt-5" style="user-select: none; pointer-events: none;">
                 <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
@@ -573,7 +573,7 @@ function removeItem(index) {
 function onFileChanged($event) {
   //console.log('ONFILECHANGE and step:', airdropStore.step);
   const target = $event.target;
-  if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) {
+  if (target && target.files && (airdropStore.step < 2) && airdropStore.waiting) {
     //console.log('triggered?');
     saveFile(target.files[0]);
   }
