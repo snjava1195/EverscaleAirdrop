@@ -2,7 +2,7 @@
   <div class="table w-full">
     <!--Mobile-->
     <div
-      class="mobTable yourAirdrops lg:hidden w-full border border-[#E4E5EA] px-[12px] divide-y divide-[#E4E5EA] mt-[16px] mb-[310px] font-pt_root"
+      class="mobTable yourAirdrops lg:hidden w-full border border-[#E4E5EA] px-[12px] divide-y divide-[#E4E5EA] mt-[16px] mb-[50px] font-pt_root"
     >
       <div v-for="(item, i) in sortedAirdrops" :key="i" class="space-y-[8px] py-[16px] cursor-pointer">
         <router-link :to="'/edit-airdrop/' + item.address" custom v-slot="{ navigate }">
@@ -37,7 +37,7 @@
 
     <!--Desktop-->
     <table
-      class="desktopTable yourAirdrops w-full mx-auto hidden lg:block border border-[#E4E5EA] text-[14px] mt-[17px] lg:mb-[100px] xl:mb-0 font-pt_root"
+      class="desktopTable yourAirdrops w-full mx-auto hidden lg:block border border-[#E4E5EA] text-[14px] mt-[17px] lg:mb-[50px] xl:mb-0 font-pt_root"
     >
       <thead>
         <ItemBoxHeading />

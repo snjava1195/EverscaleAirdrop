@@ -15,7 +15,7 @@
 
                 <template ref="target" style="display: block">
                   <section class="dropdown-wrap">
-                    <div class="dropdown-select" :style="filterStyle()" @click="recipientStore.updateDropdownVisibility()">
+                    <div class="dropdown-select" :style="filterStyle()" @click="shouldBeDisabledToken()">
                       <div v-if="token">
                         <img :src="token.icon" alt=""/>
                         <span>{{ token.label }}</span>
@@ -81,7 +81,7 @@
               <label for="airdropName" class="form-label">Lock duration</label>
               <Datepicker v-model="airdropStore.lockDuration" inputClassName="dp-custom-input"
                 placeholder="Date and time of unlock" :minDate="new Date()"
-                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }">
+                :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }" :disabled=shouldBeDisabledLock()>
                 <template #left-sidebar>
                   <div @click="addHours(1)" class="cursor-pointer left-sidebar-button">1 hour</div>
                   <div @click="addHours(2)"  class="cursor-pointer left-sidebar-button">2 hours</div>
@@ -424,6 +424,13 @@ const deployStatus = "";
 let counter = 0;
 let address = "";
 let reloadItems;
+const waiting = ref(false);
+
+watch(waiting, (newX) => {
+  console.log('WAITING STATUS:' , waiting.value);
+
+});
+
 walletStore.getBalance();
 function filterStyle() {
   if (recipientStore.isVisible) {
@@ -564,8 +571,10 @@ function removeItem(index) {
   getRecipients(ipp, pge);
 }
 function onFileChanged($event) {
+  console.log('ONFILECHANGE and step:', airdropStore.step);
   const target = $event.target;
-  if (target && target.files) {
+  if (target && target.files && (airdropStore.step < 2)) {
+    console.log('triggered?');
     saveFile(target.files[0]);
   }
 }
@@ -595,7 +604,8 @@ async function saveFile(value) {
   }
 }
 function onDrop(files) {
-  if (files) {
+  console.log('ONDROP');
+  if (files && (airdropStore.step < 2)) {
     saveFile(files[0]);
   }
 }
@@ -892,5 +902,12 @@ function addHours(hours, value = new Date()) {
   let ms = hours * 60 * 60 * 1000;
   value.setTime(value.getTime() + ms);
   airdropStore.lockDuration = value;
+}
+
+function shouldBeDisabledToken() {
+  return airdropStore.step < 2 ? recipientStore.updateDropdownVisibility() : null;
+}
+function shouldBeDisabledLock() {
+  return airdropStore.step >= 2 ? true : false;
 }
 </script>

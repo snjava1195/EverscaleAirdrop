@@ -34,7 +34,7 @@
       >
         <ItemBox />
 
-        <div class="hidden xl:flex items-center justify-between mt-[16px] mb-[100px]">
+        <div class="flex flex-row xl:flex items-center justify-between mt-[16px] mb-[0px]">
           <ExportItems />
           <AppPagination @submit="getTransactions" />
         </div>
