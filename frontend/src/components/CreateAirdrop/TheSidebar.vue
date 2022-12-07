@@ -412,7 +412,7 @@ const totalTokens = computed(() => {
     return sum2*1;
   }, 0);
 
-    console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
+    //console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
   return totalRecipientsTokens; //> 0.01 ? Number(Math.round(totalRecipientsTokens + 'e2') + 'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
 });
 const topUpValue = computed(() => {
@@ -431,7 +431,7 @@ const topUpValue = computed(() => {
     amountForSetting = 0.02 + ((recipientsList.value.length * 0.006) * 2);
     //console.log('Usao u 99');
   }
-  console.log('Number(Math.round(amountForSetting)): ', Number(Math.round(amountForSetting + 'e2') + 'e-2'));
+//  console.log('Number(Math.round(amountForSetting)): ', Number(Math.round(amountForSetting + 'e2') + 'e-2'));
 
   return recipientsList.value.length != 0 ? Number(Math.round(amountForSetting + 'e2') + 'e-2')/*.toFixed(amountForSetting.toString().split('-')[1])*/ : 0;
 });
@@ -440,7 +440,7 @@ const ever = new ProviderRpcClient();
 const topUpRequiredAmount = computed(() => {
   calculateInitialFees();
   const tempTopUpRequiredAmount = recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
-  console.log(airdropStore.topUpRequiredAmount);
+  //console.log(airdropStore.topUpRequiredAmount);
   return airdropStore.topUpRequiredAmount === 0 ? tempTopUpRequiredAmount : airdropStore.topUpRequiredAmount;
 })
 
@@ -471,8 +471,8 @@ const transactionId = computed(() => {
 watch(props.items, (newX) => {
   if (airdropStore.step <= 3) {
     airdropStore.getRequiredAmount(totalTokens.value, recipientsList.value.length);
-    console.log('Required amount: ', airdropStore.topUpRequiredAmount);
-    console.log('Date now: ', Date.now());
+    //console.log('Required amount: ', airdropStore.topUpRequiredAmount);
+    //console.log('Date now: ', Date.now());
   }
 })
 
@@ -493,10 +493,10 @@ function availableToRedeem() {
 
 async function onTopUpEver() {
   airdropStore.waiting = true;
-  console.log('WAITING IN SIDE 1', airdropStore.waiting);
-  console.log('Total tokens.value: ', totalTokens.value);
-  console.log('airdropStore.tokenWalletBalance: ', airdropStore.tokenWalletBalance);
-  console.log('walletStore.profile.balance: ', walletStore.profile.balance);
+  //console.log('WAITING IN SIDE 1', airdropStore.waiting);
+  //console.log('Total tokens.value: ', totalTokens.value);
+  //console.log('airdropStore.tokenWalletBalance: ', airdropStore.tokenWalletBalance);
+  //console.log('walletStore.profile.balance: ', walletStore.profile.balance);
   if(props.token.label!=='EVER')
   {
    if (!validateBalance(totalTokens.value, airdropStore.tokenWalletBalance)) return;
@@ -520,7 +520,7 @@ async function onTopUpEver() {
     // airdropStore.transactionId.deployContractId
 
     const data = await airdropStore.getGiverContract2(props.token.label, recipientsList.value.length);
-    console.log('Data id: ', data.id.hash);
+    //console.log('Data id: ', data.id.hash);
     airdropStore.transactionId.giverContractId = data.id.hash;
 
     airdropStore.step = 2;

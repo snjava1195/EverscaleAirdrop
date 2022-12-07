@@ -447,7 +447,7 @@ export const useAirdropStore = defineStore({
         // const amounts = arr.map((amount) => toNano(amount.amount));
 
         //console.log('token address', token.address);
-        if(this.token_root_address==="")
+        if(this.token_root_address==="" || this.token_root_address===undefined)
         {
           this.token_root_address=token.address;
         }

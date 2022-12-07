@@ -71,7 +71,7 @@
 
             <div class="w-full">
               <label for="airdropName" class="form-label">Airdrop name (optional)</label>
-              <input v-model="airdropName" id="airdropName" class="form-text-input" :class="{ 'min-h-[43px]': !token }"
+              <input :disabled=disableName() v-model="airdropName" id="airdropName" class="form-text-input" :class="{ 'min-h-[43px]': !token }"
                 type="text" name="airdropName" placeholder="Enter a name" />
             </div>
           </form>
@@ -914,5 +914,18 @@ function shouldBeDisabledLock() {
 }
 function isWaiting() {
   return airdropStore.waiting ? true : false;
+}
+function disableName()
+{
+  if(airdropStore.step>2)
+  {
+    //console.log('Disablujem');
+    return true;
+  }
+  else
+  {
+    //console.log('Ne disableujem');
+    return false;
+  }
 }
 </script>

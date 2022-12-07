@@ -71,7 +71,7 @@
 
             <div class="w-full">
               <label for="airdropName" class="form-label">Airdrop name (optional)</label>
-              <input v-model="airdropName" id="airdropName" class="form-text-input" :class="{ 'min-h-[43px]': !token }"
+              <input :disabled=disableName() v-model="airdropName" id="airdropName" class="form-text-input" :class="{ 'min-h-[43px]': !token }"
                 type="text" name="airdropName" placeholder="Enter a name" />
             </div>
           </form>
@@ -440,7 +440,7 @@ window.onunload = function() {
             //items: fullRecList.value,
             randomNonce: airdropStore.deployOptions.initParams._randomNonce,
             refundLock: airdropStore.lockDuration,
-            contractName: airdropStore.airdropName//airdropName.value ? airdropName.value : airdropStore.airdropName
+            contractName: airdropName.value ? airdropName.value : airdropStore.airdropName
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
@@ -551,8 +551,11 @@ async function getAirdrop() {
   //console.log('Token: ', token.value);
   const name = await contract.methods.contract_notes({}).call();
   //console.log('Name: ', name);
+  if(airdropStore.step<2)
+  {
   airdropName.value = name.contract_notes;
   airdropStore.airdropName = airdropName.value;
+  }
   //console.log('Name: ', airdropName.value);
 
   if(airdropStore.step<2 && airdropStore.lockDuration<=Date.now())
@@ -650,6 +653,20 @@ function addItem(index) {
     let pge = recipientStore.currentPage;
     fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
     getRecipients(ipp, pge);
+  }
+}
+
+function disableName()
+{
+  if(airdropStore.step>2)
+  {
+    //console.log('Disablujem');
+    return true;
+  }
+  else
+  {
+    //console.log('Ne disableujem');
+    return false;
   }
 }
 function removeItem(index) {
