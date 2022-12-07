@@ -169,13 +169,13 @@
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t  border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
+                  <input :disabled=isWaiting() v-model="item.address" class="h-full w-full px-[12px]" type="text" name="address"
                     placeholder="Recipient address" />
                 </div>
 
                 <div class="px-[12px] py-[4px] flex items-center 
                 justify-center border-t border-r border-[#E4E5EA]" :class="{ 'border-b ': i + 1 === items.length }">
-                  <input v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
+                  <input :disabled=isWaiting() v-model="item.amount" type="number" name="amount" class="h-full w-full px-[12px]"
                     :placeholder="`Amount`" />
                 </div>
 
@@ -424,12 +424,6 @@ const deployStatus = "";
 let counter = 0;
 let address = "";
 let reloadItems;
-const waiting = ref(false);
-
-watch(waiting, (newX) => {
-  console.log('WAITING STATUS:' , waiting.value);
-
-});
 
 walletStore.getBalance();
 function filterStyle() {
@@ -557,25 +551,29 @@ performance.getEntriesByType("navigation")
 //addCustomTokens();
 getBalances();
 function addItem(index) {
-  let blankItem = {
-    address: null,
-    amount: null,
-  };
-  let ipp = recipientStore.itemsPerPage;
-  let pge = recipientStore.currentPage;
-  fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
-  getRecipients(ipp, pge);
+  if (!isWaiting()) {
+      let blankItem = {
+      address: null,
+      amount: null,
+    };
+    let ipp = recipientStore.itemsPerPage;
+    let pge = recipientStore.currentPage;
+    fullRecList.value.splice(ipp * (pge - 1) + index + 1, 0, blankItem);
+    getRecipients(ipp, pge);
+  }
 }
 function removeItem(index) {
-  let ipp = recipientStore.itemsPerPage;
-  let pge = recipientStore.currentPage;
-  fullRecList.value.splice(ipp * (pge - 1) + index, 1);
-  getRecipients(ipp, pge);
+  if (!isWaiting()) {
+    let ipp = recipientStore.itemsPerPage;
+    let pge = recipientStore.currentPage;
+    fullRecList.value.splice(ipp * (pge - 1) + index, 1);
+    getRecipients(ipp, pge);
+  }
 }
 function onFileChanged($event) {
   console.log('ONFILECHANGE and step:', airdropStore.step);
   const target = $event.target;
-  if (target && target.files && (airdropStore.step < 2)) {
+  if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) {
     console.log('triggered?');
     saveFile(target.files[0]);
   }
@@ -607,7 +605,7 @@ async function saveFile(value) {
 }
 function onDrop(files) {
   console.log('ONDROP');
-  if (files && (airdropStore.step < 2)) {
+  if (files && (airdropStore.step < 2) && !airdropStore.waiting) {
     saveFile(files[0]);
   }
 }
@@ -907,9 +905,14 @@ function addHours(hours, value = new Date()) {
 }
 
 function shouldBeDisabledToken() {
-  return airdropStore.step < 2 ? recipientStore.updateDropdownVisibility() : null;
+  console.log('WAITING 1', airdropStore.waiting);
+  return (airdropStore.step < 2 && !airdropStore.waiting) ? recipientStore.updateDropdownVisibility() : null;
 }
 function shouldBeDisabledLock() {
-  return airdropStore.step >= 2 ? true : false;
+  console.log('WAITING 2', airdropStore.waiting);
+  return (airdropStore.step >= 2 || airdropStore.waiting) ? true : false;
+}
+function isWaiting() {
+  return airdropStore.waiting ? true : false;
 }
 </script>
