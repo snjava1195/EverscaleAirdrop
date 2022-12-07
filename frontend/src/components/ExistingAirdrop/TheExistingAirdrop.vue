@@ -681,7 +681,7 @@ function removeItem(index) {
 // }
 function onFileChanged($event) {
   const target = $event.target;
-  if (target && target.files && (airdropStore.step < 2) && airdropStore.waiting) 
+  if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) 
   {
     saveFile(target.files[0]);
   }

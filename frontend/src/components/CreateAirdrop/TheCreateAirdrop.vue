@@ -573,7 +573,7 @@ function removeItem(index) {
 function onFileChanged($event) {
   //console.log('ONFILECHANGE and step:', airdropStore.step);
   const target = $event.target;
-  if (target && target.files && (airdropStore.step < 2) && airdropStore.waiting) {
+  if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) {
     //console.log('triggered?');
     saveFile(target.files[0]);
   }
