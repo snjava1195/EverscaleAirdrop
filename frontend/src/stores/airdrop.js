@@ -194,6 +194,7 @@ export const useAirdropStore = defineStore({
       try {
         this.token = token;
         this.deployOptions.initParams._randomNonce = getRandomNonce();
+        console.log('airdrop.js randomNonce: ', this.deployOptions.initParams._randomNonce);
         this.topUpRequiredAmount = 0;
         this.lockDuration = null;
         let address;
@@ -443,7 +444,7 @@ export const useAirdropStore = defineStore({
         // const amounts = arr.map((amount) => toNano(amount.amount));
 
         console.log('token address', token.address);
-        if(this.token_root_address==undefined)
+        if(this.token_root_address==="")
         {
           this.token_root_address=token.address;
         }

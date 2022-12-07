@@ -425,6 +425,82 @@ let counter = 0;
 let address = "";
 const ever = new ProviderRpcClient();
 
+window.onunload = function() {
+  console.log('ONUNLOAD');
+  let airdropData = {
+            existingAddr: airdropStore.existingAirdropAddress,
+            contractAddr: airdropStore.address,
+            step: airdropStore.step,
+           // tokenRootAddr: airdropStore.token_root_address,
+            giverTXId: airdropStore.transactionId.giverContractId,
+            deployTXId: airdropStore.transactionId.deployContractId,
+            topupTXId: airdropStore.transactionId.amountContractId,
+            distributeTXId: airdropStore.transactionId.distributeContractId,
+            redeemTXId: airdropStore.transactionId.redeemContractId,
+            //items: fullRecList.value,
+            randomNonce: airdropStore.deployOptions.initParams._randomNonce,
+            refundLock: airdropStore.lockDuration,
+            contractName: airdropStore.airdropName//airdropName.value ? airdropName.value : airdropStore.airdropName
+          };
+  if (airdropStore.step <= 6) {
+    recipientStore.saveSingleAirdrop(airdropData);
+    console.log('Saved temporary data for airdrop', recipientStore.readSingleAirdrop());
+  }
+}
+reset();
+performance.getEntriesByType("navigation")
+  .forEach((p, i) => {
+    /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
+    // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
+    walletStore.getBalance();
+    console.log('AIRDROP STEP: ', airdropStore.step);
+    if (airdropStore.step <= 6) {
+      let preservedAirdropData = recipientStore.readSingleAirdrop();
+      console.log('Get data after refresh: ', preservedAirdropData);
+      if (preservedAirdropData !== null) {
+       // fullRecList.value = preservedAirdropData.items;
+       // items.value = fullRecList.value;
+        airdropStore.address = preservedAirdropData.contractAddr;
+        airdropStore.existingAirdropAddress = preservedAirdropData.existingAddr,
+        //const retreivedToken = tokensList.find(token=>token.address == preservedAirdropData.tokenRootAddr);
+        //token.value = retreivedToken;
+        //console.log('Token: ', token);
+        airdropStore.step = preservedAirdropData.step;
+        //airdropStore.token_root_address = preservedAirdropData.tokenRootAddr;
+        //airdropStore.token = token.value;
+        airdropStore.calculateFees("deploy", "giver", 'EVER', []);
+        //if(airdropStore.step==2)
+        //{
+          airdropStore.airdropName=preservedAirdropData.contractName;
+          console.log('Airdrop name: ', airdropStore.airdropName);
+          airdropName.value = airdropStore.airdropName;
+        airdropStore.transactionId.giverContractId=preservedAirdropData.giverTXId;
+        //}
+        //if(airdropStore.step==3)
+        //{
+          airdropStore.transactionId.deployContractId=preservedAirdropData.deployTXId;
+          airdropStore.transactionId.amountContractId = preservedAirdropData.topupTXId;
+          airdropStore.transactionId.distributeContractId = preservedAirdropData.distributeTXId;
+          airdropStore.transactionId.redeemContractId = preservedAirdropData.redeemTXId;
+        //}
+        airdropStore.deployOptions.initParams._randomNonce = preservedAirdropData.randomNonce;
+        console.log('Airdrop store step:', airdropStore.step);
+        if(airdropStore.step>2)
+        {
+        airdropStore.lockDuration = preservedAirdropData.refundLock;
+        }
+        // Remove previously stored data
+        recipientStore.removeSingleAirdrop();
+
+       // getRecipients(10, 1);
+      }
+    }
+    console.log('Fetch data');
+    console.log('fullRecList.value: ', fullRecList.value);
+    // console.log(`= Navigation entry[${i}]`);
+    // console.log('Type: ', p.type);
+});
+
 function filterStyle() {
   if (recipientStore.isVisible) {
       return {
@@ -453,10 +529,15 @@ async function getAirdrop() {
   token.value = tokensList.find(token => token.label == 'EVER');
   const address = airdropStore.existingAirdropAddress;
   const contract = new ever.Contract(airdrop2Abi, address);
+  console.log('Get airdrop step: ', airdropStore.step);
+  if(airdropStore.step<2)
+  {
   const newArdropAddress = airdropStore.getExpectedAddress(token);
   airdropStore.address = newArdropAddress;
   airdropStore.abi = airdrop2Abi;
+  }
   const tokenAddress = await contract.methods.tokenRootAddress({}).call();
+  console.log('token root address: ', tokenAddress);
   //console.log('Token address value: ', tokenAddress.tokenRootAddress);
   if (tokenAddress.tokenRootAddress._address == "0:0000000000000000000000000000000000000000000000000000000000000000") {
     token.value = tokensList.find(token => token.label == 'EVER');
@@ -474,7 +555,10 @@ async function getAirdrop() {
   airdropStore.airdropName = airdropName.value;
   console.log('Name: ', airdropName.value);
 
+  if(airdropStore.step<2 && airdropStore.lockDuration<=Date.now())
+  {
   airdropStore.lockDuration = null;
+  }
 
   const amounts = await contract.methods.batchAmounts({}).call();
   const recipients = await contract.methods.batchAddresses({}).call();
@@ -553,7 +637,7 @@ let tokenAddr;
 // const app = getCurrentInstance();
 // const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
 useDropZone(dropZoneRef, onDrop);
-reset();
+//reset();
 //addCustomTokens();
 getBalances();
 function addItem(index) {

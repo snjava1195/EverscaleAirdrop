@@ -56,6 +56,7 @@
               <span
                 class="py-[4px] px-[8px] rounded-full text-[12px] font-medium ml-[6px]"
                 :class="{ 'bg-[#DAE4FD]': item.status=='Deployed', 'text-[#214BB7]': item.status == 'Deployed',
+                          'bg-[#EDEDED]': item.status=='Deploying', 'text-[#999797]': item.status == 'Deploying',
                           'bg-[#DEF1DE]': item.status=='Executed', 'text-[#398A39]': item.status == 'Executed',
                           'bg-[#FEF2CD]': item.status=='Executing', 'text-[#B28501]': item.status == 'Executing',
                           'bg-[#E4E5EA]': item.status=='Preparing', 'text-[#6C7078]': item.status == 'Preparing',
