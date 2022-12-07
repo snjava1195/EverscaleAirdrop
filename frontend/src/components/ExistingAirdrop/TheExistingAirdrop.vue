@@ -426,7 +426,7 @@ let address = "";
 const ever = new ProviderRpcClient();
 
 window.onunload = function() {
-  console.log('ONUNLOAD');
+  //console.log('ONUNLOAD');
   let airdropData = {
             existingAddr: airdropStore.existingAirdropAddress,
             contractAddr: airdropStore.address,
@@ -444,7 +444,7 @@ window.onunload = function() {
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
-    console.log('Saved temporary data for airdrop', recipientStore.readSingleAirdrop());
+    //console.log('Saved temporary data for airdrop', recipientStore.readSingleAirdrop());
   }
 }
 reset();
@@ -453,10 +453,10 @@ performance.getEntriesByType("navigation")
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
     // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
     walletStore.getBalance();
-    console.log('AIRDROP STEP: ', airdropStore.step);
+    //console.log('AIRDROP STEP: ', airdropStore.step);
     if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
-      console.log('Get data after refresh: ', preservedAirdropData);
+      //console.log('Get data after refresh: ', preservedAirdropData);
       if (preservedAirdropData !== null) {
        // fullRecList.value = preservedAirdropData.items;
        // items.value = fullRecList.value;
@@ -472,7 +472,7 @@ performance.getEntriesByType("navigation")
         //if(airdropStore.step==2)
         //{
           airdropStore.airdropName=preservedAirdropData.contractName;
-          console.log('Airdrop name: ', airdropStore.airdropName);
+        //  console.log('Airdrop name: ', airdropStore.airdropName);
           airdropName.value = airdropStore.airdropName;
         airdropStore.transactionId.giverContractId=preservedAirdropData.giverTXId;
         //}
@@ -484,7 +484,7 @@ performance.getEntriesByType("navigation")
           airdropStore.transactionId.redeemContractId = preservedAirdropData.redeemTXId;
         //}
         airdropStore.deployOptions.initParams._randomNonce = preservedAirdropData.randomNonce;
-        console.log('Airdrop store step:', airdropStore.step);
+        //console.log('Airdrop store step:', airdropStore.step);
         if(airdropStore.step>2)
         {
         airdropStore.lockDuration = preservedAirdropData.refundLock;
@@ -495,8 +495,8 @@ performance.getEntriesByType("navigation")
        // getRecipients(10, 1);
       }
     }
-    console.log('Fetch data');
-    console.log('fullRecList.value: ', fullRecList.value);
+    //console.log('Fetch data');
+    //console.log('fullRecList.value: ', fullRecList.value);
     // console.log(`= Navigation entry[${i}]`);
     // console.log('Type: ', p.type);
 });
@@ -529,7 +529,7 @@ async function getAirdrop() {
   token.value = tokensList.find(token => token.label == 'EVER');
   const address = airdropStore.existingAirdropAddress;
   const contract = new ever.Contract(airdrop2Abi, address);
-  console.log('Get airdrop step: ', airdropStore.step);
+  //console.log('Get airdrop step: ', airdropStore.step);
   if(airdropStore.step<2)
   {
   const newArdropAddress = airdropStore.getExpectedAddress(token);
@@ -537,7 +537,7 @@ async function getAirdrop() {
   airdropStore.abi = airdrop2Abi;
   }
   const tokenAddress = await contract.methods.tokenRootAddress({}).call();
-  console.log('token root address: ', tokenAddress);
+  //console.log('token root address: ', tokenAddress);
   //console.log('Token address value: ', tokenAddress.tokenRootAddress);
   if (tokenAddress.tokenRootAddress._address == "0:0000000000000000000000000000000000000000000000000000000000000000") {
     token.value = tokensList.find(token => token.label == 'EVER');
@@ -547,13 +547,13 @@ async function getAirdrop() {
     token.value = tokensList.find(token => token.address == tokenAddress.tokenRootAddress);
     airdropStore.token = token.value;
   }
-  console.log('Airdrop store token: ', airdropStore.token);
-  console.log('Token: ', token.value);
+  //console.log('Airdrop store token: ', airdropStore.token);
+  //console.log('Token: ', token.value);
   const name = await contract.methods.contract_notes({}).call();
   //console.log('Name: ', name);
   airdropName.value = name.contract_notes;
   airdropStore.airdropName = airdropName.value;
-  console.log('Name: ', airdropName.value);
+  //console.log('Name: ', airdropName.value);
 
   if(airdropStore.step<2 && airdropStore.lockDuration<=Date.now())
   {
@@ -578,7 +578,7 @@ async function getAirdrop() {
     for(let j=0;j<amounts.batchAmounts[i][1].length;j++)
     amountss.push(amounts.batchAmounts[i][1][j]);
   }
-  console.log(amountss);
+  //console.log(amountss);
 
   if (items.value.length != amountss.length) {
     if (amountss.length <= 10) {
@@ -613,11 +613,11 @@ async function getAirdrop() {
       //console.log('items.value: ', items.value);
     }
   }
-  console.log('Items.value: ', items.value);
+  //console.log('Items.value: ', items.value);
   // Reset pagination for new file
   recipientStore.resetPagination();
   fullRecList.value = items.value.slice();
-  console.log('Fullreclist: ', fullRecList.value);
+  //console.log('Fullreclist: ', fullRecList.value);
   // Get recipients per page, initial page "0" and 10 per page
   getRecipients(recipientStore.itemsPerPage, 1);
   //console.log('Items: ', items.value);
@@ -661,7 +661,8 @@ function removeItem(index) {
 }
 function onFileChanged($event) {
   const target = $event.target;
-  if (target && target.files) {
+  if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) 
+  {
     saveFile(target.files[0]);
   }
 }
@@ -691,7 +692,7 @@ async function saveFile(value) {
   }
 }
 function onDrop(files) {
-  if (files) {
+  if(files && (airdropStore.step < 2) && !airdropStore.waiting) {
     saveFile(files[0]);
   }
 }
@@ -723,7 +724,7 @@ function CSVToJSON(data, delimiter = ',') {
             // address: addressFormat(values[0]),
             amount: values[1].replace(/^"(.*)"$/, '$1'),
           });
-          console.log(values[0]);
+       //   console.log(values[0]);
         }
       })
     );
@@ -731,10 +732,10 @@ function CSVToJSON(data, delimiter = ',') {
     // Show or hide pagination
     const paginationEdit = document.querySelectorAll('.paginationToEdit');
     if (items.value.length != 0) {
-      console.log('Display pagination: yes');
+    //  console.log('Display pagination: yes');
       paginationEdit[0].style.display = "flex";
     } else {
-      console.log('Display pagination: no');
+    //  console.log('Display pagination: no');
       paginationEdit[0].style.display = "none";
     }
     // Reset pagination for new file
@@ -807,10 +808,10 @@ async function addCustomTokens() {
   return axios(config)
     .then(function (response) {
       //responseVar = response.data.balances;
-      console.log('Response: ', response.data);
-      console.log(JSON.stringify(response.data));
+     // console.log('Response: ', response.data);
+     // console.log(JSON.stringify(response.data));
       tokenAddr = response.data;
-      console.log(tokenAddr);
+     // console.log(tokenAddr);
       //for(let i=0;i<response.data.balances.length;i++)
       //{
       // tokenAddr.push(response.data.balances[i].rootAddress);
@@ -829,7 +830,7 @@ async function addCustomTokens() {
 
 async function getBalances() {
   const axiosRes = await addCustomTokens();
-  console.log(axiosRes);
+  //console.log(axiosRes);
   // if(axiosRes.status == 200)
   //{//.then(function (response) { tokenAddr = response.data});
   //tokenAddr = axiosRes.data;
@@ -896,11 +897,11 @@ async function onChangeInput(address) {
   let error = false;
   for (let i = 0; i < tokenList.value.length; i++) {
     if (tokenList.value[i].address == address) {
-      console.log('1111111 Existing token');
+    //  console.log('1111111 Existing token');
       found = true;
       onChange(tokenList.value[i]);
     } else if (address.length < 66) {
-      console.log('2222222 ERROR IN ADDRESS');
+    //  console.log('2222222 ERROR IN ADDRESS');
       error = true;
       token.value = {
         label: 'Error: Address too short',
@@ -909,7 +910,7 @@ async function onChangeInput(address) {
         decimals: '',
       };
     } else if (!address.includes(":")) {
-      console.log('3333333 ERROR IN ADDRESS');
+    //  console.log('3333333 ERROR IN ADDRESS');
       error = true;
       token.value = {
         label: 'Error: Address missing colon',
@@ -921,7 +922,7 @@ async function onChangeInput(address) {
   }
 
   if (found == false && error == false) {
-    console.log('New address spotted!');
+   // console.log('New address spotted!');
     await addTag(address);
     var my_array = tokenList.value;
     var last_element = my_array[my_array.length - 1];
@@ -929,11 +930,11 @@ async function onChangeInput(address) {
   }
 }
 async function onChange(value) {
-  console.log('onChange called');
+//  console.log('onChange called');
   token.value = value;
   await airdropStore.getExpectedAddress(value);
   await airdropStore.calculateFees("deploy", "giver", "EVER", "");
-  console.log('Fee: ', airdropStore.fees);
+//  console.log('Fee: ', airdropStore.fees);
   //airdropStore.step =1;
 }
 function onEnter() {
@@ -944,14 +945,14 @@ async function addTag(newTag) {
   //const token =  await airdropStore.getToken(newTag);
   const root = new ever.Contract(rootAbi, newTag);
   const decimal = await root.methods.decimals({ answerId: 1 }).call();
-  console.log(decimal);
+//  console.log(decimal);
   const label = await root.methods.symbol({ answerId: 1 }).call();
-  console.log(label);
+//  console.log(label);
   const token = tokensList.find(token => token.address == newTag);
-  console.log('If token', token);
+//  console.log('If token', token);
   if (token == undefined) {
     tokenList.value.push({ label: label.value0, decimals: decimal.value0 * 1, address: newTag, icon: `/avatar/${counter++}.svg` });
-    console.log('Usao');
+//    console.log('Usao');
   }
 }
     //tokensList.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});
@@ -973,5 +974,17 @@ function addHours(hours, value = new Date()) {
   let ms = hours * 60 * 60 * 1000;
   value.setTime(value.getTime() + ms);
   airdropStore.lockDuration = value;
+}
+
+function shouldBeDisabledToken() {
+//  console.log('WAITING 1', airdropStore.waiting);
+  return (airdropStore.step < 2 && !airdropStore.waiting) ? recipientStore.updateDropdownVisibility() : null;
+}
+function shouldBeDisabledLock() {
+//  console.log('WAITING 2', airdropStore.waiting);
+  return (airdropStore.step >= 2 || airdropStore.waiting) ? true : false;
+}
+function isWaiting() {
+  return airdropStore.waiting ? true : false;
 }
 </script>

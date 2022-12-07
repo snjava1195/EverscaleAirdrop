@@ -468,7 +468,7 @@ useDropZone(dropZoneRef, onDrop);
 
 /// TODO: 
 window.onunload = function() {
-  console.log('ONUNLOAD');
+  //console.log('ONUNLOAD');
   let airdropData = {
             contractAddr: airdropStore.address,
             step: airdropStore.step,
@@ -485,7 +485,7 @@ window.onunload = function() {
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
-    console.log('Saved temporary data for airdrop', recipientStore.readSingleAirdrop());
+    //console.log('Saved temporary data for airdrop', recipientStore.readSingleAirdrop());
   }
 }
 
@@ -496,17 +496,17 @@ performance.getEntriesByType("navigation")
     /// TODO: Ovde onda staviti da iscita podatke koji nam trebaju,
     // treba podesiti jos samo da se token i one adrese setuju, izbrisi ove komentare posle :D
     walletStore.getBalance();
-    console.log('AIRDROP STEP: ', airdropStore.step);
+    //console.log('AIRDROP STEP: ', airdropStore.step);
     if (airdropStore.step <= 6) {
       let preservedAirdropData = recipientStore.readSingleAirdrop();
-      console.log('Get data after refresh: ', preservedAirdropData);
+      //console.log('Get data after refresh: ', preservedAirdropData);
       if (preservedAirdropData !== null) {
         fullRecList.value = preservedAirdropData.items;
         items.value = fullRecList.value;
         airdropStore.address = preservedAirdropData.contractAddr;
         const retreivedToken = tokensList.find(token=>token.address == preservedAirdropData.tokenRootAddr);
         token.value = retreivedToken;
-        console.log('Token: ', token);
+        //console.log('Token: ', token);
         airdropStore.step = preservedAirdropData.step;
         airdropStore.token_root_address = preservedAirdropData.tokenRootAddr;
         airdropStore.token = token.value;
@@ -514,7 +514,7 @@ performance.getEntriesByType("navigation")
         //if(airdropStore.step==2)
         //{
           airdropStore.airdropName=preservedAirdropData.contractName;
-          console.log('Airdrop name: ', airdropStore.airdropName);
+          //console.log('Airdrop name: ', airdropStore.airdropName);
           airdropName.value = airdropStore.airdropName;
         airdropStore.transactionId.giverContractId=preservedAirdropData.giverTXId;
         //}
@@ -536,8 +536,8 @@ performance.getEntriesByType("navigation")
         getRecipients(10, 1);
       }
     }
-    console.log('Fetch data');
-    console.log('fullRecList.value: ', fullRecList.value);
+    //console.log('Fetch data');
+    //console.log('fullRecList.value: ', fullRecList.value);
     // console.log(`= Navigation entry[${i}]`);
     // console.log('Type: ', p.type);
 });
@@ -571,10 +571,10 @@ function removeItem(index) {
   }
 }
 function onFileChanged($event) {
-  console.log('ONFILECHANGE and step:', airdropStore.step);
+  //console.log('ONFILECHANGE and step:', airdropStore.step);
   const target = $event.target;
   if (target && target.files && (airdropStore.step < 2) && !airdropStore.waiting) {
-    console.log('triggered?');
+    //console.log('triggered?');
     saveFile(target.files[0]);
   }
 }
@@ -604,7 +604,7 @@ async function saveFile(value) {
   }
 }
 function onDrop(files) {
-  console.log('ONDROP');
+  //console.log('ONDROP');
   if (files && (airdropStore.step < 2) && !airdropStore.waiting) {
     saveFile(files[0]);
   }
@@ -637,8 +637,8 @@ function CSVToJSON(data, delimiter = ',') {
             // address: addressFormat(values[0]),
             amount: values[1].replace(/^"(.*)"$/, '$1'),
           });
-          console.log(values[0]);
-          console.log(values[1]);
+    //      console.log(values[0]);
+      //    console.log(values[1]);
         }
       })
     );
@@ -646,10 +646,10 @@ function CSVToJSON(data, delimiter = ',') {
     // Show or hide pagination
     const paginationEdit = document.querySelectorAll('.paginationToEdit');
     if (items.value.length != 0) {
-      console.log('Display pagination: yes');
+      //console.log('Display pagination: yes');
       paginationEdit[0].style.display = "flex";
     } else {
-      console.log('Display pagination: no');
+      //console.log('Display pagination: no');
       paginationEdit[0].style.display = "none";
     }
     // Reset pagination for new file
@@ -722,10 +722,10 @@ async function addCustomTokens() {
   return axios(config)
     .then(function (response) {
       //responseVar = response.data.balances;
-      console.log('Response: ', response.data);
-      console.log(JSON.stringify(response.data));
+      //console.log('Response: ', response.data);
+      //console.log(JSON.stringify(response.data));
       tokenAddr = response.data;
-      console.log(tokenAddr);
+      //console.log(tokenAddr);
       //for(let i=0;i<response.data.balances.length;i++)
       //{
       // tokenAddr.push(response.data.balances[i].rootAddress);
@@ -803,7 +803,7 @@ function getRecipients(num, page) {
 
   recipientStore.getRecipients(pages.length, page);
   reloadItems = fullRecList;
-  console.log('Reload items: ', reloadItems.value);
+  //console.log('Reload items: ', reloadItems.value);
 }
 // /////////////////////////////////////
 // DROPDOWN Functions
@@ -813,12 +813,12 @@ async function onChangeInput(address) {
   let error = false;
   for (let i = 0; i < tokenList.value.length; i++) {
     if (tokenList.value[i].address == address) {
-      console.log('1111111 Existing token');
+    //  console.log('1111111 Existing token');
       found = true;
       onChange(tokenList.value[i]);
       recipientStore.updateDropdownVisibility();
     } else if (address.length < 66) {
-      console.log('2222222 ERROR IN ADDRESS');
+      //console.log('2222222 ERROR IN ADDRESS');
       error = true;
       token.value = {
         label: 'Error: Address too short',
@@ -827,7 +827,7 @@ async function onChangeInput(address) {
         decimals: '',
       };
     } else if (!address.includes(":")) {
-      console.log('3333333 ERROR IN ADDRESS');
+      //console.log('3333333 ERROR IN ADDRESS');
       error = true;
       token.value = {
         label: 'Error: Address missing colon',
@@ -839,7 +839,7 @@ async function onChangeInput(address) {
   }
 
   if (!found && !error) {
-    console.log('New address spotted!');
+    //console.log('New address spotted!');
     await addTag(address);
     var my_array = tokenList.value;
     var last_element = my_array[my_array.length - 1];
@@ -849,19 +849,19 @@ async function onChangeInput(address) {
 }
 async function onChange(value) {
   token.value = value;
-  console.log('token.value: ', token.value.address);
+  //console.log('token.value: ', token.value.address);
   if(token.value.label!=='EVER')
   {
 
   
   const tokenRoot = airdropStore.tokenAddr.balances.find(tokencic=>tokencic.rootAddress == token.value.address);
-    console.log('Token from token wallet: ', tokenRoot);
+    //console.log('Token from token wallet: ', tokenRoot);
     airdropStore.tokenWalletBalance = tokenRoot.amount*1;
-    console.log('Token wallet balance: ', airdropStore.tokenWalletBalance);
+    //console.log('Token wallet balance: ', airdropStore.tokenWalletBalance);
   }
   await airdropStore.getExpectedAddress(value);
   await airdropStore.calculateFees("deploy", "giver", "EVER", "");
-  console.log('Fee: ', airdropStore.fees);
+  //console.log('Fee: ', airdropStore.fees);
   //airdropStore.step =1;
 }
 function onEnter() {
@@ -873,14 +873,14 @@ async function addTag(newTag) {
   //const token =  await airdropStore.getToken(newTag);
   const root = new ever.Contract(rootAbi, newTag);
   const decimal = await root.methods.decimals({ answerId: 1 }).call();
-  console.log(decimal);
+ // console.log(decimal);
   const label = await root.methods.symbol({ answerId: 1 }).call();
-  console.log(label);
+ // console.log(label);
   const token = tokensList.find(token => token.address == newTag);
-  console.log('If token', token);
+ // console.log('If token', token);
   if (token == undefined) {
     tokenList.value.push({ label: label.value0, decimals: decimal.value0 * 1, address: newTag, icon: `/avatar/${counter++}.svg` });
-    console.log('Usao');
+   // console.log('Usao');
   }
 }
     //tokensList.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});
@@ -905,11 +905,11 @@ function addHours(hours, value = new Date()) {
 }
 
 function shouldBeDisabledToken() {
-  console.log('WAITING 1', airdropStore.waiting);
+  //console.log('WAITING 1', airdropStore.waiting);
   return (airdropStore.step < 2 && !airdropStore.waiting) ? recipientStore.updateDropdownVisibility() : null;
 }
 function shouldBeDisabledLock() {
-  console.log('WAITING 2', airdropStore.waiting);
+  //console.log('WAITING 2', airdropStore.waiting);
   return (airdropStore.step >= 2 || airdropStore.waiting) ? true : false;
 }
 function isWaiting() {

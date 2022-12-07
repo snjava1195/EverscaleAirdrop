@@ -274,10 +274,10 @@ function CSVToJSON(data, delimiter = ',') {
  // Show or hide pagination
  const paginationEdit = document.querySelectorAll('.paginationToEdit');
     if (items.value.length != 0) {
-      console.log('Display pagination: yes');
+     // console.log('Display pagination: yes');
       paginationEdit[0].style.display = "flex";
     } else {
-      console.log('Display pagination: no');
+      //console.log('Display pagination: no');
       paginationEdit[0].style.display = "none";
     }
     // Reset pagination for new file
@@ -320,21 +320,21 @@ async function getAirdrop() {
     token.value = tokensList.find(token => token.address == tokenAddress.tokenRootAddress);
     airdropStore.token = token.value;
   }
-  console.log('Airdrop store token: ', airdropStore.token);
-  console.log('Token: ', token.value);
+  //console.log('Airdrop store token: ', airdropStore.token);
+  //console.log('Token: ', token.value);
   const name = await contract.methods.contract_notes({}).call();
   //console.log('Name: ', name);
   airdropName.value = name.contract_notes;
   airdropStore.airdropName = airdropName.value;
-  console.log('Name: ', airdropName.value);
+  //console.log('Name: ', airdropName.value);
 
   const refundDuration = await contract.methods.getRefundLockDuration({}).call();
   airdropStore.lockDuration = dayjs.unix(refundDuration.value0).format('ddd MMM DD YYYY HH:mm:ss');
 
-  console.log('Lock duration: ', airdropStore.lockDuration);
+  //console.log('Lock duration: ', airdropStore.lockDuration);
   status.value = await contract.methods.status({}).call();
   let status0 = status.value;
-  console.log(status0);
+  //console.log(status0);
 
   // const balance = await contract.methods.balanceWallet({}).call();
   // console.log(balance);
@@ -343,7 +343,7 @@ async function getAirdrop() {
     if (status0.status*1==0) {
       airdropStore.step = 2;
       airdropStore.deployStatus="Deploying";
-      console.log("Step2: ", airdropStore.step);
+    //  console.log("Step2: ", airdropStore.step);
 
     }
     if (status0.status*1 == 1) {
@@ -399,7 +399,7 @@ async function getAirdrop() {
   }
 
 
-  console.log(addresses);
+  //console.log(addresses);
 
 
   
@@ -409,7 +409,7 @@ async function getAirdrop() {
     for(let j=0;j<amounts.batchAmounts[i][1].length;j++)
     amountss.push(amounts.batchAmounts[i][1][j]);
   }
-  console.log(amountss);
+  //console.log(amountss);
   for (let i = 0; i < transactionHashes.transactionHashes.length; i++) {
     if (transactionHashes.transactionHashes.length < 3) {
       airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
@@ -468,11 +468,11 @@ async function getAirdrop() {
       //console.log('items.value: ', items.value);
     }
   }
-  console.log('Items.value: ', items.value);
+  //console.log('Items.value: ', items.value);
   // Reset pagination for new file
   recipientStore.resetPagination();
   fullRecList.value = items.value.slice();
-  console.log('Fullreclist: ', fullRecList.value);
+  //console.log('Fullreclist: ', fullRecList.value);
   // Get recipients per page, initial page "0" and 10 per page
   getRecipients(recipientStore.itemsPerPage, 1);
   //console.log('Items: ', items.value);
@@ -511,7 +511,7 @@ function getRecipients(num, page) {
 
 function reset()
 {
-  console.log('RESET STARTED');
+  //console.log('RESET STARTED');
   items.value.length=10;
   fullRecList.value.length=10;
 
@@ -520,32 +520,32 @@ function reset()
     items.value[i].address = "";
     items.value[i].amount = "";
   }
-  console.log('Reset items value: ', items.value);
+  //console.log('Reset items value: ', items.value);
   for(let i=0;i<fullRecList.value.length;i++)
   {
     fullRecList.value[i].address = "";
     fullRecList.value[i].amount = "";
   }
  // fullRecList.value= recipientsList;
-  console.log('Reset recipients list value: ', fullRecList.value);
+  //console.log('Reset recipients list value: ', fullRecList.value);
   airdropStore.airdropName="";
   recipientStore.resetPagination();
 }
 
 /// If step is less than or equal to 2, you can edit the list of rec and amounts
 function canEditList() {
-  console.log('CANEDIT STARTED');
+  //console.log('CANEDIT STARTED');
   var isTrueOrNot = airdropStore.step > 2 ? false : true;
   return isTrueOrNot;
 }
 /// Func to return saved airdrop recipients data after refresh or back
 function reloadAirdropData() {
-  console.log(
-    'RELOAD DATA STARTED', 
-    'ADDRESS OF CONTR:', airdropStore.address,
-    'AIRDROP STEP:', airdropStore.step,
-    'CAN EDIT?', canEditList()
-  );
+  //console.log(
+    //'RELOAD DATA STARTED', 
+    //'ADDRESS OF CONTR:', airdropStore.address,
+    //'AIRDROP STEP:', airdropStore.step,
+    //'CAN EDIT?', canEditList()
+ // );
   // Check to prevent inserting data after step 2
   if (canEditList()) {
     // Check if the data is for this current contract and insert if true
@@ -564,7 +564,7 @@ watch(status, (newX) => {
 });
 // Watch for recipients list change in order to update the stored data (still not working)
 watch(items, (newX) => {
-  console.log('refresh items value in storage and check step:', airdropStore.step);
+  //console.log('refresh items value in storage and check step:', airdropStore.step);
   if (airdropStore.step <= 2) {
   recipientStore.saveAirdropData(items.value, airdropStore.address);
   }

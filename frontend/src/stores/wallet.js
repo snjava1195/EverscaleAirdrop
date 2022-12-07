@@ -25,7 +25,7 @@ export const useWalletStore = defineStore({
       let temp = state.currentPage;
       //state.currentPage = state.currentPage+1;
     //  console.log('On next page: ',state.currentPage);
-    console.log('Next page state: ', state);
+    //console.log('Next page state: ', state);
       return temp + 1;
      //state.currentPage+=1;
     // return state.currentPage;
@@ -37,7 +37,7 @@ export const useWalletStore = defineStore({
         let temp = state.currentPage;
       //  state.currentPage = state.currentPage-1;
         //console.log('On prev page: ',state.currentPage);
-        console.log('Prev page state: ', state);
+      //  console.log('Prev page state: ', state);
         return temp - 1;
       }
     },
@@ -46,7 +46,7 @@ export const useWalletStore = defineStore({
       return state.itemsPerPage;
     },
     getExistingPage: (state) => {
-      console.log('Get page state: ', state);
+      //console.log('Get page state: ', state);
       return (page) => state.pagination.find((p) => p.page === page);
     },
   },
@@ -54,9 +54,9 @@ export const useWalletStore = defineStore({
     async login() {
       // Check to see if you can open a connect wallet window, or its open already
       if (this.canOpenPopupAgain) {
-        console.log('CAN!');
+        //console.log('CAN!');
       } else {
-        console.log('CONNECT WALLET WINDOW ALREADY OPEN.');
+        //console.log('CONNECT WALLET WINDOW ALREADY OPEN.');
       }
 
       try {
@@ -116,15 +116,15 @@ export const useWalletStore = defineStore({
         page: page,
         continuation: continuation,
       });
-      console.log('This pagination: ', this.pagination.value);
+      //console.log('This pagination: ', this.pagination.value);
       //this.currentPage=page;
     },
     async getPagination(page) {
-      console.log(this.pagination);
+      //console.log(this.pagination);
       const find = this.pagination.find((p) => p.page === page);
-      console.log('Page pagination from get pagination: ', find);
+      //console.log('Page pagination from get pagination: ', find);
       this.continuation = find ? find.continuation : {};
-      console.log('Continuation pagination from get pagination: ',this.continuation);
+      //console.log('Continuation pagination from get pagination: ',this.continuation);
     },
     resetPagination() {
       this.pagination = [];

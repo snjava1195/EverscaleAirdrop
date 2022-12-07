@@ -16,7 +16,7 @@ export const useRecipientStore = defineStore({
     }),
 
     mounted() {
-      console.log(`Mounting the component triggered`);
+      //console.log(`Mounting the component triggered`);
     },
 
     // beforeDestroy() {
@@ -92,7 +92,7 @@ export const useRecipientStore = defineStore({
 
         // TODO: Save the list of addresses and ammounts
         saveAirdropData(items, addr, step, TR, giverTXId, deployTXId) {
-          console.log('Save Airdrop To List');
+        //  console.log('Save Airdrop To List');
           // Airdrop data (address and list of recs with amounts)
           let airdropData = {
             contractAddr: addr,
@@ -102,9 +102,9 @@ export const useRecipientStore = defineStore({
             deployTXId: deployTXId,
             items: items,
           }
-          console.log('should be empty -> ', localStorage.getItem('00123lalala'));
+          //console.log('should be empty -> ', localStorage.getItem('00123lalala'));
           let doesListExist = localStorage.getItem("airdropsListData");
-          console.log('Does airdrop list exist? save new airdrop: ', doesListExist);
+          //console.log('Does airdrop list exist? save new airdrop: ', doesListExist);
           // Check does the list of unfinished airdrops exist
           if (doesListExist !== null) {
             let parsed = JSON.parse(localStorage.getItem("airdropsListData"));
@@ -129,12 +129,12 @@ export const useRecipientStore = defineStore({
           }
           // Retrieve it and print just to check
           let parsed = JSON.parse(localStorage.getItem("airdropsListData"));
-          console.log('PARSED Drop: ', parsed);
+          //console.log('PARSED Drop: ', parsed);
         },
         checkForAirdropInLocalStorage(addr) {
           /// Check if storage has any saved airdrops
           let doesListExist = localStorage.getItem("airdropsListData");
-          console.log('Does airdrop list exist? check for airdrop: ', doesListExist);
+          //console.log('Does airdrop list exist? check for airdrop: ', doesListExist);
           let trueOrFalse = false;
           if (doesListExist == null) {
             trueOrFalse = false;
@@ -147,10 +147,10 @@ export const useRecipientStore = defineStore({
             }
           }
           if (addr == null) {
-            console.log('No Address given, so false!');
+            //console.log('No Address given, so false!');
             trueOrFalse = false;
           }
-          console.log('Does airdrop list exist - yes or no: ', trueOrFalse);
+          //console.log('Does airdrop list exist - yes or no: ', trueOrFalse);
           return trueOrFalse;
         },
         returnAirdropData(addr) {
@@ -161,7 +161,7 @@ export const useRecipientStore = defineStore({
               data = parsed[i];
             }
           }
-          console.log('Returned airdrop data: ', data);
+          //console.log('Returned airdrop data: ', data);
           return data;
         },
         removeAirdropFromStorage(addr) {
@@ -169,30 +169,30 @@ export const useRecipientStore = defineStore({
           for (let i = 0; i< parsed.length; i++) {
             if (parsed.contractAddr == addr) {
               parsed.splice(i, 1);
-              console.log(
-                'Splice the parsed list in order to remove the airdrop: ', 
-                parsed,
-              );
+            //  console.log(
+              //  'Splice the parsed list in order to remove the airdrop: ', 
+                //parsed,
+              //);
               let data = JSON.stringify(parsed);
-              console.log('Data after spliced parsed list :', data);
+              //console.log('Data after spliced parsed list :', data);
               localStorage.setItem("airdropsListData", data);
             }
           }
-          console.log('is removed?', localStorage.getItem("airdropsListData"));
+          //console.log('is removed?', localStorage.getItem("airdropsListData"));
         },
         removeAllAirdrops() {
           localStorage.removeItem("airdropsListData");
-          console.log('Airdrops in storage deleted: ', localStorage.getItem('airdropsListData'));
+          //console.log('Airdrops in storage deleted: ', localStorage.getItem('airdropsListData'));
         },
         // Save single airdrop if user refreshes page before deploying
         saveSingleAirdrop(data) {
           let dataToStorage = JSON.stringify(data);
           localStorage.setItem('AirdropBackup', dataToStorage);
-          console.log('Saved single airdrop', localStorage.getItem('AirdropBackup'));
+          //console.log('Saved single airdrop', localStorage.getItem('AirdropBackup'));
         },
         readSingleAirdrop() {
           if (localStorage.getItem('AirdropBackup') !== null) {
-            console.log('Read single airdrop', localStorage.getItem('AirdropBackup'));
+            //console.log('Read single airdrop', localStorage.getItem('AirdropBackup'));
             return JSON.parse(localStorage.getItem('AirdropBackup'));
           } else {
             return null;
@@ -200,9 +200,9 @@ export const useRecipientStore = defineStore({
         },
         removeSingleAirdrop() {
           localStorage.removeItem('AirdropBackup');
-          console.log('Removed single airdrop', 
-          localStorage.getItem('AirdropBackup')
-          );
+          //console.log('Removed single airdrop', 
+          //localStorage.getItem('AirdropBackup')
+          //);
         }
 
       },

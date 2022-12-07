@@ -530,12 +530,12 @@ async function onTopUpEver() {
     errors.value.error = true;
     errors.value.message = e.message;
     airdropStore.waiting = false;
-    console.log('WAITING IN SIDE 2', airdropStore.waiting);
+   // console.log('WAITING IN SIDE 2', airdropStore.waiting);
 
   } finally {
     loading.value = false;
     airdropStore.waiting = false;
-    console.log('WAITING IN SIDE 3', airdropStore.waiting);
+ //   console.log('WAITING IN SIDE 3', airdropStore.waiting);
 
   }
 
@@ -544,21 +544,21 @@ async function onTopUpEver() {
 function sufficientBalance()
 {
   const token = airdropStore.tokenAddr.balances.find(token=>token.rootAddress == props.token.address);
-    console.log('Token from token wallet: ', token);
+    //console.log('Token from token wallet: ', token);
 }
 
 async function onDeployContract() {
   // if (!validateAddressAmountList(props.items, totalTokens.value)) return
   const storeTime=Math.floor(new Date(airdropStore.lockDuration).getTime() / 1000);
-  console.log('store time: ', storeTime);
-  console.log('airdropStore.lockDuration: ', airdropStore.lockDuration);
+  //console.log('store time: ', storeTime);
+  //console.log('airdropStore.lockDuration: ', airdropStore.lockDuration);
   if (airdropStore.lockDuration == null || storeTime<=Date.now()) {
-    console.log('Date.now: ', Date.now());
+    //console.log('Date.now: ', Date.now());
     const date = new Date(Date.now() + (3 * 60 * 1000));
     const lockDuration = date;//{ date: date, hours: new Date().getHours(), minutes: new Date().getMinutes() + 2 }
     // console.log('Date:', lockDuration);
     airdropStore.lockDuration = date;//Math.floor(lockDuration.getTime()/1000);
-      console.log('Lock duration: ', airdropStore.lockDuration);
+      //console.log('Lock duration: ', airdropStore.lockDuration);
   }
   //console.log('Lock duration: ', airdropStore.lockDuration)
   loading.value = true;
@@ -569,19 +569,19 @@ async function onDeployContract() {
     airdropStore.airdropName = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     // console.log('airdropName:', airdropName.value);
     //await airdropStore.getDeploymentStatus();
-    console.log('deployment status: ', airdropStore.deployStatus);
+   // console.log('deployment status: ', airdropStore.deployStatus);
     if (airdropStore.deployStatus !== "Deploying") {
-      console.log('Add existing airdrop, props.token: ', props.token);
-      console.log('totalTokens.value: ', totalTokens.value);
-      console.log('recipientsList.value: ', recipientsList.value);
+     // console.log('Add existing airdrop, props.token: ', props.token);
+      //console.log('totalTokens.value: ', totalTokens.value);
+      //console.log('recipientsList.value: ', recipientsList.value);
       const data = await airdropStore.deployContract(airdropName.value, totalTokens.value, recipientsList.value.length, props.token);
       // const fees = await airdropStore.getEstimatedFee();
       airdropStore.transactionId.deployContractId = data.transaction.id.hash;
-      console.log('Tr id:', airdropStore.transactionId.deployContractId);
+      //console.log('Tr id:', airdropStore.transactionId.deployContractId);
     }
     if (airdropStore.deployStatus === "Deploying") {
       const hashes = await airdropStore.getTransactionHashes();
-      console.log('Hashes length: ', hashes.transactionHashes.length);
+      //console.log('Hashes length: ', hashes.transactionHashes.length);
       if (hashes.transactionHashes.length < 1) {
         if (airdropStore.transactionId.giverContractId != "") {
           await airdropStore.setTransactionsHash(airdropStore.transactionId.giverContractId);
@@ -593,21 +593,21 @@ async function onDeployContract() {
         }
       }
       const batchAddresses = await airdropStore.getRecipients();
-      console.log('Get recipients data: ', batchAddresses);
-      console.log('Max batches: ', maxBatches.value);  
+      //console.log('Get recipients data: ', batchAddresses);
+      //console.log('Max batches: ', maxBatches.value);  
       if (batchAddresses.batchAddresses.length < maxBatches.value) {
         await airdropStore.setRecipients(recipientsList.value);
       }
-      console.log('batch addresses: ', batchAddresses);
+      //console.log('batch addresses: ', batchAddresses);
       const batchAmounts = await airdropStore.getAmounts();
-      console.log('batchAmounts: ', batchAmounts);
+      //console.log('batchAmounts: ', batchAmounts);
       if (batchAmounts.batchAmounts.length < maxBatches.value) {
-        console.log('setujem amountove');
+        //console.log('setujem amountove');
         await airdropStore.setAmounts(recipientsList.value);
       }
     }
     await airdropStore.calculateFees("topup", "giver", '', []);
-    console.log('Fees calculated: ', airdropStore.fees);
+    //console.log('Fees calculated: ', airdropStore.fees);
     airdropStore.getDeploymentStatus();
     if (airdropStore.deployStatus == "Deployed") {
 
@@ -651,15 +651,15 @@ async function onResumeAirdrop(isResumed) {
   try {
     errors.value.error = false;
     error.value = false;
-    console.log('Recipients list:', recipientsList.value);
+    //console.log('Recipients list:', recipientsList.value);
     const data = await airdropStore.distribute(recipientsList.value, isResumed);
-    console.log('Distribute hash: ', data.id.hash);
-    console.log('Transaction ids: ', transactionId.value);
+    //console.log('Distribute hash: ', data.id.hash);
+    //console.log('Transaction ids: ', transactionId.value);
     airdropStore.transactionId.distributeContractId = data.id.hash;
     await airdropStore.setTransactionsHash(airdropStore.transactionId.distributeContractId);
     availableToRedeem();
     redeemPolling.value = setInterval(() => {
-      console.log('interval');
+      //console.log('interval');
       availableToRedeem();
     }, 1000);
     await airdropStore.calculateFees("redeem", "everAirdrop", '', []);
@@ -705,7 +705,7 @@ async function onRedeemFunds() {
 }
 
 function logHashes() {
-  console.log('Hashes: ', transactionId.value);
+//  console.log('Hashes: ', transactionId.value);
 }
 
 </script>

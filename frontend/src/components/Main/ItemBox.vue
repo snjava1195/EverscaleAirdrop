@@ -128,7 +128,7 @@ function everDivider(item) {
 function creationTime(date)
 {
   //let date = walletStore.profile.creationTimes[i];
-  console.log(date);
+ // console.log(date);
   //if(date==null)
   return dayjs.unix(date).format('DD MMM YYYY');
 }
@@ -136,7 +136,7 @@ function creationTime(date)
 function sort()
 {
   sortedAirdrops = _.sortBy(transactions.value, 'dateCreated');
-  console.log('Sorted:', sortedAirdrops);
+ // console.log('Sorted:', sortedAirdrops);
 }
 
 </script>
