@@ -481,7 +481,8 @@ window.onunload = function() {
             items: fullRecList.value,
             randomNonce: airdropStore.deployOptions.initParams._randomNonce,
             refundLock: airdropStore.lockDuration,
-            contractName: airdropName.value ? airdropName.value : airdropStore.airdropName
+            contractName: airdropName.value ? airdropName.value : airdropStore.airdropName,
+            fees: airdropStore.fees,
           };
   if (airdropStore.step <= 6) {
     recipientStore.saveSingleAirdrop(airdropData);
@@ -510,7 +511,8 @@ performance.getEntriesByType("navigation")
         airdropStore.step = preservedAirdropData.step;
         airdropStore.token_root_address = preservedAirdropData.tokenRootAddr;
         airdropStore.token = token.value;
-        airdropStore.calculateFees("deploy", "giver", 'EVER', []);
+        airdropStore.fees = preservedAirdropData.fees;
+        //airdropStore.calculateFees("deploy", "giver", 'EVER', []);
         //if(airdropStore.step==2)
         //{
           airdropStore.airdropName=preservedAirdropData.contractName;
