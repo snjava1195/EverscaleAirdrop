@@ -4,7 +4,7 @@
       <div class="hidden md:flex items-center space-x-[6px]">
         <form>
           <select v-model="itemsPerPage" class="pagination-dropdown">
-            <option v-for="n in 50" :key="n" :value="n">{{ n }}</option>
+            <option v-for="n in [5, 10, 20, 50, 100]" :key="n" :value="n">{{ n }}</option>
           </select>
         </form>
         <span> items on page </span>
@@ -15,8 +15,7 @@
         <form>
           <input
             v-model="recipientStore.currentPage"
-            class="border w-[56px] h-[36px] flex 
-            justify-center items-center text-center"
+            class="border w-[56px] h-[36px] flex justify-center items-center text-center"
             type="text"
             name="currentPage"
             disabled
@@ -27,23 +26,16 @@
       </div>
 
       <div class="paginationBtns">
-        <button 
-        @click="onPrevPage"
-        >
-          <div class="leftBtn w-[36px] h-[36px] 
-          flex items-center justify-center bg-[#ECF1FE]">
+        <button @click="onPrevPage">
+          <div class="leftBtn w-[36px] h-[36px] flex items-center justify-center bg-[#ECF1FE]">
             <LeftArrowIcon />
           </div>
         </button>
 
-        <button
-          @click="onNextPage"
-        >
-          <div class="rightBtn w-[36px] h-[36px] 
-          flex items-center justify-center bg-[#ECF1FE]">
+        <button @click="onNextPage">
+          <div class="rightBtn w-[36px] h-[36px] flex items-center justify-center bg-[#ECF1FE]">
             <RightArrowIcon />
           </div>
-
         </button>
       </div>
     </div>

@@ -31,15 +31,15 @@
           >
         </li>
       </ul>
-      <button
-      @click="onChange()"
-      class="py-[8px] px-[12px] bg-[#ECF1FE] hover:bg-blue-100 ml-[16px]"
-      href="javascript:void(0)"
-      >
+      <!-- <button
+        @click="onChange()"
+        class="py-[8px] px-[12px] bg-[#ECF1FE] hover:bg-blue-100 ml-[16px]"
+        href="javascript:void(0)"
+      > -->
       <!--<SwitchIcon />-->
-     <!-- <img class="option__image pr-1 w-4 h-4" src="/avatar/7f56a5f7df1ce514936b6ae80a3f873d.svg"/> -->
-      
-     <svg viewBox="0 0 255.82 251.08" class="swap-acc-icon">
+      <!-- <img class="option__image pr-1 w-4 h-4" src="/avatar/7f56a5f7df1ce514936b6ae80a3f873d.svg"/> -->
+
+      <!-- <svg viewBox="0 0 255.82 251.08" class="swap-acc-icon">
       <path 
         d="M243.2,167.44c-11.77-.89-10.74-12.1-10.6-15.31-.29-77.95,
         9.08-80.32-48.89-79h-129L91.52,
@@ -55,8 +55,8 @@
         86.44,23,91.37,23.32,104.57Z"
       />
     </svg>
-    
-    </button>
+     -->
+      <!-- </button> -->
       <a
         @click="onLogout()"
         class="py-[8px] px-[12px] bg-[#ECF1FE] hover:bg-blue-100 ml-[16px]"
@@ -64,7 +64,6 @@
       >
         <LogoutIcon />
       </a>
-      
     </div>
   </header>
 </template>
@@ -78,16 +77,12 @@ const walletStore = useWalletStore();
 function onLogin() {
   walletStore.login();
   walletStore.getBalance();
-  
 }
 function onLogout() {
-  
   walletStore.logout();
-  
 }
 
-function onChange()
-{
+function onChange() {
   walletStore.logout();
   walletStore.login();
 }

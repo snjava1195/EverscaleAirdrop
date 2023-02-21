@@ -19,16 +19,15 @@ export const getSeconds = (date) => {
 };
 
 export const validateBalance = (totalTokens, tokenBalance) => {
-  if(totalTokens>tokenBalance)
-  {
+  if (totalTokens > tokenBalance) {
     notify({
-      text: 'Insuficcient tokens in wallet',
+      text: 'Insufficient tokens in wallet',
       type: 'error',
     });
     return false;
   }
   return true;
-}
+};
 
 export const validateAddressAmountList = (arr, totalTokens) => {
   const walletStore = useWalletStore();
@@ -98,22 +97,23 @@ export const validateLockDuration = (lockDuration) => {
     return false;
   }
   return true;
-}
+};
 
-export const chunk = (array, chunkSize) => { 
+export const chunk = (array, chunkSize) => {
   // Create a plain object for housing our named properties: row1, row2, ...rowN
-  let output=[];
+  let output = [];
   // Cache array.length
   let arrayLength = array.length;
   // Loop variables
-  let arrayIndex = 0, chunkOrdinal = 1;
+  let arrayIndex = 0,
+    chunkOrdinal = 1;
   // Loop over chunks
   while (arrayIndex < arrayLength) {
     // Use slice() to select a chunk. Note the incrementing operations.
-    output.push([chunkOrdinal++, array.slice(arrayIndex, arrayIndex += chunkSize)]);
+    output.push([chunkOrdinal++, array.slice(arrayIndex, (arrayIndex += chunkSize))]);
   }
   return output;
-}
+};
 
 export const validateAirdropAddress = (address) => {
   if (!addressReg.test(address)) {
@@ -125,4 +125,4 @@ export const validateAirdropAddress = (address) => {
   }
 
   return true;
-}
+};
