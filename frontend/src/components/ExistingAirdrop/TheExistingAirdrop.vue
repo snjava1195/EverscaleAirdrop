@@ -42,6 +42,10 @@
                           <div @click="recipientStore.updateDropdownVisibility()">
                             <img :src="token.icon" alt="" />
                             <p>{{ token.label }}</p>
+                            <div>
+                              <!-- TODO: Add checkmark instead of '0' -->
+                              {{ selectedToken?.label === token.label ? '0' : '' }}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1061,8 +1065,10 @@ async function onChangeInput(address) {
     onChange(last_element);
   }
 }
+let selectedToken;
 async function onChange(value) {
   //  console.log('onChange called');
+  selectedToken = value;
   token.value = value;
   await airdropStore.getExpectedAddress(value);
   await airdropStore.calculateFees('deploy', 'giver', 'EVER', '');
