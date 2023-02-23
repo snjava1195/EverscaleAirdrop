@@ -310,30 +310,35 @@
       </ul>
 
       <!-- Step 1 -->
-      <button
-        v-if="step === 1"
-        @click="onTopUpEver"
-        type="button"
-        class="aside-btn"
-        :class="[
-          !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1] hover:bg-blue-700',
-          { 'is-loading': loading },
-        ]"
-        :disabled="!recipientsList.length"
-      >
-        Top up
-        {{
-          token == null || !recipientsList || token.label == 'EVER'
-            ? Number(Math.round(topUpValue + 0.5 + 'e2') + 'e-2') + ' EVER'
-            : Number(Math.round(topUpValue + 1.5 + 'e2') + 'e-2') + ' ' + ' EVER'
-        }}
-      </button>
-
-      <!-- Step 2 -->
       <template v-if="step === 1">
         <div class="message text-[#7E5E01] bg-[#FEF2CD]">
           <p>The form will not be edited after first step.</p>
         </div>
+        <button
+          v-if="step === 1"
+          @click="onTopUpEver"
+          type="button"
+          class="aside-btn"
+          :class="[
+            !recipientsList.length ? 'bg-[#DAE4FD]' : 'bg-[#2B63F1] hover:bg-blue-700',
+            { 'is-loading': loading },
+          ]"
+          :disabled="!recipientsList.length"
+        >
+          Top up
+          {{
+            token == null || !recipientsList || token.label == 'EVER'
+              ? Number(Math.round(topUpValue + 0.5 + 'e2') + 'e-2') + ' EVER'
+              : Number(Math.round(topUpValue + 1.5 + 'e2') + 'e-2') + ' ' + ' EVER'
+          }}
+        </button>
+      </template>
+
+      <!-- Step 2 -->
+      <template v-if="step === 2">
+        <!-- <div class="message text-[#7E5E01] bg-[#FEF2CD]">
+          <p>The form will not be edited after first step.</p>
+        </div> -->
 
         <button
           @click="onDeployContract"
