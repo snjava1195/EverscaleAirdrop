@@ -660,7 +660,8 @@ function sufficientBalance() {
 
 async function onDeployContract() {
   // if (!validateAddressAmountList(props.items, totalTokens.value)) return
-  const storeTime = Math.floor(new Date(airdropStore.lockDuration).getTime() / 1000);
+  const storeTime = new Date(airdropStore.lockDuration).getTime();
+
   //console.log('store time: ', storeTime);
   //console.log('airdropStore.lockDuration: ', airdropStore.lockDuration);
   if (airdropStore.lockDuration == null || storeTime <= Date.now()) {
