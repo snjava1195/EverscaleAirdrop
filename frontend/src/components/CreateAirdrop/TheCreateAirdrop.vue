@@ -43,9 +43,10 @@
                           <div @click="recipientStore.updateDropdownVisibility()">
                             <img :src="token.icon" alt="" />
                             <p>{{ token.label }}</p>
-                            <div>
-                              <!-- TODO: Add checkmark instead of '0' -->
-                              {{ selectedToken?.label === token.label ? '0' : '' }}
+                            <div style="margin-left: auto; margin-right: 20px">
+                              <div v-if="selectedToken?.label === token.label">
+                                <img src="/checkmark.svg" />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -482,6 +483,7 @@ import axios from 'axios';
 import { useWalletStore } from '@/stores/wallet';
 import { ProviderRpcClient, Address } from 'everscale-inpage-provider';
 import { onClickOutside } from '@vueuse/core';
+import CheckIcon from '@/components/icons/IconCheck.vue';
 
 // PAGINATION entities //
 const recipientStore = useRecipientStore();
@@ -536,6 +538,8 @@ const deployStatus = '';
 let counter = 0;
 let address = '';
 let reloadItems;
+
+let checkMark = '✓';
 
 walletStore.getBalance();
 function filterStyle() {

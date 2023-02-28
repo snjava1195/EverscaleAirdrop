@@ -42,9 +42,10 @@
                           <div @click="recipientStore.updateDropdownVisibility()">
                             <img :src="token.icon" alt="" />
                             <p>{{ token.label }}</p>
-                            <div>
-                              <!-- TODO: Add checkmark instead of '0' -->
-                              {{ selectedToken?.label === token.label ? '0' : '' }}
+                            <div style="margin-left: auto; margin-right: 20px">
+                              <div v-if="selectedToken?.label === token.label">
+                                <img src="/checkmark.svg" />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -467,6 +468,7 @@ import tokensList from '@/utils/tokens-list';
 import TheSidebar from '@/components/CreateAirdrop/TheSidebar.vue';
 import PlusIcon from '@/components/icons/IconPlus.vue';
 import TrashIcon from '@/components/icons/IconTrash.vue';
+import CheckIcon from '@/components/icons/IconCheck.vue';
 import DownloadIcon from '@/components/icons/IconDownload.vue';
 import UploadIcon from '@/components/icons/Upload/IconUpload.vue';
 import ProgressIcon from '@/components/icons/Upload/IconProgress.vue';
