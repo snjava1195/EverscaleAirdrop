@@ -962,13 +962,18 @@ let selectedToken;
 async function onChange(value) {
   selectedToken = value;
   token.value = value;
+  let tokenRoot;
   //console.log('token.value: ', token.value.address);
   if (token.value.label !== 'EVER') {
-    const tokenRoot = airdropStore.tokenAddr.balances.find(
+    tokenRoot = airdropStore.tokenAddr.balances.find(
       (tokencic) => tokencic.rootAddress == token.value.address
     );
-    //console.log('Token from token wallet: ', tokenRoot);
-    airdropStore.tokenWalletBalance = tokenRoot.amount * 1;
+
+    if (!tokenRoot) {
+      tokenRoot = await airdropStore.getToken(token.value.address);
+    }
+    console.log('Token from token wallet: ', tokenRoot);
+    airdropStore.tokenWalletBalance = tokenRoot.balance;
     //console.log('Token wallet balance: ', airdropStore.tokenWalletBalance);
   }
   await airdropStore.getExpectedAddress(value);

@@ -14,8 +14,8 @@ export default [
   {
     label: 'stEVER',
     decimals: 9,
-    address: "0:6d42d0bc4a6568120ea88bf642edb653d727cfbd35868c47877532de128e71f2",
-    icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/stEVER/logo.svg'
+    address: '0:6d42d0bc4a6568120ea88bf642edb653d727cfbd35868c47877532de128e71f2',
+    icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/stEVER/logo.svg',
   },
   {
     label: 'DAI',
@@ -119,13 +119,13 @@ export default [
     address: '0:dbba0028173f5b8d09eb597e0cca88cb41a4875efdf8a1815bb31292f150f800',
     icon: 'https://raw.githubusercontent.com/broxus/flatqube-assets/master/icons/PILE/logo.svg',
   },
- /* {
-    label: 'AIRDROP',
+  {
+    label: 'DTK2',
     decimals: 9,
-    address: '0:a50def2df0f7f531b82b7ffec7baf8e7ce4279605726b94927c9ee6ded09f5c2',
+    address: '0:cb08cffbf14de06a12f697793f29808487c33a70a69dcd3f27cd93ed6feb34aa',
     icon: '',
   },
-  {
+  /*{
     label: 'AIRDROP_15',
     decimals: 15,
     address: '0:cc5cce51f1b5998b52c998d3492f770ef14b7edd60fa57b96d0ce3c9c0d46bdc',
