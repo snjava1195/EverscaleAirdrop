@@ -25,7 +25,11 @@
 
       <div class="flex justify-between">
         <span class="text-[#8B909A]">Creation date & time</span>
-        <span>{{ dayjs(new Date()).format('DD.MM.YYYY, HH:mm') }}</span>
+        <span>{{
+          !date
+            ? dayjs(new Date()).format('DD.MM.YYYY, HH:mm')
+            : dayjs.unix(date).format('DD.MM.YYYY, HH:mm')
+        }}</span>
       </div>
 
       <div class="flex justify-between">
@@ -595,23 +599,27 @@ async function onTopUpEver() {
     errors.value.error = false;
 
     // TODO: Add here the address and list to be stored
-    recipientStore.saveAirdropData(
-      recipientsList.value,
-      airdropStore.address,
-      airdropStore.step,
-      props.token.address
-    );
+
     const data = await airdropStore.getGiverContract2(
       props.token.label,
       recipientsList.value.length
     );
     airdropStore.transactionId.giverContractId = data.id.hash;
+    recipientStore.saveAirdropData(
+      recipientsList.value,
+      airdropStore.address,
+      airdropStore.step,
+      props.token.address,
+      data.id.hash,
+      '',
+      props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now()
+    );
 
     airdropStore.step = 2;
   } catch (e) {
     console.log('e: ', e);
     errors.value.error = true;
-    loading = false;
+    loading.value = false;
     errors.value.message = e.message;
     airdropStore.waiting = false;
   } finally {
@@ -641,6 +649,10 @@ async function onDeployContract() {
       ? props.shareNetwork.airdropName
       : 'Airdrop_' + Date.now();
     if (airdropStore.deployStatus !== 'Deploying') {
+      console.log('airdropName.value: ', airdropName.value);
+      console.log('totalTokens.value: ', totalTokens.value);
+      console.log('recipientsList.value.length: ', recipientsList.value.length);
+      console.log('props.token: ', props.token);
       const data = await airdropStore.deployContract(
         airdropName.value,
         totalTokens.value,
@@ -672,10 +684,11 @@ async function onDeployContract() {
     }
     await airdropStore.calculateFees('topup', 'giver', '', []);
     airdropStore.getDeploymentStatus();
+    console.log('airdrop store deploy stat: ', airdropStore.deployStatus);
     if (airdropStore.deployStatus == 'Deployed') {
       // TODO: Remove the saved airdrop data after deploying the contract succesfuly
-      recipientStore.removeAirdropFromStorage(airdropStore.address);
-
+      recipientStore.removeDeployed(airdropStore.address);
+      console.log('obrisao');
       airdropStore.step = 3;
     }
   } catch (e) {

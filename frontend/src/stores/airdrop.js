@@ -171,14 +171,14 @@ export const useAirdropStore = defineStore({
       try {
         this.token = token;
         this.deployOptions.initParams._randomNonce = getRandomNonce();
-        this.deployOptions.initParams._randNon = 1;
+        //this.deployOptions.initParams._randNon = 1;
         //console.log('airdrop.js randomNonce: ', this.deployOptions.initParams._randomNonce);
         this.topUpRequiredAmount = 0;
         this.lockDuration = null;
         let address;
         this.abi = airdrop2Abi;
-        //this.deployOptions.tvc = airdrop2Tvc;
-        this.deployOptions.tvc = tokenWalletTvc;
+        this.deployOptions.tvc = airdrop2Tvc;
+        //this.deployOptions.tvc = tokenWalletTvc;
         if (token.label === 'EVER') {
           this.token_root_address =
             '0:0000000000000000000000000000000000000000000000000000000000000000';
@@ -877,6 +877,7 @@ export const useAirdropStore = defineStore({
             tokenIcon: icon,
           });
         }
+
         const existingPage = walletStore.getExistingPage(walletStore.nextPage);
 
         if (existingPage === undefined) {
@@ -892,6 +893,36 @@ export const useAirdropStore = defineStore({
             if (accByCodeHash.length != 0) {
               await walletStore.updatePagination(walletStore.nextPage, this.airdrops.continuation);
             }
+          }
+        }
+
+        let airdropsList = JSON.parse(localStorage.getItem('airdropsListData'));
+        console.log('airdropsList: ', airdropsList[2]);
+        for (let i = 0; i < airdropsList.length; i++) {
+          if (airdropsList[i].step == 1) {
+            const totalRecipientsTokens = airdropsList[i].items.reduce((accumulator, object) => {
+              const acc = toNano(accumulator, 9);
+              const objc = toNano(object.amount, 9);
+
+              const sum = acc * 1 + objc * 1;
+
+              const sum2 = fromNano(sum, 9);
+
+              return sum2 * 1;
+            }, 0);
+
+            console.log('status: Preparing');
+            this.airdropData.push({
+              airdropName: airdropsList[i].airdropName,
+              status: 'Preparing',
+              amount: totalRecipientsTokens,
+              recipientsNumber: airdropsList[i].items.length,
+              dateCreated: airdropsList[i].date,
+              statusCreated: 'Preparing',
+              address: airdropsList[i].contractAddr,
+              tokenLabel: 'EVER',
+              tokenIcon: '',
+            });
           }
         }
 

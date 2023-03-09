@@ -1,6 +1,7 @@
 <template>
   <div
-    class="w-full xl:max-w-[1160px] mx-auto mt-[64px] px-[20px] md:px-[40px] lg:px-[10px] xl:px-0 mb-[109px] md:mb-[100px] lg:mb-0">
+    class="w-full xl:max-w-[1160px] mx-auto mt-[64px] px-[20px] md:px-[40px] lg:px-[10px] xl:px-0 mb-[109px] md:mb-[100px] lg:mb-0"
+  >
     <h2 class="font-semibold text-[28px] text-left mb-[48px]">{{ airdropName }}</h2>
 
     <div class="flex flex-col lg:flex-row lg:justify-between">
@@ -11,15 +12,33 @@
           <div class="w-full">
             <label class="form-label">Distribution token</label>
             <div class="relative">
-              <multiselect v-model="token" placeholder="Select a token" label="label" track-by="label"
-                :options="tokenList" :option-height="104" :show-labels="false" @update:modelValue="onChange(token)" :disabled="true">
-                <template v-slot:singleLabel="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
-                    :alt="props.option.label" />
+              <multiselect
+                v-model="token"
+                placeholder="Select a token"
+                label="label"
+                track-by="label"
+                :options="tokenList"
+                :option-height="104"
+                :show-labels="false"
+                @update:modelValue="onChange(token)"
+                :disabled="true"
+              >
+                <template v-slot:singleLabel="props"
+                  ><img
+                    class="option__image pr-1 w-5 h-5"
+                    :src="props.option.icon"
+                    :alt="props.option.label"
+                  />
                   <span class="option__desc">
                     <span class="option__title">{{ props.option.label }}</span>
-                  </span></template>
-                <template v-slot:option="props"><img class="option__image pr-1 w-5 h-5" :src="props.option.icon"
-                    :alt="props.option.label" />
+                  </span></template
+                >
+                <template v-slot:option="props"
+                  ><img
+                    class="option__image pr-1 w-5 h-5"
+                    :src="props.option.icon"
+                    :alt="props.option.label"
+                  />
                   <div class="option__desc">
                     <span class="option__title">{{ props.option.label }}</span>
                   </div>
@@ -31,17 +50,30 @@
 
           <div class="w-full">
             <label for="airdropName" class="form-label">Airdrop name (optional)</label>
-            <input v-model="airdropName" id="airdropName" class="form-text-input" :class="{ 'min-h-[43px]': !token }"
-              type="text" name="airdropName" placeholder="Enter a name" :disabled="true"/>
+            <input
+              v-model="airdropName"
+              id="airdropName"
+              class="form-text-input"
+              :class="{ 'min-h-[43px]': !token }"
+              type="text"
+              name="airdropName"
+              placeholder="Enter a name"
+              :disabled="true"
+            />
           </div>
         </form>
 
         <form class="form">
           <div class="w-full">
             <label for="airdropName" class="form-label">Lock duration</label>
-            <Datepicker v-model="airdropStore.lockDuration" inputClassName="dp-custom-input"
-              placeholder="Date and time of unlock" :minDate="new Date()"
-              :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }" :disabled="true"></Datepicker>
+            <Datepicker
+              v-model="airdropStore.lockDuration"
+              inputClassName="dp-custom-input"
+              placeholder="Date and time of unlock"
+              :minDate="new Date()"
+              :minTime="{ hours: new Date().getHours(), minutes: new Date().getMinutes() + 1 }"
+              :disabled="disabled"
+            ></Datepicker>
           </div>
 
           <div class="w-full">
@@ -56,7 +88,9 @@
             <header>
               <h2 class="recipients-list-subtitle">Recipients list</h2>
               <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                <div class="flex space-x-[8px] sm:space-x-0 sm:justify-between md:justify-start md:space-x-[8px]">
+                <div
+                  class="flex space-x-[8px] sm:space-x-0 sm:justify-between md:justify-start md:space-x-[8px]"
+                >
                   <h3 class="text-[14px] font-pt_root">
                     Fill out the form manually or upload the CSV file.
                   </h3>
@@ -66,7 +100,11 @@
                   </span>
                 </div>
 
-                <div @click="downloadTemplate" :disabled="true" class="flex items-center space-x-[6px] cursor-pointer">
+                <div
+                  @click="downloadTemplate"
+                  :disabled="true"
+                  class="flex items-center space-x-[6px] cursor-pointer"
+                >
                   <span class="downloadSign">
                     <DownloadIcon :disabled="true" />
                   </span>
@@ -84,20 +122,26 @@
                 <SuccessIcon v-else />
               </span>
 
-              <input :disabled="true" ref="file" @change="onFileChanged($event)" type="file" name="file"
+              <input
+                :disabled="true"
+                ref="file"
+                @change="onFileChanged($event)"
+                type="file"
+                name="file"
                 class="upload-csv"
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                @click="$event.target.value = ''" />
+                @click="$event.target.value = ''"
+              />
 
               <h2 class="upload-header" :class="{ 'text-[#398A39]': uploadSuccessful }">
                 {{
-                    !loading && !uploadSuccessful
-                      ? 'Click to upload or drag and drop'
-                      : loading
-                        ? `Checking the file ${fileName}...`
-                        : uploadSuccessful
-                          ? 'List has been successfully imported'
-                          : ''
+                  !loading && !uploadSuccessful
+                    ? 'Click to upload or drag and drop'
+                    : loading
+                    ? `Checking the file ${fileName}...`
+                    : uploadSuccessful
+                    ? 'List has been successfully imported'
+                    : ''
                 }}
               </h2>
               <h3 v-if="!loading && !uploadSuccessful" class="upload-subtitle">
@@ -107,32 +151,55 @@
           </div>
 
           <div class="table w-full">
-            <div class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] border-[#E4E5EA] font-pt_root">
-              <div v-for="(item, i) in items" :key="i" @mouseover="hoverItem = i" @mouseleave="hoverItem = null"
+            <div
+              class="desktop-table sm:block mt-[16px] mb-[40px] lg:mb-[100px] border-[#E4E5EA] font-pt_root"
+            >
+              <div
+                v-for="(item, i) in items"
+                :key="i"
+                @mouseover="hoverItem = i"
+                @mouseleave="hoverItem = null"
                 class="row grid grid-cols-2 md:grid-cols-[64px_1fr_1fr_68px] h-[90px] md:h-[44px] text-[14px] border border-b-[#E4E5EA]]"
-                :class="{ 'bg-[#F0F1F5]': hoverItem === i }">
+                :class="{ 'bg-[#F0F1F5]': hoverItem === i }"
+              >
                 <div class="h-full w-full flex items-center px-[12px]">{{ i + 1 }}</div>
 
                 <div
-                  class="h-full w-full flex items-center justify-end px-[12px] space-x-[17px] md:order-4 md:bg-white">
-                  <span v-if="hoverItem === i"  class="plusSign cursor-pointer">
+                  class="h-full w-full flex items-center justify-end px-[12px] space-x-[17px] md:order-4 md:bg-white"
+                >
+                  <span v-if="hoverItem === i" class="plusSign cursor-pointer">
                     <!-- <PlusIcon :disabled="true" /> -->
                   </span>
 
-                  <span v-if="hoverItem === i && items.length > 1" @click="removeItem(i)"
-                    class="deleteSign cursor-pointer">
+                  <span
+                    v-if="hoverItem === i && items.length > 1"
+                    @click="removeItem(i)"
+                    class="deleteSign cursor-pointer"
+                  >
                     <!-- <TrashIcon :disabled="true" /> -->
                   </span>
                 </div>
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
-                  <input :disabled="!canEdit" v-model="item.address" class="h-full w-full px-[12px]" type="text"
-                    name="address" placeholder="Recipient address" />
+                  <input
+                    :disabled="!canEdit"
+                    v-model="item.address"
+                    class="h-full w-full px-[12px]"
+                    type="text"
+                    name="address"
+                    placeholder="Recipient address"
+                  />
                 </div>
 
                 <div class="h-full w-full px-[12px] py-[4px] flex items-center justify-center">
-                  <input :disabled="!canEdit" v-model="item.amount" type="number" name="amount"
-                    class="h-full w-full px-[12px]" :placeholder="`Amount, ${token.label}`" />
+                  <input
+                    :disabled="!canEdit"
+                    v-model="item.amount"
+                    type="number"
+                    name="amount"
+                    class="h-full w-full px-[12px]"
+                    :placeholder="`Amount, ${token.label}`"
+                  />
                 </div>
               </div>
             </div>
@@ -143,14 +210,17 @@
                 <AppPagination @submit="getRecipients" />
               </div>
             </div>
-
           </div>
         </template>
       </main>
 
-      <TheSidebar :items="fullRecList" :token="token" :shareNetwork="{
-        airdropName: airdropName,
-      }" />
+      <TheSidebar
+        :items="fullRecList"
+        :token="token"
+        :shareNetwork="{
+          airdropName: airdropName,
+        }"
+      />
     </div>
   </div>
 </template>
@@ -192,7 +262,7 @@ let items = ref(recipientsList);
 /// FULL LIST
 let fullRecList = ref(recipientsList);
 let numberPerPage = recipientStore.itemsPerPage;
-
+const route = useRoute();
 const status = ref(null);
 
 const airdropName = ref(null);
@@ -206,15 +276,14 @@ const dropZoneRef = ref();
 const loading = ref(false);
 const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
-// const app = getCurrentInstance();
-// const addressFormat = app.appContext.config.globalProperties.$filters.addressFormat;
+const disabled = ref(true);
 useDropZone(dropZoneRef, onDrop);
 reset();
 
-getAirdrop();
+airdropStore.step > 2 ? getAirdrop() : reloadAirdropData();
 function onFileChanged($event) {
   const target = $event.target;
-  if (target && target.files && (airdropStore.step < 2)) {
+  if (target && target.files && airdropStore.step < 2) {
     saveFile(target.files[0]);
   }
 }
@@ -236,23 +305,21 @@ async function saveFile(value) {
   }
 }
 function onDrop(files) {
-  if (files && (airdropStore.step < 2)) {
+  if (files && airdropStore.step < 2) {
     saveFile(files[0]);
   }
 }
 function downloadTemplate() {
   //console.log(items.value[0]);
-  let array="";
-  for(let i=0;i<fullRecList.value.length;i++)
-  {
-    array+=fullRecList.value[i].address + "," + fullRecList.value[i].amount +"\n";
+  let array = '';
+  for (let i = 0; i < fullRecList.value.length; i++) {
+    array += fullRecList.value[i].address + ',' + fullRecList.value[i].amount + '\n';
   }
   //console.log(array);
-  let csvContent = "data:text/csv;charset=utf-8," 
-    + array;
+  let csvContent = 'data:text/csv;charset=utf-8,' + array;
   //console.log(csvContent)
   var encodedUri = encodeURI(csvContent);
-window.open(encodedUri);
+  window.open(encodedUri);
 }
 
 function CSVToJSON(data, delimiter = ',') {
@@ -271,14 +338,14 @@ function CSVToJSON(data, delimiter = ',') {
       })
     );
 
- // Show or hide pagination
- const paginationEdit = document.querySelectorAll('.paginationToEdit');
+    // Show or hide pagination
+    const paginationEdit = document.querySelectorAll('.paginationToEdit');
     if (items.value.length != 0) {
-     // console.log('Display pagination: yes');
-      paginationEdit[0].style.display = "flex";
+      // console.log('Display pagination: yes');
+      paginationEdit[0].style.display = 'flex';
     } else {
       //console.log('Display pagination: no');
-      paginationEdit[0].style.display = "none";
+      paginationEdit[0].style.display = 'none';
     }
     // Reset pagination for new file
     recipientStore.resetPagination();
@@ -301,23 +368,24 @@ async function onChange(token) {
   await airdropStore.getExpectedAddress(token);
 }
 
-let addresses=[];
+let addresses = [];
 let amountss = [];
 async function getAirdrop() {
-  const route = useRoute();
-  token.value = tokensList.find(token => token.label == 'EVER');
+  token.value = tokensList.find((token) => token.label == 'EVER');
   const address = route.params.address;
   const contract = new ever.Contract(airdrop2Abi, address);
   airdropStore.address = address;
   airdropStore.abi = airdrop2Abi;
   const tokenAddress = await contract.methods.tokenRootAddress({}).call();
   //console.log('Token address value: ', tokenAddress.tokenRootAddress);
-  if (tokenAddress.tokenRootAddress._address == "0:0000000000000000000000000000000000000000000000000000000000000000") {
-    token.value = tokensList.find(token => token.label == 'EVER');
+  if (
+    tokenAddress.tokenRootAddress._address ==
+    '0:0000000000000000000000000000000000000000000000000000000000000000'
+  ) {
+    token.value = tokensList.find((token) => token.label == 'EVER');
     airdropStore.token = token.value;
-  }
-  else {
-    token.value = tokensList.find(token => token.address == tokenAddress.tokenRootAddress);
+  } else {
+    token.value = tokensList.find((token) => token.address == tokenAddress.tokenRootAddress);
     airdropStore.token = token.value;
   }
   //console.log('Airdrop store token: ', airdropStore.token);
@@ -340,29 +408,27 @@ async function getAirdrop() {
   // console.log(balance);
 
   function stepCount() {
-    if (status0.status*1==0) {
+    if (status0.status * 1 == 0) {
       airdropStore.step = 2;
-      airdropStore.deployStatus="Deploying";
-    //  console.log("Step2: ", airdropStore.step);
-
+      airdropStore.deployStatus = 'Deploying';
+      //  console.log("Step2: ", airdropStore.step);
     }
-    if (status0.status*1 == 1) {
+    if (status0.status * 1 == 1) {
       airdropStore.step = 3;
-      airdropStore.deployStatus="Deployed";
+      airdropStore.deployStatus = 'Deployed';
     }
-    if (status0.status*1 == 3) {
+    if (status0.status * 1 == 3) {
       airdropStore.step = 5;
     }
-    if (status0.status*1 == 4) {
+    if (status0.status * 1 == 4) {
       airdropStore.step = 6;
     }
-    if (status0.status*1==5) {
+    if (status0.status * 1 == 5) {
       airdropStore.step = 4;
     }
     for (let i = 0; i < airdropStore.airdropData.length; i++) {
       if (airdropStore.airdropData[i].address == address) {
-
-        if (airdropStore.airdropData[i].status == "Preparing") {
+        if (airdropStore.airdropData[i].status == 'Preparing') {
           airdropStore.step = 4;
         }
         /*else if(airdropStore.airdropData[i].status == "Redeemed")
@@ -377,7 +443,7 @@ async function getAirdrop() {
     }
   }
   stepCount();
- 
+
   const recipientsNr = await contract.methods.recipientNumber({}).call();
   const totalAmount = await contract.methods.totalAmount({}).call();
   airdropStore.topUpRequiredAmount = fromNano(totalAmount.totalAmount, 9);
@@ -391,42 +457,33 @@ async function getAirdrop() {
   const zaAirdrop = [];
 
   const amounts = await contract.methods.batchAmounts({}).call();
-  
-  for(let i=0;i<recipients.batchAddresses.length;i++)
-  {
-    for(let j=0;j<recipients.batchAddresses[i][1].length;j++)
-    addresses.push(recipients.batchAddresses[i][1][j]._address);
-  }
 
+  for (let i = 0; i < recipients.batchAddresses.length; i++) {
+    for (let j = 0; j < recipients.batchAddresses[i][1].length; j++)
+      addresses.push(recipients.batchAddresses[i][1][j]._address);
+  }
 
   //console.log(addresses);
 
-
-  
-  
-  for(let i=0;i<amounts.batchAmounts.length;i++)
-  {
-    for(let j=0;j<amounts.batchAmounts[i][1].length;j++)
-    amountss.push(amounts.batchAmounts[i][1][j]);
+  for (let i = 0; i < amounts.batchAmounts.length; i++) {
+    for (let j = 0; j < amounts.batchAmounts[i][1].length; j++)
+      amountss.push(amounts.batchAmounts[i][1][j]);
   }
   //console.log(amountss);
   for (let i = 0; i < transactionHashes.transactionHashes.length; i++) {
     if (transactionHashes.transactionHashes.length < 3) {
       airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
       airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
-    }
-    else if (transactionHashes.transactionHashes.length < 4) {
+    } else if (transactionHashes.transactionHashes.length < 4) {
       airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
       airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
       airdropStore.transactionId.amountContractId = transactionHashes.transactionHashes[2];
-    }
-    else if (transactionHashes.transactionHashes.length < 5) {
+    } else if (transactionHashes.transactionHashes.length < 5) {
       airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
       airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
       airdropStore.transactionId.amountContractId = transactionHashes.transactionHashes[2];
       airdropStore.transactionId.distributeContractId = transactionHashes.transactionHashes[3];
-    }
-    else {
+    } else {
       airdropStore.transactionId.giverContractId = transactionHashes.transactionHashes[0];
       airdropStore.transactionId.deployContractId = transactionHashes.transactionHashes[1];
       airdropStore.transactionId.amountContractId = transactionHashes.transactionHashes[2];
@@ -448,9 +505,7 @@ async function getAirdrop() {
         items.value[i].amount = fromNano(amountss[i], airdropStore.token.decimals);
       }
       //console.log(zaAirdrop);
-    }
-
-    else {
+    } else {
       for (let i = 0; i < 10; i++) {
         //console.log('Za airdrop: ', recipients.allRecipients[i]._address)
         zaAirdrop.push(addresses[i]);
@@ -462,7 +517,10 @@ async function getAirdrop() {
         items.value[i].amount = fromNano(amountss[i], airdropStore.token.decimals);
       }
       for (let i = 10; i < addresses.length; i++) {
-        items.value.push({ address: addresses[i], amount: fromNano(amountss[i], airdropStore.token.decimals) });
+        items.value.push({
+          address: addresses[i],
+          amount: fromNano(amountss[i], airdropStore.token.decimals),
+        });
       }
 
       //console.log('items.value: ', items.value);
@@ -509,26 +567,23 @@ function getRecipients(num, page) {
   recipientStore.getRecipients(pages.length, page);
 }
 
-function reset()
-{
+function reset() {
   //console.log('RESET STARTED');
-  items.value.length=10;
-  fullRecList.value.length=10;
+  items.value.length = 10;
+  fullRecList.value.length = 10;
 
- 
   for (let i = 0; i < items.value.length; i++) {
-    items.value[i].address = "";
-    items.value[i].amount = "";
+    items.value[i].address = '';
+    items.value[i].amount = '';
   }
   //console.log('Reset items value: ', items.value);
-  for(let i=0;i<fullRecList.value.length;i++)
-  {
-    fullRecList.value[i].address = "";
-    fullRecList.value[i].amount = "";
+  for (let i = 0; i < fullRecList.value.length; i++) {
+    fullRecList.value[i].address = '';
+    fullRecList.value[i].amount = '';
   }
- // fullRecList.value= recipientsList;
+  // fullRecList.value= recipientsList;
   //console.log('Reset recipients list value: ', fullRecList.value);
-  airdropStore.airdropName="";
+  airdropStore.airdropName = '';
   recipientStore.resetPagination();
 }
 
@@ -540,18 +595,32 @@ function canEditList() {
 }
 /// Func to return saved airdrop recipients data after refresh or back
 function reloadAirdropData() {
-  //console.log(
-    //'RELOAD DATA STARTED', 
+  console.log(
+    'RELOAD DATA STARTED'
     //'ADDRESS OF CONTR:', airdropStore.address,
     //'AIRDROP STEP:', airdropStore.step,
     //'CAN EDIT?', canEditList()
- // );
+  );
   // Check to prevent inserting data after step 2
   if (canEditList()) {
+    console.log('moze');
     // Check if the data is for this current contract and insert if true
-    if (recipientStore.checkForAirdropInLocalStorage(airdropStore.address)) {
-        fullRecList.value =  recipientStore.returnAirdropData(airdropStore.address).items;
-        items.value =  fullRecList.value;
+    if (recipientStore.checkForAirdropInLocalStorage(route.params.address)) {
+      console.log('nasao sam');
+      const airdropDataStore = recipientStore.returnAirdropData(route.params.address);
+      console.log('airdropData: ', airdropDataStore);
+
+      fullRecList.value = airdropDataStore.items;
+      items.value = fullRecList.value;
+      console.log('items.value: ', items.value);
+      token.value = tokensList.find((token) => token.label == 'EVER');
+      airdropStore.address = route.params.address;
+      airdropStore.step =
+        airdropDataStore.deployTXId == '' ? airdropDataStore.step + 1 : airdropDataStore.step;
+      airdropName.value = airdropDataStore.airdropName;
+      airdropStore.airdropName = airdropName.value;
+      airdropStore.transactionId.giverContractId = airdropDataStore.giverTXId;
+      disabled.value = false;
     }
   }
 }
@@ -566,9 +635,7 @@ watch(status, (newX) => {
 watch(items, (newX) => {
   //console.log('refresh items value in storage and check step:', airdropStore.step);
   if (airdropStore.step <= 2) {
-  recipientStore.saveAirdropData(items.value, airdropStore.address);
+    recipientStore.saveAirdropData(items.value, airdropStore.address);
   }
 });
-
-
 </script>
