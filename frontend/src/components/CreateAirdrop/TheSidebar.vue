@@ -501,25 +501,18 @@ const recipientsList = computed(() => {
 });
 
 const totalTokens = computed(() => {
-  //if(recipientsList.value.)
   const totalRecipientsTokens = recipientsList.value.reduce((accumulator, object) => {
-    // console.log('Acumulator: ', accumulator);
-    // console.log('Object: ', object.amount);
-    // console.log('Token: ', props.token.decimals);
     const acc = toNano(accumulator, props.token.decimals);
-    //console.log('acc: ', acc);
     const objc = toNano(object.amount, props.token.decimals);
 
-    //console.log('objc: ', objc);
     const sum = acc * 1 + objc * 1;
-    //console.log('sum: ', sum);
+
     const sum2 = fromNano(sum, props.token.decimals);
-    //console.log('sum2: ', sum2);
+
     return sum2 * 1;
   }, 0);
 
-  //console.log('TotalRecipientsTokens: ', totalRecipientsTokens);
-  return totalRecipientsTokens; //> 0.01 ? Number(Math.round(totalRecipientsTokens + 'e2') + 'e-2') : totalRecipientsTokens;//.toFixed(totalRecipientsTokens.toString().split('-')[1]);
+  return totalRecipientsTokens;
 });
 const topUpValue = computed(() => {
   let loopCount = Math.floor(recipientsList.value.length / 99);
@@ -530,18 +523,11 @@ const topUpValue = computed(() => {
 
   if (recipientsList.value.length == 1) {
     amountForSetting = 0.02;
-    //console.log('Usao u jednog');
   } else {
     amountForSetting = 0.02 + recipientsList.value.length * 0.006 * 2;
-    //console.log('Usao u 99');
   }
-  //  console.log('Number(Math.round(amountForSetting)): ', Number(Math.round(amountForSetting + 'e2') + 'e-2'));
 
-  return recipientsList.value.length != 0
-    ? Number(
-        Math.round(amountForSetting + 'e2') + 'e-2'
-      ) /*.toFixed(amountForSetting.toString().split('-')[1])*/
-    : 0;
+  return recipientsList.value.length != 0 ? Number(Math.round(amountForSetting + 'e2') + 'e-2') : 0;
 });
 
 const ever = new ProviderRpcClient();
@@ -549,7 +535,7 @@ const topUpRequiredAmount = computed(() => {
   calculateInitialFees();
   const tempTopUpRequiredAmount =
     recipientsList.value.length > 0 ? recipientsList.value.length + 1 : 0;
-  //console.log(airdropStore.topUpRequiredAmount);
+
   return airdropStore.topUpRequiredAmount === 0
     ? tempTopUpRequiredAmount
     : airdropStore.topUpRequiredAmount;
@@ -581,8 +567,6 @@ const transactionId = computed(() => {
 watch(props.items, (newX) => {
   if (airdropStore.step <= 3) {
     airdropStore.getRequiredAmount(totalTokens.value, recipientsList.value.length);
-    //console.log('Required amount: ', airdropStore.topUpRequiredAmount);
-    //console.log('Date now: ', Date.now());
   }
 });
 
@@ -598,13 +582,7 @@ function availableToRedeem() {
   clearInterval(redeemPolling.value);
 }
 
-// airdropStore.getExpectedAddress(props.token);
-
 async function onTopUpEver() {
-  //console.log('WAITING IN SIDE 1', airdropStore.waiting);
-  //console.log('Total tokens.value: ', totalTokens.value);
-  //console.log('airdropStore.tokenWalletBalance: ', airdropStore.tokenWalletBalance);
-  //console.log('walletStore.profile.balance: ', walletStore.profile.balance);
   if (props.token.label !== 'EVER') {
     if (!validateBalance(totalTokens.value, airdropStore.tokenWalletBalance)) return;
   } else {
@@ -615,10 +593,7 @@ async function onTopUpEver() {
 
   try {
     errors.value.error = false;
-    /* if(airdropStore.tokenWalletBalance<totalTokens.value)
-    {
-      errors.value.error=true;
-    }*/
+
     // TODO: Add here the address and list to be stored
     recipientStore.saveAirdropData(
       recipientsList.value,
@@ -626,29 +601,22 @@ async function onTopUpEver() {
       airdropStore.step,
       props.token.address
     );
-
-    // airdropStore.transactionId.giverContractId
-    // airdropStore.transactionId.deployContractId
-
     const data = await airdropStore.getGiverContract2(
       props.token.label,
       recipientsList.value.length
     );
-    //console.log('Data id: ', data.id.hash);
     airdropStore.transactionId.giverContractId = data.id.hash;
-    console.log('STEP: ', step);
+
     airdropStore.step = 2;
   } catch (e) {
     console.log('e: ', e);
     errors.value.error = true;
+    loading = false;
     errors.value.message = e.message;
     airdropStore.waiting = false;
-    console.log('STEP: ', step);
-    // console.log('WAITING IN SIDE 2', airdropStore.waiting);
   } finally {
     loading.value = false;
     airdropStore.waiting = false;
-    //   console.log('WAITING IN SIDE 3', airdropStore.waiting);
   }
 }
 
@@ -656,52 +624,33 @@ function sufficientBalance() {
   const token = airdropStore.tokenAddr.balances.find(
     (token) => token.rootAddress == props.token.address
   );
-  //console.log('Token from token wallet: ', token);
 }
 
 async function onDeployContract() {
-  // if (!validateAddressAmountList(props.items, totalTokens.value)) return
   const storeTime = new Date(airdropStore.lockDuration).getTime();
-
-  //console.log('store time: ', storeTime);
-  //console.log('airdropStore.lockDuration: ', airdropStore.lockDuration);
   if (airdropStore.lockDuration == null || storeTime <= Date.now()) {
-    //console.log('Date.now: ', Date.now());
     const date = new Date(Date.now() + 3 * 60 * 1000);
-    const lockDuration = date; //{ date: date, hours: new Date().getHours(), minutes: new Date().getMinutes() + 2 }
-    // console.log('Date:', lockDuration);
-    airdropStore.lockDuration = date; //Math.floor(lockDuration.getTime()/1000);
-    //console.log('Lock duration: ', airdropStore.lockDuration);
+    const lockDuration = date;
+    airdropStore.lockDuration = date;
   }
-  //console.log('Lock duration: ', airdropStore.lockDuration)
   loading.value = true;
 
   try {
     errors.value.error = false;
-    //airdropName.value = props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now();
     airdropStore.airdropName = props.shareNetwork.airdropName
       ? props.shareNetwork.airdropName
       : 'Airdrop_' + Date.now();
-    // console.log('airdropName:', airdropName.value);
-    //await airdropStore.getDeploymentStatus();
-    // console.log('deployment status: ', airdropStore.deployStatus);
     if (airdropStore.deployStatus !== 'Deploying') {
-      // console.log('Add existing airdrop, props.token: ', props.token);
-      //console.log('totalTokens.value: ', totalTokens.value);
-      //console.log('recipientsList.value: ', recipientsList.value);
       const data = await airdropStore.deployContract(
         airdropName.value,
         totalTokens.value,
         recipientsList.value.length,
         props.token
       );
-      // const fees = await airdropStore.getEstimatedFee();
       airdropStore.transactionId.deployContractId = data.transaction.id.hash;
-      //console.log('Tr id:', airdropStore.transactionId.deployContractId);
     }
     if (airdropStore.deployStatus === 'Deploying') {
       const hashes = await airdropStore.getTransactionHashes();
-      //console.log('Hashes length: ', hashes.transactionHashes.length);
       if (hashes.transactionHashes.length < 1) {
         if (airdropStore.transactionId.giverContractId != '') {
           await airdropStore.setTransactionsHash(airdropStore.transactionId.giverContractId);
@@ -713,21 +662,15 @@ async function onDeployContract() {
         }
       }
       const batchAddresses = await airdropStore.getRecipients();
-      //console.log('Get recipients data: ', batchAddresses);
-      //console.log('Max batches: ', maxBatches.value);
       if (batchAddresses.batchAddresses.length < maxBatches.value) {
         await airdropStore.setRecipients(recipientsList.value);
       }
-      //console.log('batch addresses: ', batchAddresses);
       const batchAmounts = await airdropStore.getAmounts();
-      //console.log('batchAmounts: ', batchAmounts);
       if (batchAmounts.batchAmounts.length < maxBatches.value) {
-        //console.log('setujem amountove');
         await airdropStore.setAmounts(recipientsList.value);
       }
     }
     await airdropStore.calculateFees('topup', 'giver', '', []);
-    //console.log('Fees calculated: ', airdropStore.fees);
     airdropStore.getDeploymentStatus();
     if (airdropStore.deployStatus == 'Deployed') {
       // TODO: Remove the saved airdrop data after deploying the contract succesfuly
@@ -738,6 +681,7 @@ async function onDeployContract() {
   } catch (e) {
     errors.value.error = true;
     errors.value.message = e.message;
+    loading.value = false;
   } finally {
     if (airdropStore.deployStatus == 'Deployed') {
       loading.value = false;
@@ -748,7 +692,6 @@ async function onTopUpToken() {
   loading.value = true;
 
   try {
-    //await airdropStore.calculateFees("distribute", "everAirdrop", '', recipientsList.value);
     airdropStore.getRequiredAmount(totalTokens.value, recipientsList.value.length);
     errors.value.error = false;
     const data = await airdropStore.topUp();
@@ -762,9 +705,10 @@ async function onTopUpToken() {
       recipientsList.value
     );
   } catch (e) {
-    console.log('onTopUpToken e:', e);
     errors.value.error = true;
     errors.value.message = e.message;
+    step.value = step.value - 1;
+    loading.value = false;
   } finally {
     loading.value = false;
   }
@@ -775,24 +719,21 @@ async function onResumeAirdrop(isResumed) {
   try {
     errors.value.error = false;
     error.value = false;
-    //console.log('Recipients list:', recipientsList.value);
     const data = await airdropStore.distribute(recipientsList.value, isResumed);
-    //console.log('Distribute hash: ', data.id.hash);
-    //console.log('Transaction ids: ', transactionId.value);
     airdropStore.transactionId.distributeContractId = data.id.hash;
     await airdropStore.setTransactionsHash(airdropStore.transactionId.distributeContractId);
     availableToRedeem();
     redeemPolling.value = setInterval(() => {
-      //console.log('interval');
       availableToRedeem();
     }, 1000);
     await airdropStore.calculateFees('redeem', 'everAirdrop', '', []);
     airdropStore.step = 5;
   } catch (e) {
-    console.log('onResumeAirdrop e:', e);
     errors.value.error = true;
     error.value = true;
     errors.value.message = e.message;
+    step.value = step.value - 1;
+    loading.value = false;
   } finally {
     loading.value = false;
     // error.value = true;
@@ -809,27 +750,18 @@ async function onRedeemFunds() {
       limit: 1,
     });
     airdropStore.transactionId.redeemContractId = lastTx.transactions[0].id.hash;
-    //console.log('Last tx: ', lastTx);
-    //console.log('redeemed tx: ', airdropStore.transactionId.redeemContractId);
     await airdropStore.setTransactionsHash(airdropStore.transactionId.redeemContractId);
     const data = await airdropStore.redeemFunds();
-    // airdropStore.transactionId.redeemContractId =data.id.hash;
-
-    //transactionId.value.redeemContractId = data.id.hash;
-
-    // error.value = true;
     airdropStore.step = 6;
   } catch (e) {
-    console.log('onRedeemFunds e:', e);
     errors.value.error = true;
     errors.value.message = e.message;
+    step.value = step.value - 1;
+    loading.value = false;
   } finally {
     loading.value = false;
-    // error.value = true;
   }
 }
 
-function logHashes() {
-  //  console.log('Hashes: ', transactionId.value);
-}
+function logHashes() {}
 </script>
