@@ -616,10 +616,8 @@ async function onTopUpEver() {
       props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + date,
       airdropStore.deployOptions.initParams._randomNonce
     );
-    console.log('proslo');
     airdropStore.step = 2;
   } catch (e) {
-    console.log('e: ', e);
     errors.value.error = true;
     loading.value = false;
     errors.value.message = e.message;
@@ -651,10 +649,6 @@ async function onDeployContract() {
       ? props.shareNetwork.airdropName
       : 'Airdrop_' + Date.now();
     if (airdropStore.deployStatus !== 'Deploying') {
-      console.log('airdropName.value: ', airdropName.value);
-      console.log('totalTokens.value: ', totalTokens.value);
-      console.log('recipientsList.value.length: ', recipientsList.value.length);
-      console.log('props.token: ', props.token);
       const data = await airdropStore.deployContract(
         airdropName.value,
         totalTokens.value,
@@ -673,12 +667,9 @@ async function onDeployContract() {
         }
         if (flag == 1) {
           recipientStore.removeAllAirdrops();
-          console.log('airdropStorageData: ', airdropStorageData);
           localStorage.setItem('airdropsListData', JSON.stringify(airdropStorageData));
         }
       }
-      //recipientStore.returnAirdropData(airdropStore.address);
-      //airdropStorageData.deployTXId =
     }
     if (airdropStore.deployStatus === 'Deploying') {
       const hashes = await airdropStore.getTransactionHashes();
@@ -703,11 +694,9 @@ async function onDeployContract() {
     }
     await airdropStore.calculateFees('topup', 'giver', '', []);
     airdropStore.getDeploymentStatus();
-    console.log('airdrop store deploy stat: ', airdropStore.deployStatus);
     if (airdropStore.deployStatus == 'Deployed') {
       // TODO: Remove the saved airdrop data after deploying the contract succesfuly
       recipientStore.removeDeployed(airdropStore.address);
-      console.log('obrisao');
       airdropStore.step = 3;
     }
   } catch (e) {

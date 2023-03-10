@@ -171,14 +171,11 @@ export const useAirdropStore = defineStore({
       try {
         this.token = token;
         this.deployOptions.initParams._randomNonce = getRandomNonce();
-        //this.deployOptions.initParams._randNon = 1;
-        //console.log('airdrop.js randomNonce: ', this.deployOptions.initParams._randomNonce);
         this.topUpRequiredAmount = 0;
         this.lockDuration = null;
         let address;
         this.abi = airdrop2Abi;
         this.deployOptions.tvc = airdrop2Tvc;
-        //this.deployOptions.tvc = tokenWalletTvc;
         if (token.label === 'EVER') {
           this.token_root_address =
             '0:0000000000000000000000000000000000000000000000000000000000000000';
@@ -189,7 +186,6 @@ export const useAirdropStore = defineStore({
         address = await ever.getExpectedAddress(this.abi, this.deployOptions);
         this.address = address._address;
       } catch (e) {
-        console.log('e: ', e);
         this.errorFlag = 1;
       }
     },
@@ -345,7 +341,6 @@ export const useAirdropStore = defineStore({
         walletStore.getBalance();
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         this.errorFlag = 1;
         return Promise.reject(e);
       }
@@ -399,7 +394,6 @@ export const useAirdropStore = defineStore({
         this.errorFlag = 0;
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         this.errorFlag = 1;
         return Promise.reject(e);
       }
@@ -420,7 +414,6 @@ export const useAirdropStore = defineStore({
         }
         return Promise.resolve(statusTx);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -442,7 +435,6 @@ export const useAirdropStore = defineStore({
 
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -481,7 +473,6 @@ export const useAirdropStore = defineStore({
         walletStore.getBalance();
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -520,7 +511,6 @@ export const useAirdropStore = defineStore({
         walletStore.getBalance();
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -530,7 +520,6 @@ export const useAirdropStore = defineStore({
         const recipients = await everAirDropContract.methods.batchAddresses({}).call();
         return Promise.resolve(recipients);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -541,7 +530,6 @@ export const useAirdropStore = defineStore({
         const recipients = await everAirDropContract.methods.batchAmounts({}).call();
         return Promise.resolve(recipients);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -552,7 +540,6 @@ export const useAirdropStore = defineStore({
         const transactionHashes = await everAirDropContract.methods.transactionHashes({}).call();
         return Promise.resolve(transactionHashes);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -619,7 +606,6 @@ export const useAirdropStore = defineStore({
         this.errorFlag = 0;
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         this.errorFlag = 1;
         return Promise.reject(e);
       }
@@ -711,7 +697,6 @@ export const useAirdropStore = defineStore({
         walletStore.getBalance();
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -739,7 +724,6 @@ export const useAirdropStore = defineStore({
         walletStore.getBalance();
         return Promise.resolve(sendTransaction);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -750,7 +734,6 @@ export const useAirdropStore = defineStore({
         this.currentBatch = event.data.batchProcesses * 1;
         return Promise.resolve(event);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
@@ -790,7 +773,6 @@ export const useAirdropStore = defineStore({
         this.airdropData = [];
         for (let i = 0; i < this.airdrops.accounts.length; i++) {
           const contract = new ever.Contract(airdrop2Abi, this.airdrops.accounts[i]._address);
-          console.log('contract: ', contract);
           const names = await contract.methods.contract_notes({}).call();
           const status = await contract.methods.status({}).call();
           const recipientsNr = await contract.methods.recipientNumber({}).call();
@@ -896,7 +878,6 @@ export const useAirdropStore = defineStore({
         }
 
         let airdropsList = JSON.parse(localStorage.getItem('airdropsListData'));
-        console.log('airdropsList: ', airdropsList[2]);
         for (let i = 0; i < airdropsList.length; i++) {
           if (airdropsList[i].step == 1) {
             const totalRecipientsTokens = airdropsList[i].items.reduce((accumulator, object) => {
@@ -911,8 +892,6 @@ export const useAirdropStore = defineStore({
             }, 0);
 
             const token = await this.returnTokenInfo(airdropsList[i].tokenRootAddr);
-            console.log('token: ', token);
-            console.log('status: Preparing');
             this.airdropData.push({
               airdropName: airdropsList[i].airdropName,
               status: 'Preparing',
@@ -929,7 +908,6 @@ export const useAirdropStore = defineStore({
 
         this.airdropsLoading = false;
       } catch (e) {
-        console.log('e: ', e);
         this.airdropsLoading = false;
       }
     },
@@ -965,9 +943,7 @@ export const useAirdropStore = defineStore({
         .then((response) => {
           this.tokenAddr = response.data;
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => {});
     },
 
     async getBalances() {
@@ -1031,7 +1007,6 @@ export const useAirdropStore = defineStore({
         };
         return Promise.resolve(tokenInfo);
       } catch (e) {
-        console.log(e);
         return Promise.reject(e);
       }
     },
