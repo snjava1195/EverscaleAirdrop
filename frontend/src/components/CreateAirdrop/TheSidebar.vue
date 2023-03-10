@@ -613,7 +613,8 @@ async function onTopUpEver() {
       props.token.address,
       data.id.hash,
       '',
-      props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + date
+      props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + date,
+      airdropStore.deployOptions.initParams._randomNonce
     );
     console.log('proslo');
     airdropStore.step = 2;
@@ -661,6 +662,23 @@ async function onDeployContract() {
         props.token
       );
       airdropStore.transactionId.deployContractId = data.transaction.id.hash;
+      let airdropStorageData = JSON.parse(localStorage.getItem('airdropsListData'));
+      let flag = 0;
+      if (airdropStorageData) {
+        for (let i = 0; i < airdropStorageData.length; i++) {
+          if (airdropStorageData[i].contractAddr == airdropStore.address) {
+            airdropStorageData[i].deployTXId = data.transaction.id.hash;
+            flag = 1;
+          }
+        }
+        if (flag == 1) {
+          recipientStore.removeAllAirdrops();
+          console.log('airdropStorageData: ', airdropStorageData);
+          localStorage.setItem('airdropsListData', JSON.stringify(airdropStorageData));
+        }
+      }
+      //recipientStore.returnAirdropData(airdropStore.address);
+      //airdropStorageData.deployTXId =
     }
     if (airdropStore.deployStatus === 'Deploying') {
       const hashes = await airdropStore.getTransactionHashes();

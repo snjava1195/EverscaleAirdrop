@@ -89,7 +89,7 @@ export const useRecipientStore = defineStore({
     },
 
     // TODO: Save the list of addresses and ammounts
-    saveAirdropData(items, addr, step, TR, giverTXId, deployTXId, airdropName) {
+    saveAirdropData(items, addr, step, TR, giverTXId, deployTXId, airdropName, nonce) {
       //  console.log('Save Airdrop To List');
       // Airdrop data (address and list of recs with amounts)
       let airdropData = {
@@ -101,6 +101,7 @@ export const useRecipientStore = defineStore({
         items: items,
         airdropName: airdropName,
         date: Math.round(Date.now() / 1000),
+        nonce: nonce,
       };
       //console.log('should be empty -> ', localStorage.getItem('00123lalala'));
       let doesListExist = localStorage.getItem('airdropsListData');

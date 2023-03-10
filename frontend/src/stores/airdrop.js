@@ -383,13 +383,11 @@ export const useAirdropStore = defineStore({
           _number_of_recipients: totalRecipients,
           _total_amount: toNano(totalTokens, 9),
         };
-
         const sendTransaction = await everAirDropContract.methods.constructor(data).sendExternal({
           stateInit: stateInit.stateInit,
           publicKey: publicKey,
           withoutSignature: true,
         });
-
         this.getRequiredAmount(totalTokens, totalRecipients);
         const status = await everAirDropContract.methods.status({}).call();
         if (status.status * 1 == 0) {
@@ -792,6 +790,7 @@ export const useAirdropStore = defineStore({
         this.airdropData = [];
         for (let i = 0; i < this.airdrops.accounts.length; i++) {
           const contract = new ever.Contract(airdrop2Abi, this.airdrops.accounts[i]._address);
+          console.log('contract: ', contract);
           const names = await contract.methods.contract_notes({}).call();
           const status = await contract.methods.status({}).call();
           const recipientsNr = await contract.methods.recipientNumber({}).call();
