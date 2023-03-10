@@ -35,16 +35,20 @@
                         type="text"
                         placeholder="Enter token address"
                         v-model="customToken"
-                        @keyup.enter="onEnter"
+                        @keyup.stop="onStopTyping"
                       />
 
                       <div class="dropdown-options">
-                        <div v-for="(token, i) in tokenList" :key="i" @click="onChange(token)">
-                          <div @click="recipientStore.updateDropdownVisibility()">
+                        <div
+                          v-for="(token, i) in listWithoutDuplicates()"
+                          :key="i"
+                          @click="onChange(token)"
+                        >
+                          <div @click="onSelected()">
                             <img :src="token.icon" alt="" />
                             <p>{{ token.label }}</p>
                             <div style="margin-left: auto; margin-right: 20px">
-                              <div v-if="selectedToken?.label === token.label">
+                              <div v-if="selectedToken?.address === token.address">
                                 <img src="/checkmark.svg" />
                               </div>
                             </div>
@@ -523,7 +527,7 @@ const fullRecList = ref(items.value.slice());
 const target = ref(null);
 const airdropName = ref(null);
 const token = ref(null);
-const customToken = ref(null);
+const customToken = ref('');
 const tokenList = ref(tokensList);
 const lockDuration = ref(null);
 const hoverItem = ref(null);
@@ -535,6 +539,7 @@ const uploadSuccessful = ref(false);
 const airdropStore = useAirdropStore();
 const walletStore = useWalletStore();
 const deployStatus = '';
+
 let counter = 0;
 let address = '';
 let reloadItems;
@@ -562,10 +567,6 @@ function filterStyle2() {
     };
   }
 }
-
-onClickOutside(target, () => {
-  if (recipientStore.isVisible) recipientStore.updateDropdownVisibility();
-});
 
 /*const step = computed(() => {
   return airdropStore.step;
@@ -919,17 +920,50 @@ function getRecipients(num, page) {
 // /////////////////////////////////////
 // DROPDOWN Functions
 // /////////////////////////////////////////////////////
+let selectedToken = '';
+let intitiatedFirst = false;
+/// TOFIX: VTK DUPLICATES
+let listWithoutDuplicates = () => {
+  // maybe just return the filtered list instead of changing the original first
+  tokenList.value = tokenList.value.filter(
+    (v, i, a) => a.findIndex((v2) => v2.address === v.address) === i
+  );
+  return tokenList.value;
+};
+onClickOutside(target, () => {
+  if (recipientStore.isVisible) recipientStore.updateDropdownVisibility();
+  if (recipientStore.tokensList.length !== 0) {
+    tokenList.value = recipientStore.tokensList;
+    intitiatedFirst = false;
+  }
+});
+function onSelected() {
+  if (!intitiatedFirst) {
+    recipientStore.saveTokensList(tokensList);
+    intitiatedFirst = true;
+  }
+  // console.log('ON SELECTED');
+  tokenList.value = recipientStore.tokensList;
+  console.log(customToken.value, typeof customToken.value);
+  onChangeInput(customToken.value);
+  customToken.value = '';
+  // intitiatedFirst = false;
+  recipientStore.updateDropdownVisibility();
+  if (recipientStore.tokensList.length !== 0) {
+    // console.log('Store List: ', recipientStore.tokensList);
+    tokenList.value = recipientStore.tokensList;
+    intitiatedFirst = false;
+  }
+}
+
 async function onChangeInput(address) {
   let found = false;
   let error = false;
   for (let i = 0; i < tokenList.value.length; i++) {
     if (tokenList.value[i].address == address) {
-      //  console.log('1111111 Existing token');
       found = true;
       onChange(tokenList.value[i]);
-      recipientStore.updateDropdownVisibility();
     } else if (address.length < 66) {
-      //console.log('2222222 ERROR IN ADDRESS');
       error = true;
       token.value = {
         label: 'Error: Address too short',
@@ -938,7 +972,6 @@ async function onChangeInput(address) {
         decimals: '',
       };
     } else if (!address.includes(':')) {
-      //console.log('3333333 ERROR IN ADDRESS');
       error = true;
       token.value = {
         label: 'Error: Address missing colon',
@@ -948,22 +981,17 @@ async function onChangeInput(address) {
       };
     }
   }
-
   if (!found && !error) {
-    //console.log('New address spotted!');
     await addTag(address);
     var my_array = tokenList.value;
     var last_element = my_array[my_array.length - 1];
     onChange(last_element);
-    recipientStore.updateDropdownVisibility();
   }
 }
-let selectedToken;
 async function onChange(value) {
   selectedToken = value;
   token.value = value;
   let tokenRoot;
-  //console.log('token.value: ', token.value.address);
   if (token.value.label !== 'EVER') {
     tokenRoot = airdropStore.tokenAddr.balances.find(
       (tokencic) => tokencic.rootAddress == token.value.address
@@ -972,29 +1000,39 @@ async function onChange(value) {
     if (!tokenRoot) {
       tokenRoot = await airdropStore.getToken(token.value.address);
     }
-    console.log('Token from token wallet: ', tokenRoot);
     airdropStore.tokenWalletBalance = tokenRoot.balance;
-    //console.log('Token wallet balance: ', airdropStore.tokenWalletBalance);
   }
   await airdropStore.getExpectedAddress(value);
   await airdropStore.calculateFees('deploy', 'giver', 'EVER', '');
-  //console.log('Fee: ', airdropStore.fees);
-  //airdropStore.step =1;
 }
-function onEnter() {
-  onChangeInput(customToken.value);
+// function onEnter() {
+//   console.log('On Enter');
+//   tokenList.value = recipientStore.tokensList;
+//   onChangeInput(customToken.value);
+//   customToken.value = '';
+//   intitiatedFirst = false;
+//   recipientStore.updateDropdownVisibility();
+// }
+function onStopTyping() {
+  console.log('On Stop Typing');
+  if (!intitiatedFirst) {
+    recipientStore.saveTokensList(tokensList);
+    intitiatedFirst = true;
+  }
+  tokenList.value = [];
+  if (customToken.value.length == 0) {
+    console.log('EMPTY INPUT');
+    tokenList.value = recipientStore.tokensList;
+  }
+  addTag(customToken.value);
 }
-
 async function addTag(newTag) {
   const ever = new ProviderRpcClient();
-  //const token =  await airdropStore.getToken(newTag);
   const root = new ever.Contract(rootAbi, newTag);
   const decimal = await root.methods.decimals({ answerId: 1 }).call();
-  // console.log(decimal);
   const label = await root.methods.symbol({ answerId: 1 }).call();
-  // console.log(label);
   const token = tokensList.find((token) => token.address == newTag);
-  // console.log('If token', token);
+  // console.log('TOKEN: ', token);
   if (token == undefined) {
     tokenList.value.push({
       label: label.value0,
@@ -1002,7 +1040,8 @@ async function addTag(newTag) {
       address: newTag,
       icon: `/avatar/${counter++}.svg`,
     });
-    // console.log('Usao');
+  } else {
+    tokenList.value = [token];
   }
 }
 //tokensList.push({label: label.value0, decimals: decimal.value0*1, address: newTag, icon:`/avatar/5.svg`});

@@ -11,6 +11,7 @@ export const useRecipientStore = defineStore({
     continuation: {},
     isVisible: false,
     listToStorage: [],
+    tokensList: [],
   }),
 
   mounted() {
@@ -219,6 +220,9 @@ export const useRecipientStore = defineStore({
       //console.log('Removed single airdrop',
       //localStorage.getItem('AirdropBackup')
       //);
+    },
+    saveTokensList(list) {
+      this.tokensList = list;
     },
   },
 });
