@@ -559,20 +559,34 @@ function canEditList() {
   return isTrueOrNot;
 }
 /// Func to return saved airdrop recipients data after refresh or back
-function reloadAirdropData() {
+async function reloadAirdropData() {
   // Check to prevent inserting data after step 2
   if (canEditList()) {
     // Check if the data is for this current contract and insert if true
     if (recipientStore.checkForAirdropInLocalStorage(route.params.address)) {
       const airdropDataStore = recipientStore.returnAirdropData(route.params.address);
+      console.log('airdropData: ', airdropDataStore);
       airdropStore.deployOptions.initParams._randomNonce = airdropDataStore.nonce;
       fullRecList.value = airdropDataStore.items;
       items.value = fullRecList.value;
-      token.value = tokensList.find((token) => token.label == 'EVER');
+      let tokenData;
+      if (
+        airdropDataStore.tokenRootAddr ==
+        '0:0000000000000000000000000000000000000000000000000000000000000000'
+      ) {
+        tokenData = tokensList.find((token) => token.label == 'EVER');
+      } else {
+        tokenData = tokensList.find((token) => token.address == airdropDataStore.tokenRootAddr);
+        console.log('token: ', token);
+        //await airdropStore.returnTokenInfo(airdropDataStore.tokenRootAddr);
+      }
+      token.value = tokenData;
       airdropStore.token = token.value;
       airdropStore.address = route.params.address;
       airdropStore.step =
-        airdropDataStore.deployTXId == '' ? airdropDataStore.step + 1 : airdropDataStore.step;
+        airdropDataStore.deployTXId == '' && airdropDataStore.step == 1
+          ? airdropDataStore.step + 1
+          : airdropDataStore.step;
       airdropName.value = airdropDataStore.airdropName;
       airdropStore.airdropName = airdropName.value;
       airdropStore.transactionId.giverContractId = airdropDataStore.giverTXId;
@@ -590,7 +604,16 @@ watch(status, (newX) => {
 // Watch for recipients list change in order to update the stored data (still not working)
 watch(items, (newX) => {
   if (airdropStore.step <= 2) {
-    recipientStore.saveAirdropData(items.value, airdropStore.address);
+    recipientStore.saveAirdropData(
+      items.value,
+      airdropStore.address,
+      airdropStore.step,
+      airdropStore.token.address,
+      airdropStore.transactionId.giverContractId ? airdropStore.transactionId.giverContractId : '',
+      '',
+      airdropStore.airdropName,
+      airdropStore.deployOptions.initParams._randomNonce
+    );
   }
 });
 </script>

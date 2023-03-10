@@ -606,6 +606,7 @@ async function onTopUpEver() {
     );
     const date = Date.now();
     airdropStore.transactionId.giverContractId = data.id.hash;
+
     recipientStore.saveAirdropData(
       recipientsList.value,
       airdropStore.address,

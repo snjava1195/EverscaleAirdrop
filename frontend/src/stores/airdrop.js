@@ -879,7 +879,7 @@ export const useAirdropStore = defineStore({
 
         let airdropsList = JSON.parse(localStorage.getItem('airdropsListData'));
         for (let i = 0; i < airdropsList.length; i++) {
-          if (airdropsList[i].step == 1) {
+          if (airdropsList[i].step == 1 || airdropsList[i].step == 2) {
             const totalRecipientsTokens = airdropsList[i].items.reduce((accumulator, object) => {
               const acc = toNano(accumulator, 9);
               const objc = toNano(object.amount, 9);
