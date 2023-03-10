@@ -911,6 +911,8 @@ export const useAirdropStore = defineStore({
               return sum2 * 1;
             }, 0);
 
+            const token = await this.returnTokenInfo(airdropsList[i].tokenRootAddr);
+            console.log('token: ', token);
             console.log('status: Preparing');
             this.airdropData.push({
               airdropName: airdropsList[i].airdropName,
@@ -920,8 +922,8 @@ export const useAirdropStore = defineStore({
               dateCreated: airdropsList[i].date,
               statusCreated: 'Preparing',
               address: airdropsList[i].contractAddr,
-              tokenLabel: 'EVER',
-              tokenIcon: '',
+              tokenLabel: token.label,
+              tokenIcon: token.icon,
             });
           }
         }
@@ -1033,6 +1035,30 @@ export const useAirdropStore = defineStore({
         console.log(e);
         return Promise.reject(e);
       }
+    },
+    async returnTokenInfo(addr) {
+      let token;
+      if (addr != '0:0000000000000000000000000000000000000000000000000000000000000000') {
+        //const token = new ever.Contract(rootAbi, addr)
+        token = tokensList.find((token) => token.address == addr);
+        if (!token) {
+          const tokenContract = new ever.Contract(rootAbi, addr);
+          const label = await tokenContract.methods.symbol({ answerId: 0 }).call();
+          const decimals = await tokenContract.methods.decimals({ answerId: 0 }).call();
+
+          token = {
+            label: label.value0,
+            decimals: decimals.value0,
+            address: addr,
+            icon: '/avatar/1.svg',
+          };
+          //return Promise.resolve(token);
+        }
+      } else {
+        token = tokensList.find((token) => token.label == 'EVER');
+      }
+
+      return Promise.resolve(token);
     },
   },
 });

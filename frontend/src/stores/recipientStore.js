@@ -100,11 +100,11 @@ export const useRecipientStore = defineStore({
         deployTXId: deployTXId,
         items: items,
         airdropName: airdropName,
-        date: new Date().getTime(),
+        date: Math.round(Date.now() / 1000),
       };
       //console.log('should be empty -> ', localStorage.getItem('00123lalala'));
       let doesListExist = localStorage.getItem('airdropsListData');
-      //console.log('Does airdrop list exist? save new airdrop: ', doesListExist);
+      console.log('Does airdrop list exist? save new airdrop: ', doesListExist);
       // Check does the list of unfinished airdrops exist
       if (doesListExist !== null) {
         let parsed = JSON.parse(localStorage.getItem('airdropsListData'));
@@ -128,7 +128,7 @@ export const useRecipientStore = defineStore({
         localStorage.setItem('airdropsListData', data);
       }
       // Retrieve it and print just to check
-      let parsed = JSON.parse(localStorage.getItem('airdropsListData'));
+      //let parsed = JSON.parse(localStorage.getItem('airdropsListData'));
       //console.log('PARSED Drop: ', parsed);
     },
     checkForAirdropInLocalStorage(addr) {
@@ -189,8 +189,8 @@ export const useRecipientStore = defineStore({
           parsed.pop(i);
           console.log('parsed: ', parsed);
           localStorage.removeItem('airdropsListData');
-          if (parsed) {
-            localStorage.setItem('airdropsListData', parsed);
+          if (parsed.length > 0) {
+            localStorage.setItem('airdropsListData', JSON.stringify(parsed));
           }
         }
       }

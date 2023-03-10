@@ -604,6 +604,7 @@ async function onTopUpEver() {
       props.token.label,
       recipientsList.value.length
     );
+    const date = Date.now();
     airdropStore.transactionId.giverContractId = data.id.hash;
     recipientStore.saveAirdropData(
       recipientsList.value,
@@ -612,9 +613,9 @@ async function onTopUpEver() {
       props.token.address,
       data.id.hash,
       '',
-      props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + Date.now()
+      props.shareNetwork.airdropName ? props.shareNetwork.airdropName : 'Airdrop_' + date
     );
-
+    console.log('proslo');
     airdropStore.step = 2;
   } catch (e) {
     console.log('e: ', e);
